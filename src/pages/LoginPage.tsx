@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     // Simulate successful login
     console.log('Logging in with:', { username, password });
-    navigate('/home'); // Redirect to home page after login
+    navigate('/student-home'); // Redirect to home page after login
   };
 
   return (

@@ -1,0 +1,17 @@
+.MuiAppBar-root {
+  background-color: #1976d2;
+}
+
+.MuiToolbar-root {
+  min-height: 64px;
+  padding: 0 24px;
+}
+
+.MuiButton-root {
+  text-transform: none;
+  font-size: 1rem;
+}
+
+.MuiButton-root:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+} 
