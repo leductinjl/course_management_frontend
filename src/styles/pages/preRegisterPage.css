@@ -1,0 +1,22 @@
+/* Style cho trang trước khi đăng ký */
+.pre-register-page {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.options {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.option {
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.option:hover {
+  transform: scale(1.05);
+}
