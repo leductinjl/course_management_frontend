@@ -7,10 +7,10 @@ import {
   Tabs,
   Tab,
 } from '@mui/material';
-import Header from '../components/student/StudentHeader';
-import Footer from '../components/Footer';
-import SearchBar from '../components/search/SearchBar';
-import PlannedCourses from '../components/search/PlannedCourses';
+import Header from '../../components/student/StudentHeader';
+import Footer from '../../components/Footer';
+import SearchBar from '../../components/search/SearchBar';
+import PlannedCourses from '../../components/search/PlannedCourses';
 
 interface TabPanelProps {
   children?: React.ReactNode;

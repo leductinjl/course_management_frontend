@@ -1,9 +1,9 @@
 import React from 'react';
-import InstructorHeader from '../components/instructor/InstructorHeader';
-import Footer from '../components/Footer';
+import InstructorHeader from '../../components/instructor/InstructorHeader';
+import Footer from '../../components/Footer';
 import { Container, Grid, Paper, Typography, List, ListItem, Box, Button } from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
-import { MenuPaper } from '../styles/pages/studentHomeStyle/MenuPaper.styles';
+import { MenuPaper } from '../../styles/pages/studentHomeStyle/MenuPaper.styles';
 
 const InstructorHome: React.FC = () => {
   const bannerItems = [

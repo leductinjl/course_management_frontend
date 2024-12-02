@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import InstructorHeader from '../components/instructor/InstructorHeader';
-import Footer from '../components/Footer';
+import InstructorHeader from '../../components/instructor/InstructorHeader';
+import Footer from '../../components/Footer';
 import {
   Container,
   Grid,
@@ -10,9 +10,9 @@ import {
   Box,
   Typography,
 } from '@mui/material';
-import TeachingSchedule from '../components/instructor/TeachingSchedule';
-import CourseManagement from '../components/instructor/CourseManagement';
-import GradeManagement from '../components/instructor/GradeManagement';
+import TeachingSchedule from '../../components/instructor/TeachingSchedule';
+import CourseManagement from '../../components/instructor/CourseManagement';
+import GradeManagement from '../../components/instructor/GradeManagement';
 
 interface TabPanelProps {
   children?: React.ReactNode;

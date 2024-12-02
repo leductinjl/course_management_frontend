@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import StudentHeader from '../components/student/StudentHeader';
-import Footer from '../components/Footer';
+import StudentHeader from '../../components/student/StudentHeader';
+import Footer from '../../components/Footer';
 import { Container, Grid, Paper, Typography, List, ListItem, ListItemText, Box, InputBase, Button } from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
-import '../styles/pages/studentHomeStyle/StudentHome.css';
-import { MenuPaper } from '../styles/pages/studentHomeStyle/MenuPaper.styles';
+import '../../styles/pages/studentHomeStyle/StudentHome.css';
+import { MenuPaper } from '../../styles/pages/studentHomeStyle/MenuPaper.styles';
 
 const StudentHome: React.FC = () => {
   const bannerItems = [

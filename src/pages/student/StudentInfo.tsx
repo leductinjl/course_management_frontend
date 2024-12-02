@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import Header from '../components/student/StudentHeader';
-import Footer from '../components/Footer';
-import StudentSidebar from '../components/student/StudentSidebar';
-import PersonalInfo from '../components/student/PersonalInfo';
-import RegistrationHistory from '../components/student/RegistrationHistory';
-import CourseInfo from '../components/student/CourseInfo';
-import ClassSchedule from '../components/student/ClassSchedule';
-import ExamSchedule from '../components/student/ExamSchedule';
-import Certificates from '../components/student/Certificates';
-import Tuition from '../components/student/Tuition';
+import Header from '../../components/student/StudentHeader';
+import Footer from '../../components/Footer';
+import StudentSidebar from '../../components/student/StudentSidebar';
+import PersonalInfo from '../../components/student/PersonalInfo';
+import RegistrationHistory from '../../components/student/RegistrationHistory';
+import CourseInfo from '../../components/student/CourseInfo';
+import ClassSchedule from '../../components/student/ClassSchedule';
+import ExamSchedule from '../../components/student/ExamSchedule';
+import Certificates from '../../components/student/Certificates';
+import Tuition from '../../components/student/Tuition';
 import { Container, Grid, Paper } from '@mui/material';
-import StudyResults from '../components/student/StudyResults';
+import StudyResults from '../../components/student/StudyResults';
 
 const StudentInfo: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState('personal');

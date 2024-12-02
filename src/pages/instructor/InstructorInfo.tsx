@@ -1,7 +1,7 @@
 import React from 'react';
-import InstructorHeader from '../components/instructor/InstructorHeader';
-import Footer from '../components/Footer';
-import PersonalInfo from '../components/instructor/PersonalInfo';
+import InstructorHeader from '../../components/instructor/InstructorHeader';
+import Footer from '../../components/Footer';
+import PersonalInfo from '../../components/instructor/PersonalInfo';
 import { 
   Container, 
   Paper, 

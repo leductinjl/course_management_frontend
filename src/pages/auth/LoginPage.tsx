@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
-import '../styles/pages/loginPage.css';
+import '../../styles/pages/loginPage.css';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');

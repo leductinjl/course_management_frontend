@@ -1,7 +1,7 @@
 import React from 'react';
-import Header from '../components/student/StudentHeader';
-import Footer from '../components/Footer';
-import CourseList from '../components/course/CourseList';
+import Header from '../../components/student/StudentHeader';
+import Footer from '../../components/Footer';
+import CourseList from '../../components/course/CourseList';
 import { Container, Typography, Box } from '@mui/material';
 
 const CourseRegistration: React.FC = () => {
