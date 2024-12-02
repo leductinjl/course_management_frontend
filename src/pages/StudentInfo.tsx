@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
+import Header from '../components/student/StudentHeader';
 import Footer from '../components/Footer';
 import StudentSidebar from '../components/student/StudentSidebar';
 import PersonalInfo from '../components/student/PersonalInfo';

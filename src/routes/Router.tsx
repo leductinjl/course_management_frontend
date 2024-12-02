@@ -11,6 +11,9 @@ import NotFound from '../pages/NotFound';
 import WelcomePage from '../pages/WelcomePage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
+import InstructorHome from '../pages/InstructorHome';
+import InstructorInfo from '../pages/InstructorInfo';
+import InstructorTeaching from '../pages/InstructorTeaching';
 
 const AppRouter: React.FC = () => {
   return (
@@ -24,6 +27,9 @@ const AppRouter: React.FC = () => {
       <Route path="/student-info" element={<StudentInfo />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/instructor-home" element={<InstructorHome />} />
+      <Route path="/instructor-info" element={<InstructorInfo />} />
+      <Route path="/instructor-teaching" element={<InstructorTeaching />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

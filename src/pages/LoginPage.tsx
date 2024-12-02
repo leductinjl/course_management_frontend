@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography } from '@mui/material';
+import { 
+  TextField, 
+  Button, 
+  Typography, 
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  FormControl,
+  FormLabel
+} from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
 import '../styles/pages/loginPage.css';
@@ -8,16 +17,22 @@ import '../styles/pages/loginPage.css';
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('student');
   const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate successful login
-    console.log('Logging in with:', { username, password });
-    navigate('/student-home');
+    // Simulate successful login and redirect based on role
+    console.log('Logging in with:', { username, password, role });
+    
+    if (role === 'student') {
+      navigate('/student-home');
+    } else {
+      navigate('/instructor-home');
+    }
   };
 
-  // Add particles
+  // Add particles effect (keeping existing useEffect)
   React.useEffect(() => {
     const createParticle = () => {
       const particle = document.createElement('div');
@@ -48,6 +63,18 @@ const LoginPage: React.FC = () => {
         <Typography className="subtitle">Sign in to your account</Typography>
         
         <form onSubmit={handleLogin}>
+          <FormControl component="fieldset" className="role-selector">
+            <FormLabel component="legend">Login as:</FormLabel>
+            <RadioGroup
+              row
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <FormControlLabel value="student" control={<Radio />} label="Student" />
+              <FormControlLabel value="instructor" control={<Radio />} label="Instructor" />
+            </RadioGroup>
+          </FormControl>
+          
           <label>Email address</label>
           <TextField
             variant="outlined"

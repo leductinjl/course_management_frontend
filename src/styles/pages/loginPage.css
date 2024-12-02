@@ -455,3 +455,31 @@ body {
 .success-animation {
   animation: success 0.5s ease-out;
 }
+
+.role-selector {
+  margin-bottom: 24px !important;
+}
+
+.role-selector legend {
+  color: #111827;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.role-selector .MuiFormGroup-root {
+  margin-top: 8px;
+}
+
+.role-selector .MuiRadio-root {
+  color: #6B7280;
+}
+
+.role-selector .MuiRadio-root.Mui-checked {
+  color: #6366f1;
+}
+
+.role-selector .MuiFormControlLabel-label {
+  color: #374151;
+  font-size: 14px;
+}

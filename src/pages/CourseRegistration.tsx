@@ -1,7 +1,8 @@
 import React from 'react';
-import Header from '../components/Header';
+import Header from '../components/student/StudentHeader';
 import Footer from '../components/Footer';
-import { Container, Typography } from '@mui/material';
+import CourseList from '../components/course/CourseList';
+import { Container, Typography, Box } from '@mui/material';
 
 const CourseRegistration: React.FC = () => {
   return (
@@ -11,7 +12,9 @@ const CourseRegistration: React.FC = () => {
         <Typography variant="h4" gutterBottom>
           Đăng ký môn học
         </Typography>
-        {/* Thêm nội dung trang đăng ký môn học ở đây */}
+        <Box sx={{ mt: 3 }}>
+          <CourseList />
+        </Box>
       </Container>
       <Footer />
     </>

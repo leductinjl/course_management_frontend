@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
+import StudentHeader from '../components/student/StudentHeader';
 import Footer from '../components/Footer';
 import { Container, Grid, Paper, Typography, List, ListItem, ListItemText, Box, InputBase, Button } from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
@@ -75,7 +75,7 @@ const StudentHome: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <StudentHeader />
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Carousel
           animation="slide"

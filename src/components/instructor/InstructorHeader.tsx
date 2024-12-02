@@ -1,11 +1,10 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
 import SchoolIcon from '@mui/icons-material/School';
 
-const Header: React.FC = () => {
+const InstructorHeader: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -16,7 +15,7 @@ const Header: React.FC = () => {
           variant="h6" 
           component="div" 
           sx={{ flexGrow: 1, cursor: 'pointer' }}
-          onClick={() => navigate('/student-home')}
+          onClick={() => navigate('/instructor-home')}
         >
           TTTH ĐHSP TPHCM
         </Typography>
@@ -24,41 +23,28 @@ const Header: React.FC = () => {
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button 
             color="inherit" 
-            startIcon={<SearchIcon />}
-            onClick={() => navigate('/search')}
+            startIcon={<PersonIcon />}
+            onClick={() => navigate('/instructor-info')}
             sx={{ 
-              backgroundColor: location.pathname === '/search' 
+              backgroundColor: location.pathname === '/instructor-info' 
                 ? 'rgba(255, 255, 255, 0.1)' 
                 : 'transparent' 
             }}
           >
-            Tra cứu
+            Thông tin cá nhân
           </Button>
           
           <Button 
             color="inherit" 
             startIcon={<SchoolIcon />}
-            onClick={() => navigate('/course-registration')}
+            onClick={() => navigate('/instructor-teaching')}
             sx={{ 
-              backgroundColor: location.pathname === '/course-registration' 
+              backgroundColor: location.pathname === '/instructor-teaching' 
                 ? 'rgba(255, 255, 255, 0.1)' 
                 : 'transparent' 
             }}
           >
-            Đăng ký môn học
-          </Button>
-          
-          <Button 
-            color="inherit" 
-            startIcon={<PersonIcon />}
-            onClick={() => navigate('/student-info')}
-            sx={{ 
-              backgroundColor: location.pathname === '/student-info' 
-                ? 'rgba(255, 255, 255, 0.1)' 
-                : 'transparent' 
-            }}
-          >
-            Thông tin học viên
+            Thông tin giảng dạy
           </Button>
         </Box>
       </Toolbar>
@@ -66,4 +52,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header; 
+export default InstructorHeader; 
