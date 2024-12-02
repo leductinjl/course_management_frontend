@@ -10,7 +10,7 @@ const Header: React.FC = () => {
   const location = useLocation();
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ bgcolor: '#1a237e' }}>
       <Toolbar>
         <Typography 
           variant="h6" 

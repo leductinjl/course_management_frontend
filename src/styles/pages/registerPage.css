@@ -1,61 +1,111 @@
 /* Style cho trang đăng ký */
 .register-page {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
+    max-width: 460px;
+    margin: 24px auto;
+    padding: 40px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
     text-align: center;
-    color: #333;
-    font-size: 24px;
+    color: #111827;
+    font-size: 28px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+h2 + p {
+    text-align: center;
+    color: #6B7280;
+    margin-bottom: 28px;
+    font-size: 15px;
+}
+
+.input-group {
+    position: relative;
     margin-bottom: 20px;
-  }
-  
-  .input-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .input-group input {
+}
+
+.input-group svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    font-size: 20px;
+}
+
+.input-group input {
     width: 100%;
-    padding: 10px;
-    margin-left: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  .input-group input:focus {
-    border-color: #5b9bd5;
+    padding: 14px 14px 14px 44px;
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+}
+
+.input-group input:focus {
     outline: none;
-  }
-  
-  button {
+    border-color: #6366f1;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.input-group input:hover {
+    background-color: #F3F4F6;
+}
+
+button[type="submit"] {
     width: 100%;
-    padding: 12px;
-    background-color: #007bff;
+    padding: 16px;
+    background-color: #6366f1;
     color: white;
     border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 32px 0 24px;
     cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  .welcome-section {
-    text-align: center;
-  }
-  
-  .welcome-section img {
-    width: 50%;
-    margin: 20px 0;
-  }
+    transition: all 0.2s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+p {
+    font-size: 14px;
+    color: #6B7280;
+}
+
+p span {
+    color: #6366f1;
+    font-weight: 500;
+}
+
+/* Animation mới cho input khi focus */
+.input-group input:focus {
+    transform: translateY(-1px);
+}
+
+/* Animation cho chuyển bước */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.input-group {
+    animation: slideIn 0.4s ease-out forwards;
+}
   

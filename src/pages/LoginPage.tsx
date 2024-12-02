@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     // Simulate successful login
     console.log('Logging in with:', { username, password });
-    navigate('/student-home'); // Redirect to home page after login
+    navigate('/student-home');
   };
 
   // Add particles
@@ -44,8 +44,8 @@ const LoginPage: React.FC = () => {
       <div className="decorative-shape decorative-shape-1"></div>
       <div className="decorative-shape decorative-shape-2"></div>
       <div className="login-page">
-        <Typography variant="h4" gutterBottom>Create a free account</Typography>
-        <Typography className="subtitle">Join us today and get started</Typography>
+        <Typography variant="h4" gutterBottom>Welcome Back</Typography>
+        <Typography className="subtitle">Sign in to your account</Typography>
         
         <form onSubmit={handleLogin}>
           <label>Email address</label>
@@ -64,7 +64,7 @@ const LoginPage: React.FC = () => {
           <TextField
             variant="outlined"
             type="password"
-            placeholder="Choose a password"
+            placeholder="Enter your password"
             InputProps={{
               startAdornment: <LockIcon />,
             }}
@@ -73,24 +73,13 @@ const LoginPage: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <label>Confirm password</label>
-          <TextField
-            variant="outlined"
-            type="password"
-            placeholder="Confirm your password"
-            InputProps={{
-              startAdornment: <LockIcon />,
-            }}
-            fullWidth
-          />
-
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Create Account
+            Sign In
           </Button>
         </form>
         <p>
-          Already have an account?{' '}
-          <Link to="/login">Sign in</Link>
+          Don't have an account?{' '}
+          <Link to="/register">Sign up</Link>
         </p>
       </div>
     </>

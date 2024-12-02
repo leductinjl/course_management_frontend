@@ -5,6 +5,10 @@ import SchoolIcon from '@mui/icons-material/School';
 import ComputerIcon from '@mui/icons-material/Computer';
 import LanguageIcon from '@mui/icons-material/Language';
 import SecurityIcon from '@mui/icons-material/Security';
+import ForumIcon from '@mui/icons-material/Forum';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import '../styles/pages/welcomePage.css';
 
 const WelcomePage: React.FC = () => {
@@ -28,8 +32,46 @@ const WelcomePage: React.FC = () => {
     }
   ];
 
+  const testimonials = [
+    {
+      quote: "Chất lượng đào tạo tuyệt vời, giảng viên nhiệt tình",
+      author: "Nguyễn Văn A - Học viên khóa K34"
+    },
+    {
+      quote: "Môi trường học tập chuyên nghiệp, hiện đại",
+      author: "Trần Thị B - Học viên khóa K35"
+    }
+  ];
+
+  const highlights = [
+    {
+      icon: <WorkspacePremiumIcon />,
+      text: "Chứng chỉ được công nhận quốc tế"
+    },
+    {
+      icon: <EmojiPeopleIcon />,
+      text: "Đội ngũ giảng viên giàu kinh nghiệm"
+    },
+    {
+      icon: <ThumbUpIcon />,
+      text: "Tỷ lệ đậu chứng chỉ cao"
+    }
+  ];
+
   return (
     <div className="welcome-container">
+      <div className="decorative-circles"></div>
+      <div className="floating-shapes"></div>
+
+      <div className="side-decoration left">
+        {highlights.map((item, index) => (
+          <div key={index} className="decoration-item">
+            <div className="decoration-icon">{item.icon}</div>
+            <span className="decoration-text">{item.text}</span>
+          </div>
+        ))}
+      </div>
+
       <div className="welcome-card">
         <div className="icon-container">
           <SchoolIcon className="school-icon" />
@@ -93,6 +135,16 @@ const WelcomePage: React.FC = () => {
             ĐĂNG NHẬP
           </Button>
         </div>
+      </div>
+
+      <div className="side-decoration right">
+        {testimonials.map((item, index) => (
+          <div key={index} className="testimonial-card">
+            <ForumIcon className="quote-icon" />
+            <p className="quote">{item.quote}</p>
+            <p className="author">{item.author}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

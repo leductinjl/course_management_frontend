@@ -46,6 +46,7 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="register-page">
       <h2>Create a free account</h2>
+      <p>Join us today and get started</p>
       <form onSubmit={handleNext}>
         {/* Bước 1: Nhập Email và Mật khẩu */}
         {step === 1 && (
