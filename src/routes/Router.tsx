@@ -53,15 +53,24 @@ const AppRouter: React.FC = () => {
 
       {/* Admin Routes */}
       <Route path="/management-portal-secure" element={<AdminPortalAuth />} />
-      <Route path="/management-portal-secure/login" element={<AdminLogin />} />
+      <Route 
+        path="/management-portal-secure/login" 
+        element={
+          <PortalAuthGuard>
+            <AdminLogin />
+          </PortalAuthGuard>
+        } 
+      />
       <Route 
         path="/management-portal-secure/dashboard/*" 
         element={
-          isAdminAuthenticated ? (
-            <AdminDashboard />
-          ) : (
-            <Navigate to="/management-portal-secure/login" replace />
-          )
+          <PortalAuthGuard>
+            {isAdminAuthenticated ? (
+              <AdminDashboard />
+            ) : (
+              <Navigate to="/management-portal-secure/login" replace />
+            )}
+          </PortalAuthGuard>
         } 
       />
 

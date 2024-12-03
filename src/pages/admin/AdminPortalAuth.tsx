@@ -16,6 +16,7 @@ const AdminPortalAuth = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (portalPassword === import.meta.env.VITE_ADMIN_PORTAL_PASSWORD) {
+      sessionStorage.setItem('portalAuth', 'true');
       navigate('/management-portal-secure/login');
     } else {
       setError('Invalid portal password');
