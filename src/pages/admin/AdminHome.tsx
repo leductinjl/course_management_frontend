@@ -2,21 +2,45 @@ import React from 'react';
 import { 
   Box, 
   Grid, 
-  Paper, 
-  Typography, 
+  Typography,
   Card,
   CardContent,
-  Divider,
-  Stack
+  IconButton,
+  keyframes
 } from '@mui/material';
 import {
   School as SchoolIcon,
   People as PeopleIcon,
   CardMembership as CertificateIcon,
   Assignment as ExamIcon,
-  Dashboard as DashboardIcon
+  Notifications as NotificationIcon,
+  Settings as SettingsIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+
+// Định nghĩa keyframes cho các animation
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
 
 const AdminHome = () => {
   const navigate = useNavigate();
@@ -26,109 +50,213 @@ const AdminHome = () => {
       id: 'courses',
       title: 'Quản lý môn học',
       description: 'Quản lý danh sách môn học, thông tin chi tiết và trạng thái',
-      icon: <SchoolIcon sx={{ fontSize: 40 }} />,
+      icon: <SchoolIcon />,
       path: 'courses',
-      color: '#1976d2',
-      stats: '24 môn học'
+      count: '24',
+      color: '#6366f1',
+      delay: '0s'
     },
     {
       id: 'users',
       title: 'Quản lý tài khoản',
       description: 'Quản lý người dùng, phân quyền và thông tin cá nhân',
-      icon: <PeopleIcon sx={{ fontSize: 40 }} />,
+      icon: <PeopleIcon />,
       path: 'users',
-      color: '#2e7d32',
-      stats: '156 người dùng'
+      count: '156',
+      color: '#10b981',
+      delay: '0.1s'
     },
     {
       id: 'certificates',
       title: 'Quản lý chứng chỉ',
       description: 'Quản lý cấp phát và theo dõi chứng chỉ học viên',
-      icon: <CertificateIcon sx={{ fontSize: 40 }} />,
+      icon: <CertificateIcon />,
       path: 'certificates',
-      color: '#ed6c02',
-      stats: '89 chứng chỉ'
+      count: '89',
+      color: '#f59e0b',
+      delay: '0.2s'
     },
     {
       id: 'exams',
       title: 'Quản lý kỳ thi',
       description: 'Quản lý lịch thi, đề thi và kết quả thi',
-      icon: <ExamIcon sx={{ fontSize: 40 }} />,
+      icon: <ExamIcon />,
       path: 'exams',
-      color: '#9c27b0',
-      stats: '12 kỳ thi'
+      count: '12',
+      color: '#ec4899',
+      delay: '0.3s'
     }
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Paper 
-        elevation={0} 
+    <Box sx={{ 
+      p: 4, 
+      bgcolor: '#f8fafc', 
+      minHeight: '100vh',
+      animation: `${fadeIn} 0.6s ease-out`
+    }}>
+      {/* Header */}
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        mb: 4,
+        animation: `${fadeIn} 0.6s ease-out`
+      }}>
+        <Typography variant="h4" sx={{ 
+          fontWeight: 500, 
+          color: '#1e293b',
+          position: 'relative',
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: -8,
+            left: 0,
+            width: '60px',
+            height: '3px',
+            backgroundColor: '#6366f1',
+            borderRadius: '2px'
+          }
+        }}>
+          Admin Dashboard
+        </Typography>
+        <Box>
+          <IconButton 
+            color="inherit"
+            sx={{
+              transition: 'transform 0.2s',
+              '&:hover': {
+                transform: 'scale(1.1)',
+                color: '#6366f1'
+              }
+            }}
+          >
+            <NotificationIcon />
+          </IconButton>
+          <IconButton 
+            color="inherit"
+            sx={{
+              transition: 'transform 0.2s',
+              '&:hover': {
+                transform: 'scale(1.1)',
+                color: '#6366f1'
+              }
+            }}
+          >
+            <SettingsIcon />
+          </IconButton>
+        </Box>
+      </Box>
+
+      {/* Welcome Message */}
+      <Box 
         sx={{ 
-          p: 3, 
-          mb: 4, 
-          bgcolor: 'primary.dark',
-          color: 'white'
+          mb: 4,
+          p: 3,
+          bgcolor: '#fff',
+          borderRadius: 2,
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          animation: `${fadeIn} 0.6s ease-out`,
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            boxShadow: '0 8px 12px -1px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(-2px)'
+          }
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <DashboardIcon sx={{ fontSize: 40 }} />
-          <Box>
-            <Typography variant="h4" gutterBottom>
-              Xin chào, Admin
-            </Typography>
-            <Typography variant="subtitle1">
-              Chào mừng bạn đến với Hệ thống quản trị TTTH ĐHSP
-            </Typography>
-          </Box>
-        </Stack>
-      </Paper>
-      
+        <Typography variant="h5" gutterBottom sx={{ 
+          color: '#1e293b', 
+          fontWeight: 500,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1
+        }}>
+          Xin chào, Admin
+        </Typography>
+        <Typography variant="body1" sx={{ color: '#64748b' }}>
+          Chào mừng bạn đến với Hệ thống quản trị TTTH ĐHSP
+        </Typography>
+      </Box>
+
+      {/* Menu Grid */}
       <Grid container spacing={3}>
         {menuItems.map((item) => (
           <Grid item xs={12} sm={6} md={3} key={item.id}>
             <Card 
               sx={{ 
                 height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
                 cursor: 'pointer',
-                transition: 'transform 0.2s, box-shadow 0.2s',
+                transition: 'all 0.3s ease',
+                animation: `${fadeIn} 0.6s ease-out`,
+                animationDelay: item.delay,
+                opacity: 0,
+                animationFillMode: 'forwards',
                 '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 6
+                  transform: 'translateY(-8px)',
+                  boxShadow: '0 12px 20px -5px rgba(0, 0, 0, 0.15)',
+                  '& .icon-box': {
+                    animation: `${pulse} 0.5s ease-in-out`
+                  },
+                  '& .count': {
+                    transform: 'scale(1.1)'
+                  }
                 }
               }}
               onClick={() => navigate(item.path)}
             >
-              <CardContent sx={{ flexGrow: 1 }}>
+              <CardContent>
                 <Box sx={{ 
-                  mb: 2, 
-                  color: item.color,
-                  display: 'flex',
-                  justifyContent: 'center'
+                  display: 'flex', 
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  mb: 2 
                 }}>
-                  {item.icon}
+                  <Box 
+                    className="icon-box"
+                    sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: 48,
+                      height: 48,
+                      borderRadius: 2,
+                      bgcolor: `${item.color}15`,
+                      color: item.color,
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    {item.icon}
+                  </Box>
+                  <Typography 
+                    className="count"
+                    variant="h4" 
+                    sx={{ 
+                      fontWeight: 600,
+                      color: item.color,
+                      transition: 'all 0.3s ease'
+                    }}
+                  >
+                    {item.count}
+                  </Typography>
                 </Box>
-                <Typography variant="h6" component="div" align="center" gutterBottom>
+                <Typography 
+                  variant="subtitle1" 
+                  gutterBottom 
+                  sx={{ 
+                    fontWeight: 500,
+                    color: '#1e293b'
+                  }}
+                >
                   {item.title}
                 </Typography>
-                <Divider sx={{ my: 1.5 }} />
                 <Typography 
                   variant="body2" 
-                  color="text.secondary" 
-                  align="center"
-                  sx={{ mb: 1.5 }}
+                  sx={{ 
+                    color: '#64748b',
+                    lineHeight: 1.5
+                  }}
                 >
                   {item.description}
-                </Typography>
-                <Typography 
-                  variant="subtitle2" 
-                  color={item.color}
-                  align="center"
-                  sx={{ fontWeight: 'bold' }}
-                >
-                  {item.stats}
                 </Typography>
               </CardContent>
             </Card>

@@ -19,19 +19,6 @@ import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminPortalAuth from '../pages/admin/AdminPortalAuth';
 import { useAuth } from '../contexts/AuthContext';
 
-const PortalAuthGuard = ({ children }: { children: React.ReactNode }) => {
-  const isPortalAuthenticated = sessionStorage.getItem('portalAuth') === 'true';
-  const navigate = useNavigate();
-  
-  useEffect(() => {
-    if (!isPortalAuthenticated) {
-      navigate('/management-portal-secure');
-    }
-  }, [isPortalAuthenticated, navigate]);
-
-  return isPortalAuthenticated ? <>{children}</> : null;
-};
-
 const AppRouter: React.FC = () => {
   const { isAdminAuthenticated } = useAuth();
 
@@ -52,25 +39,15 @@ const AppRouter: React.FC = () => {
       <Route path="/instructor-teaching" element={<InstructorTeaching />} />
 
       {/* Admin Routes */}
-      <Route path="/management-portal-secure" element={<AdminPortalAuth />} />
-      <Route 
-        path="/management-portal-secure/login" 
-        element={
-          <PortalAuthGuard>
-            <AdminLogin />
-          </PortalAuthGuard>
-        } 
-      />
+      <Route path="/management-portal-secure/login" element={<AdminLogin />} />
       <Route 
         path="/management-portal-secure/dashboard/*" 
         element={
-          <PortalAuthGuard>
-            {isAdminAuthenticated ? (
-              <AdminDashboard />
-            ) : (
-              <Navigate to="/management-portal-secure/login" replace />
-            )}
-          </PortalAuthGuard>
+          isAdminAuthenticated ? (
+            <AdminDashboard />
+          ) : (
+            <Navigate to="/management-portal-secure/login" replace />
+          )
         } 
       />
 
