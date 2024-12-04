@@ -6,11 +6,20 @@ import {
   Paper,
   Tabs,
   Tab,
+  Breadcrumbs,
+  Link,
+  Fade,
+  Grow,
+  Chip,
 } from '@mui/material';
 import Header from '../../components/student/StudentHeader';
 import Footer from '../../components/Footer';
 import SearchBar from '../../components/search/SearchBar';
 import PlannedCourses from '../../components/search/PlannedCourses';
+import HomeIcon from '@mui/icons-material/Home';
+import SearchIcon from '@mui/icons-material/Search';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import UpdateIcon from '@mui/icons-material/Update';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -59,56 +68,156 @@ const SearchPage: React.FC = () => {
     },
   ];
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-    setSearchQuery('');
-  };
-
-  const filteredCourses = searchQuery
-    ? plannedCourses.filter(course =>
-        course.courseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : plannedCourses;
-
   return (
-    <>
-      <Header />
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Tra cứu môn học
-        </Typography>
+    <Fade in={true} timeout={800}>
+      <Box sx={{ 
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        bgcolor: '#f5f5f5'
+      }}>
+        <Header />
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4, flex: 1 }}>
+          <Grow in={true} timeout={500}>
+            <Breadcrumbs aria-label="breadcrumb" sx={{ 
+              mb: 3,
+              p: 1.5,
+              bgcolor: 'white',
+              borderRadius: 1,
+              boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+            }}>
+              <Link
+                underline="hover"
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  '&:hover': { color: 'primary.main' }
+                }}
+                color="inherit"
+                href="/dashboard"
+              >
+                <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                Trang chủ
+              </Link>
+              <Typography
+                sx={{ display: 'flex', alignItems: 'center' }}
+                color="text.primary"
+              >
+                <SearchIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                Tra cứu môn học
+              </Typography>
+            </Breadcrumbs>
+          </Grow>
 
-        <Paper sx={{ mt: 3 }}>
-          <Tabs value={tabValue} onChange={handleTabChange}>
-            <Tab label="Tất cả môn học" />
-            <Tab label="Môn học sắp mở" />
-          </Tabs>
+          <Paper 
+            elevation={0}
+            sx={{ 
+              borderRadius: 2,
+              overflow: 'hidden',
+              transition: 'all 0.3s ease-in-out',
+              '&:hover': {
+                boxShadow: '0 8px 24px rgba(0,0,0,0.08)'
+              }
+            }}
+          >
+            <Box sx={{ 
+              p: 3,
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <Typography 
+                variant="h5" 
+                sx={{ 
+                  color: 'primary.main',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}
+              >
+                <MenuBookIcon />
+                Tra cứu môn học
+              </Typography>
+              
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Chip
+                  icon={<UpdateIcon />}
+                  label="Cập nhật: 15/03/2024"
+                  color="primary"
+                  variant="outlined"
+                />
+              </Box>
+            </Box>
 
-          <Box sx={{ p: 3 }}>
-            <SearchBar
-              placeholder="Nhập mã môn học hoặc tên môn học..."
-              value={searchQuery}
-              onChange={setSearchQuery}
-              onSearch={() => {}}
-            />
-          </Box>
+            <Tabs 
+              value={tabValue} 
+              onChange={(e, newValue) => setTabValue(newValue)}
+              sx={{
+                borderBottom: '1px solid',
+                borderColor: 'divider',
+                bgcolor: '#f8f9fa',
+                '& .MuiTab-root': {
+                  minHeight: 64,
+                  fontSize: '1rem',
+                  textTransform: 'none',
+                  fontWeight: 500,
+                }
+              }}
+            >
+              <Tab 
+                label="Tất cả môn học" 
+                icon={<MenuBookIcon />}
+                iconPosition="start"
+              />
+              <Tab 
+                label="Môn học sắp mở" 
+                icon={<UpdateIcon />}
+                iconPosition="start"
+              />
+            </Tabs>
 
-          <TabPanel value={tabValue} index={0}>
-            <PlannedCourses 
-              courses={filteredCourses} 
-            />
-          </TabPanel>
+            <Box sx={{ p: 3, bgcolor: 'white' }}>
+              <SearchBar
+                placeholder="Nhập mã môn học hoặc tên môn học để tìm kiếm..."
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onSearch={() => {}}
+              />
+            </Box>
 
-          <TabPanel value={tabValue} index={1}>
-            <PlannedCourses 
-              courses={filteredCourses.filter(course => course.status === 'upcoming')} 
-            />
-          </TabPanel>
-        </Paper>
-      </Container>
-      <Footer />
-    </>
+            <TabPanel value={tabValue} index={0}>
+              <PlannedCourses 
+                courses={searchQuery
+                  ? plannedCourses.filter(course =>
+                      course.courseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                  : plannedCourses
+                } 
+              />
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={1}>
+              <PlannedCourses 
+                courses={plannedCourses
+                  .filter(course => course.status === 'upcoming')
+                  .filter(course =>
+                    searchQuery
+                      ? course.courseCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
+                      : true
+                  )
+                } 
+              />
+            </TabPanel>
+          </Paper>
+        </Container>
+        <Footer />
+      </Box>
+    </Fade>
   );
 };
 

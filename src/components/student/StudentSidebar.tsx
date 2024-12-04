@@ -1,66 +1,75 @@
 import React from 'react';
-import {
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemButton,
-  Divider,
-} from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import HistoryIcon from '@mui/icons-material/History';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import PaymentIcon from '@mui/icons-material/Payment';
 import CardMembershipIcon from '@mui/icons-material/CardMembership';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 interface StudentSidebarProps {
   selectedSection: string;
   onSectionChange: (section: string) => void;
 }
 
+const menuItems = [
+  { id: 'personal', label: 'Thông tin cá nhân', icon: <PersonIcon /> },
+  { id: 'history', label: 'Lịch sử đăng ký', icon: <HistoryIcon /> },
+  { id: 'courses', label: 'Thông tin môn học', icon: <MenuBookIcon /> },
+  { id: 'schedule', label: 'Lịch học', icon: <CalendarTodayIcon /> },
+  { id: 'exams', label: 'Lịch thi', icon: <AssignmentIcon /> },
+  { id: 'results', label: 'Kết quả học tập', icon: <AssessmentIcon /> },
+  { id: 'certificates', label: 'Chứng chỉ', icon: <CardMembershipIcon /> },
+  { id: 'tuition', label: 'Học phí', icon: <PaymentIcon /> },
+];
+
 const StudentSidebar: React.FC<StudentSidebarProps> = ({
   selectedSection,
   onSectionChange,
 }) => {
-  const menuItems = [
-    { id: 'personal', text: 'Thông tin cá nhân', icon: <PersonIcon /> },
-    { id: 'history', text: 'Lịch sử đăng ký', icon: <HistoryIcon /> },
-    { id: 'courses', text: 'Thông tin môn học', icon: <MenuBookIcon /> },
-    { id: 'schedule', text: 'Lịch học', icon: <CalendarTodayIcon /> },
-    { id: 'exams', text: 'Lịch thi', icon: <AssignmentIcon /> },
-    { id: 'results', text: 'Kết quả học tập', icon: <AssessmentIcon /> },
-    { id: 'certificates', text: 'Chứng chỉ', icon: <CardMembershipIcon /> },
-    { id: 'tuition', text: 'Học phí', icon: <PaymentIcon /> },
-  ];
-
   return (
-    <Paper elevation={3} sx={{ p: 2 }}>
-      <List component="nav">
+    <Paper 
+      elevation={1} 
+      sx={{ 
+        backgroundColor: 'white',
+        borderRadius: 2,
+        overflow: 'hidden'
+      }}
+    >
+      <List sx={{ p: 0 }}>
         {menuItems.map((item) => (
-          <React.Fragment key={item.id}>
-            <ListItem disablePadding>
-              <ListItemButton
-                selected={selectedSection === item.id}
-                onClick={() => onSectionChange(item.id)}
-                sx={{
-                  '&.Mui-selected': {
-                    backgroundColor: 'primary.light',
-                    '&:hover': {
-                      backgroundColor: 'primary.light',
-                    },
-                  },
-                }}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.text} />
-              </ListItemButton>
-            </ListItem>
-            <Divider />
-          </React.Fragment>
+          <ListItem
+            key={item.id}
+            onClick={() => onSectionChange(item.id)}
+            sx={{
+              cursor: 'pointer',
+              backgroundColor: selectedSection === item.id ? '#4285f4' : 'transparent',
+              color: selectedSection === item.id ? 'white' : 'inherit',
+              '&:hover': {
+                backgroundColor: selectedSection === item.id ? '#4285f4' : '#f5f5f5',
+              },
+              borderBottom: '1px solid #e0e0e0',
+              py: 2,
+            }}
+          >
+            <ListItemIcon 
+              sx={{ 
+                color: selectedSection === item.id ? 'white' : '#757575',
+                minWidth: '40px'
+              }}
+            >
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText 
+              primary={item.label}
+              primaryTypographyProps={{
+                fontSize: '0.95rem',
+                fontWeight: selectedSection === item.id ? 500 : 400
+              }}
+            />
+          </ListItem>
         ))}
       </List>
     </Paper>

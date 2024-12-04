@@ -3,6 +3,7 @@ import {
   TextField,
   Button,
   InputAdornment,
+  Box,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -20,25 +21,53 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
 }) => {
   return (
-    <TextField
-      fullWidth
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <Button
-              variant="contained"
-              onClick={onSearch}
-              startIcon={<SearchIcon />}
-            >
-              Tìm kiếm
-            </Button>
-          </InputAdornment>
-        ),
-      }}
-    />
+    <Box sx={{ position: 'relative' }}>
+      <TextField
+        fullWidth
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        variant="outlined"
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 2,
+            transition: 'all 0.3s',
+            '&:hover': {
+              '& fieldset': {
+                borderColor: 'primary.main',
+              }
+            },
+            '&.Mui-focused': {
+              '& fieldset': {
+                borderWidth: '2px',
+              }
+            }
+          }
+        }}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <Button
+                variant="contained"
+                onClick={onSearch}
+                startIcon={<SearchIcon />}
+                sx={{
+                  height: '40px',
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  boxShadow: 'none',
+                  '&:hover': {
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                  }
+                }}
+              >
+                Tìm kiếm
+              </Button>
+            </InputAdornment>
+          ),
+        }}
+      />
+    </Box>
   );
 };
 
