@@ -5,6 +5,11 @@ import { Container, Grid, Paper, Typography, List, ListItem, ListItemText, Box, 
 import Carousel from 'react-material-ui-carousel';
 import '../../styles/pages/studentHomeStyle/StudentHome.css';
 import { MenuPaper } from '../../styles/pages/studentHomeStyle/MenuPaper.styles';
+import PersonIcon from '@mui/icons-material/Person';
+import SchoolIcon from '@mui/icons-material/School';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import GroupIcon from '@mui/icons-material/Group';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 const StudentHome: React.FC = () => {
   const bannerItems = [
@@ -26,23 +31,28 @@ const StudentHome: React.FC = () => {
   const menuItems = [
     {
       title: "CỔNG THÔNG TIN SINH VIÊN",
-      color: "#304399", // Navy blue
+      icon: <PersonIcon sx={{ fontSize: 40, color: 'white' }} />,
+      color: "#4B0082",
     },
     {
       title: "SỔ TAY SINH VIÊN",
-      color: "#E91E63", // Pink
+      icon: <SchoolIcon sx={{ fontSize: 40, color: 'white' }} />,
+      color: "#4B0082",
     },
     {
       title: "CẨM NANG CỐ VẤN",
-      color: "#3F4E75", // Dark blue grey
+      icon: <SupervisorAccountIcon sx={{ fontSize: 40, color: 'white' }} />,
+      color: "#4B0082",
     },
     {
       title: "SINH HOẠT CÔNG DÂN",
-      color: "#26A69A", // Teal
+      icon: <GroupIcon sx={{ fontSize: 40, color: 'white' }} />,
+      color: "#4B0082",
     },
     {
       title: "BIỂU MẪU CẦN THIẾT",
-      color: "#FF9800", // Orange
+      icon: <DescriptionIcon sx={{ fontSize: 40, color: 'white' }} />,
+      color: "#4B0082",
     }
   ];
 
@@ -98,11 +108,25 @@ const StudentHome: React.FC = () => {
         <Grid container spacing={2} sx={{ mt: 4 }}>
           {menuItems.map((item, index) => (
             <Grid item xs={12} sm={6} md={2.4} key={index}>
-            <MenuPaper sx={{ backgroundColor: item.color }}>
+            <MenuPaper sx={{ 
+              backgroundColor: item.color,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 1,
+              padding: 2,
+              cursor: 'pointer',
+              '&:hover': {
+                opacity: 0.9,
+                transform: 'translateY(-2px)',
+              }
+            }}>
+              {item.icon}
               <Typography 
                 variant="subtitle1" 
                 align="center" 
                 sx={{ 
+                  color: 'white',
                   fontWeight: 'bold',
                   fontSize: '0.9rem',
                   lineHeight: 1.2
