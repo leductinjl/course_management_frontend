@@ -12,6 +12,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import GradingIcon from '@mui/icons-material/Grading';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AddIcon from '@mui/icons-material/Add';
+import PaymentsIcon from '@mui/icons-material/Payments';
 
 interface InstructorSidebarProps {
   selectedSection: string;
@@ -27,6 +29,7 @@ const InstructorSidebar: React.FC<InstructorSidebarProps> = ({
     { id: 'schedule', text: 'Lịch giảng dạy', icon: <CalendarTodayIcon /> },
     { id: 'grades', text: 'Quản lý điểm', icon: <GradingIcon /> },
     { id: 'courses', text: 'Quản lý môn học', icon: <MenuBookIcon /> },
+    { id: 'course-request', text: 'Yêu cầu mở môn', icon: <AddIcon /> },
   ];
 
   return (

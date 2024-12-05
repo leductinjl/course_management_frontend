@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import SchoolIcon from '@mui/icons-material/School';
+import PaymentsIcon from '@mui/icons-material/Payments';
 
 const InstructorHeader: React.FC = () => {
   const navigate = useNavigate();
@@ -45,6 +46,19 @@ const InstructorHeader: React.FC = () => {
             }}
           >
             Thông tin giảng dạy
+          </Button>
+
+          <Button 
+            color="inherit" 
+            startIcon={<PaymentsIcon />}
+            onClick={() => navigate('/instructor-salary')}
+            sx={{ 
+              backgroundColor: location.pathname === '/instructor-salary' 
+                ? 'rgba(255, 255, 255, 0.1)' 
+                : 'transparent' 
+            }}
+          >
+            Quản lý lương
           </Button>
         </Box>
       </Toolbar>

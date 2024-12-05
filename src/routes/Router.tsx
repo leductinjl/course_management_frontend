@@ -18,6 +18,7 @@ import AdminLogin from '../pages/admin/AdminLogin';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminPortalAuth from '../pages/admin/AdminPortalAuth';
 import { useAuth } from '../contexts/AuthContext';
+import InstructorSalary from '../pages/instructor/InstructorSalary';
 
 const AppRouter: React.FC = () => {
   const { isAdminAuthenticated } = useAuth();
@@ -37,6 +38,7 @@ const AppRouter: React.FC = () => {
       <Route path="/instructor-home" element={<InstructorHome />} />
       <Route path="/instructor-info" element={<InstructorInfo />} />
       <Route path="/instructor-teaching" element={<InstructorTeaching />} />
+      <Route path="/instructor-salary" element={<InstructorSalary />} />
 
       {/* Admin Routes */}
       <Route path="/management-portal-secure/login" element={<AdminLogin />} />
