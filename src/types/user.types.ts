@@ -2,7 +2,6 @@ export interface BaseProfile {
   fullName: string;
   phone?: string;
   address?: string;
-  status: 'active' | 'inactive';
 }
 
 export interface StudentProfile extends BaseProfile {

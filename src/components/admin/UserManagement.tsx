@@ -96,8 +96,7 @@ const UserManagement: React.FC = () => {
                   fullName: userData.fullName || user.studentProfile.fullName,
                   phone: userData.phone || user.studentProfile.phone || '',
                   address: userData.address || user.studentProfile.address || '',
-                  dateOfBirth: userData.dateOfBirth || user.studentProfile.dateOfBirth || '',
-                  status: user.studentProfile.status
+                  dateOfBirth: userData.dateOfBirth || user.studentProfile.dateOfBirth || ''
                 };
               }
 
@@ -108,8 +107,7 @@ const UserManagement: React.FC = () => {
                   phone: userData.phone || user.instructorProfile.phone || '',
                   address: userData.address || user.instructorProfile.address || '',
                   specialization: userData.specialization || user.instructorProfile.specialization || '',
-                  bio: userData.bio || user.instructorProfile.bio || '',
-                  status: user.instructorProfile.status
+                  bio: userData.bio || user.instructorProfile.bio || ''
                 };
               }
 

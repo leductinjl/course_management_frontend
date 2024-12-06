@@ -33,7 +33,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
     fullName: userData.role === 'student' 
       ? userData.studentProfile?.fullName || ''
       : userData.instructorProfile?.fullName || '',
-    status: userData.status || 'active',
+    status: userData.status,
     phone: userData.role === 'student'
       ? userData.studentProfile?.phone || ''
       : userData.instructorProfile?.phone || '',
@@ -56,7 +56,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
       fullName: userData.role === 'student' 
         ? userData.studentProfile?.fullName || ''
         : userData.instructorProfile?.fullName || '',
-      status: userData.status || 'active',
+      status: userData.status,
       phone: userData.role === 'student'
         ? userData.studentProfile?.phone || ''
         : userData.instructorProfile?.phone || '',
