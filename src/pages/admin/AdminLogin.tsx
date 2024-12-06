@@ -5,15 +5,46 @@ import {
   TextField,
   Button,
   Typography,
-  Paper
+  Paper,
+  Alert
 } from '@mui/material';
+import { useState } from 'react';
+import { adminService } from '../../services/admin.service';
+import { AdminLoginRequest, ApiError } from '../../types/admin.types';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const [credentials, setCredentials] = useState<AdminLoginRequest>({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCredentials(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/management-portal-secure/dashboard');
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await adminService.login(credentials);
+      // Lưu token vào localStorage
+      localStorage.setItem('adminToken', response.token);
+      localStorage.setItem('adminData', JSON.stringify(response.admin));
+      navigate('/management-portal-secure/dashboard');
+    } catch (err: any) {
+      const apiError = err.response?.data as ApiError;
+      setError(apiError?.message || 'Đã xảy ra lỗi khi đăng nhập');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,19 +68,31 @@ const AdminLogin = () => {
       >
         <form onSubmit={handleSubmit}>
           <Typography variant="h6" gutterBottom>
-            Admin Login
+            Đăng nhập Admin
           </Typography>
+          
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
           
           <TextField
             fullWidth
-            label="Username"
+            label="Email"
+            name="email"
+            value={credentials.email}
+            onChange={handleChange}
             margin="normal"
           />
 
           <TextField
             fullWidth
             type="password"
-            label="Password"
+            label="Mật khẩu"
+            name="password"
+            value={credentials.password}
+            onChange={handleChange}
             margin="normal"
           />
           
@@ -57,9 +100,10 @@ const AdminLogin = () => {
             fullWidth 
             type="submit"
             variant="contained"
+            disabled={loading}
             sx={{ mt: 2 }}
           >
-            Login
+            {loading ? 'Đang xử lý...' : 'Đăng nhập'}
           </Button>
         </form>
       </Paper>

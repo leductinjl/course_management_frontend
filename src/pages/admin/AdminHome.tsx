@@ -14,7 +14,9 @@ import {
   CardMembership as CertificateIcon,
   Assignment as ExamIcon,
   Notifications as NotificationIcon,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Class as ClassIcon,
+  MonetizationOn as MonetizationOnIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -49,7 +51,7 @@ const AdminHome = () => {
     {
       id: 'courses',
       title: 'Quản lý môn học',
-      description: 'Quản lý danh sách môn học, thông tin chi tiết và trạng thái',
+      description: 'Quản lý danh sách môn học, thông tin chi tiết và yêu cầu mở môn',
       icon: <SchoolIcon />,
       path: 'courses',
       count: '24',
@@ -57,34 +59,54 @@ const AdminHome = () => {
       delay: '0s'
     },
     {
+      id: 'classes',
+      title: 'Quản lý lớp học',
+      description: 'Quản lý lớp học, phân công giảng viên và theo dõi tiến độ',
+      icon: <ClassIcon />,
+      path: 'classes',
+      count: '36',
+      color: '#8b5cf6',
+      delay: '0.1s'
+    },
+    {
       id: 'users',
       title: 'Quản lý tài khoản',
-      description: 'Quản lý người dùng, phân quyền và thông tin cá nhân',
+      description: 'Quản lý người dùng, phân quyền và mở khóa tài khoản',
       icon: <PeopleIcon />,
       path: 'users',
       count: '156',
       color: '#10b981',
-      delay: '0.1s'
+      delay: '0.2s'
     },
     {
       id: 'certificates',
       title: 'Quản lý chứng chỉ',
-      description: 'Quản lý cấp phát và theo dõi chứng chỉ học viên',
+      description: 'Quản lý chứng chỉ, tiêu chuẩn cấp và theo dõi cấp phát',
       icon: <CertificateIcon />,
       path: 'certificates',
-      count: '89',
+      count: '45',
       color: '#f59e0b',
-      delay: '0.2s'
+      delay: '0.3s'
     },
     {
       id: 'exams',
       title: 'Quản lý kỳ thi',
-      description: 'Quản lý lịch thi, đề thi và kết quả thi',
+      description: 'Quản lý kỳ thi cấp chứng chỉ và đăng ký thi',
       icon: <ExamIcon />,
       path: 'exams',
       count: '12',
       color: '#ec4899',
-      delay: '0.3s'
+      delay: '0.4s'
+    },
+    {
+      id: 'finance',
+      title: 'Quản lý tài chính',
+      description: 'Thống kê doanh thu và quản lý thanh toán lương',
+      icon: <MonetizationOnIcon />,
+      path: 'finance',
+      count: '₫',
+      color: '#14b8a6',
+      delay: '0.5s'
     }
   ];
 
@@ -118,7 +140,7 @@ const AdminHome = () => {
             borderRadius: '2px'
           }
         }}>
-          Admin Dashboard
+          Admin Home
         </Typography>
         <Box>
           <IconButton 

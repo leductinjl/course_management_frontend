@@ -16,7 +16,9 @@ import {
   CardMembership as CertificateIcon,
   Assignment as ExamIcon,
   Logout as LogoutIcon,
-  Home as HomeIcon
+  Home as HomeIcon,
+  Class as ClassIcon,
+  MonetizationOn as MonetizationOnIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -48,6 +50,12 @@ const AdminSidebar: React.FC<SidebarProps> = ({
       path: '/management-portal-secure/dashboard/courses'
     },
     { 
+      id: 'classes', 
+      text: 'Quản lý lớp học', 
+      icon: <ClassIcon />,
+      path: '/management-portal-secure/dashboard/classes'
+    },
+    { 
       id: 'users', 
       text: 'Quản lý tài khoản', 
       icon: <PeopleIcon />,
@@ -64,6 +72,12 @@ const AdminSidebar: React.FC<SidebarProps> = ({
       text: 'Quản lý kỳ thi', 
       icon: <ExamIcon />,
       path: '/management-portal-secure/dashboard/exams'
+    },
+    { 
+      id: 'finance', 
+      text: 'Quản lý tài chính', 
+      icon: <MonetizationOnIcon />,
+      path: '/management-portal-secure/dashboard/finance'
     },
   ];
 
