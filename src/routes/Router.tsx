@@ -1,6 +1,6 @@
 // src/routes/Router.tsx
-import React, { useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import StudentHome from '../pages/student/StudentHome';
 import SearchPage from '../pages/student/SearchPage';
 import CourseRegistration from '../pages/student/CourseRegistration';
@@ -16,12 +16,9 @@ import InstructorInfo from '../pages/instructor/InstructorInfo';
 import InstructorTeaching from '../pages/instructor/InstructorTeaching';
 import AdminLogin from '../pages/admin/AdminLogin';
 import AdminDashboard from '../pages/admin/AdminDashboard';
-import AdminPortalAuth from '../pages/admin/AdminPortalAuth';
-import { useAuth } from '../contexts/AuthContext';
 import InstructorSalary from '../pages/instructor/InstructorSalary';
 
 const AppRouter: React.FC = () => {
-  const { isAdminAuthenticated } = useAuth();
 
   return (
     <Routes>
@@ -45,11 +42,7 @@ const AppRouter: React.FC = () => {
       <Route 
         path="/management-portal-secure/dashboard/*" 
         element={
-          isAdminAuthenticated ? (
             <AdminDashboard />
-          ) : (
-            <Navigate to="/management-portal-secure/login" replace />
-          )
         } 
       />
 

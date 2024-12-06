@@ -7,15 +7,12 @@ import {
   Typography,
   Paper
 } from '@mui/material';
-import { useAuth } from '../../contexts/AuthContext'; // Thêm import useAuth
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Thêm hook useAuth
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(); // Cập nhật trạng thái đăng nhập trong AuthContext
     navigate('/management-portal-secure/dashboard');
   };
 
