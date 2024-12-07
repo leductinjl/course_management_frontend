@@ -12,11 +12,12 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
+import { CreateCourseDTO, COURSE_STATUS_MAP, CourseStatus } from '../../../types/course.types';
 
 interface AddCourseDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (courseData: any) => void;
+  onSubmit: (courseData: CreateCourseDTO) => void;
 }
 
 const AddCourseDialog: React.FC<AddCourseDialogProps> = ({
@@ -24,25 +25,23 @@ const AddCourseDialog: React.FC<AddCourseDialogProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [courseData, setCourseData] = React.useState({
+  const [courseData, setCourseData] = React.useState<CreateCourseDTO>({
     code: '',
     name: '',
-    instructor: '',
-    credits: '',
-    type: '',
     description: '',
+    credits: 0,
+    type: '',
+    fee: 0,
+    status: 'draft'
   });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(courseData);
-    onClose();
-  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>Thêm môn học mới</DialogTitle>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(courseData);
+      }}>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -66,20 +65,21 @@ const AddCourseDialog: React.FC<AddCourseDialogProps> = ({
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Giảng viên phụ trách"
+                label="Số tín chỉ"
+                type="number"
                 required
-                value={courseData.instructor}
-                onChange={(e) => setCourseData({...courseData, instructor: e.target.value})}
+                value={courseData.credits}
+                onChange={(e) => setCourseData({...courseData, credits: Number(e.target.value)})}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Số tín chỉ"
+                label="Học phí"
                 type="number"
                 required
-                value={courseData.credits}
-                onChange={(e) => setCourseData({...courseData, credits: e.target.value})}
+                value={courseData.fee}
+                onChange={(e) => setCourseData({...courseData, fee: Number(e.target.value)})}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -88,11 +88,27 @@ const AddCourseDialog: React.FC<AddCourseDialogProps> = ({
                 <Select
                   value={courseData.type}
                   label="Loại môn học"
-                  onChange={(e) => setCourseData({...courseData, type: e.target.value})}
+                  required
+                  onChange={(e) => setCourseData({...courseData, type: e.target.value as 'basic' | 'advanced' | 'specialized'})}
                 >
                   <MenuItem value="basic">Cơ bản</MenuItem>
                   <MenuItem value="advanced">Nâng cao</MenuItem>
                   <MenuItem value="specialized">Chuyên ngành</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Trạng thái</InputLabel>
+                <Select
+                  value={courseData.status}
+                  label="Trạng thái"
+                  required
+                  onChange={(e) => setCourseData({...courseData, status: e.target.value as CourseStatus})}
+                >
+                  {Object.entries(COURSE_STATUS_MAP).map(([key, value]) => (
+                    <MenuItem key={key} value={key}>{value}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
