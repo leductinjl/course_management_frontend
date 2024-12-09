@@ -8,47 +8,52 @@ import {
   FormControlLabel,
   Radio,
   FormControl,
-  FormLabel
+  FormLabel,
+  Alert,
+  CircularProgress
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
+import { authService } from '../../services/auth.service';
 import '../../styles/pages/loginPage.css';
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('student');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate successful login and redirect based on role
-    console.log('Logging in with:', { username, password, role });
-    
-    if (role === 'student') {
-      navigate('/student-home');
-    } else {
-      navigate('/instructor-home');
+    setError('');
+    setLoading(true);
+
+    try {
+      let response;
+      if (role === 'student') {
+        response = await authService.studentLogin(email, password);
+      } else {
+        response = await authService.instructorLogin(email, password);
+      }
+
+      // Lưu token và thông tin user
+      localStorage.setItem('userToken', response.token);
+      localStorage.setItem('userData', JSON.stringify(response.user));
+
+      // Chuyển hướng dựa vào role
+      if (role === 'student') {
+        navigate('/student-home');
+      } else {
+        navigate('/instructor-home');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+    } finally {
+      setLoading(false);
     }
   };
-
-  // Add particles effect (keeping existing useEffect)
-  React.useEffect(() => {
-    const createParticle = () => {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + 'vw';
-      particle.style.animationDuration = Math.random() * 3 + 5 + 's';
-      document.querySelector('.particles')?.appendChild(particle);
-      
-      setTimeout(() => {
-        particle.remove();
-      }, 8000);
-    };
-
-    const particleInterval = setInterval(createParticle, 500);
-    return () => clearInterval(particleInterval);
-  }, []);
 
   return (
     <>
@@ -62,6 +67,12 @@ const LoginPage: React.FC = () => {
         <Typography variant="h4" gutterBottom>Welcome Back</Typography>
         <Typography className="subtitle">Sign in to your account</Typography>
         
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
         <form onSubmit={handleLogin}>
           <FormControl component="fieldset" className="role-selector">
             <FormLabel component="legend">Login as:</FormLabel>
@@ -79,12 +90,14 @@ const LoginPage: React.FC = () => {
           <TextField
             variant="outlined"
             placeholder="Enter your email"
+            type="email"
             InputProps={{
               startAdornment: <PersonIcon />,
             }}
             fullWidth
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
           />
           
           <label>Password</label>
@@ -98,10 +111,17 @@ const LoginPage: React.FC = () => {
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
           />
 
-          <Button type="submit" variant="contained" color="primary" fullWidth>
-            Sign In
+          <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary" 
+            fullWidth
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Sign In'}
           </Button>
         </form>
         <p>

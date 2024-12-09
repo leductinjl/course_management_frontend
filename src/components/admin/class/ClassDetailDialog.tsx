@@ -29,7 +29,7 @@ import {
   CLASS_STATUS_OPTIONS,
   ClassStatus 
 } from '../../../types/class.types';
-import { formatDateTime } from '../../../utils/dateUtils';
+import { formatDate } from '../../../utils/dateUtils';
 
 interface ClassDetailDialogProps {
   open: boolean;
@@ -165,7 +165,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Ngày bắt đầu
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {formatDateTime(classData.startDate)}
+              {formatDate(classData.startDate)}
             </Typography>
           </Grid>
 
@@ -174,7 +174,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Ngày kết thúc
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {formatDateTime(classData.endDate)}
+              {formatDate(classData.endDate)}
             </Typography>
           </Grid>
 
@@ -213,7 +213,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               {classData.creator?.fullName}
             </Typography>
             <Typography variant="caption" color="textSecondary">
-              {formatDateTime(classData.created_at)}
+              {formatDate(classData.created_at)}
             </Typography>
           </Grid>
 
@@ -222,7 +222,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Cập nhật lần cuối
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {formatDateTime(classData.updated_at)}
+              {formatDate(classData.updated_at)}
             </Typography>
           </Grid>
 

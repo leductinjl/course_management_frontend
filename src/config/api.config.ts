@@ -34,5 +34,14 @@ export const API_ENDPOINTS = {
         ANNOUNCEMENT_COUNT: (id: string) => `${API_BASE_URL}/api/admin/classes/stats/announcement-count/${id}`,
       }
     }
+  },
+  AUTH: {
+    STUDENT: {
+      LOGIN: `${API_BASE_URL}/api/auth/student/login`,
+      REGISTER: `${API_BASE_URL}/api/auth/student/register`,
+    },
+    INSTRUCTOR: {
+      LOGIN: `${API_BASE_URL}/api/auth/instructor/login`,
+    }
   }
 }; 

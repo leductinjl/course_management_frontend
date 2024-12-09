@@ -1,50 +1,30 @@
 import { format, isValid, parseISO } from 'date-fns';
+import dayjs from 'dayjs';
 
 /**
  * Format a date string to display format
- * @param dateString - ISO date string or undefined
- * @param formatString - date-fns format string (default: 'dd/MM/yyyy HH:mm')
- * @param fallback - Value to return if date is invalid (default: 'N/A')
- * @returns Formatted date string or fallback value
+ * @param date - ISO date string or Date object or undefined
+ * @returns Formatted date string or empty string
  */
-export const formatDate = (
-  dateString?: string, 
-  formatString: string = 'dd/MM/yyyy HH:mm',
-  fallback: string = 'N/A'
-): string => {
-  if (!dateString) return fallback;
-  
-  try {
-    const date = parseISO(dateString);
-    if (!isValid(date)) return fallback;
-    return format(date, formatString);
-  } catch {
-    return fallback;
-  }
+export const formatDate = (date?: string | Date | null) => {
+  if (!date) return '';
+  return dayjs(date).format('DD/MM/YYYY');
 };
 
 /**
  * Format a date string to date only format
  * @param dateString - ISO date string or undefined
- * @param fallback - Value to return if date is invalid (default: 'N/A')
- * @returns Formatted date string or fallback value
+ * @returns Formatted date string or empty string
  */
-export const formatDateOnly = (
-  dateString?: string,
-  fallback: string = 'N/A'
-): string => {
-  return formatDate(dateString, 'dd/MM/yyyy', fallback);
+export const formatDateOnly = (dateString?: string | null): string => {
+  return formatDate(dateString);
 };
 
 /**
  * Format a date string to datetime format
  * @param dateString - ISO date string or undefined
- * @param fallback - Value to return if date is invalid (default: 'N/A')
- * @returns Formatted datetime string or fallback value
+ * @returns Formatted datetime string or empty string
  */
-export const formatDateTime = (
-  dateString?: string,
-  fallback: string = 'N/A'
-): string => {
-  return formatDate(dateString, 'dd/MM/yyyy HH:mm', fallback);
+export const formatDateTime = (dateString?: string | null): string => {
+  return formatDate(dateString);
 }; 

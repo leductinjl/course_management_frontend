@@ -41,43 +41,43 @@ const AdminSidebar: React.FC<SidebarProps> = ({
       id: 'home',
       text: 'Trang chủ', 
       icon: <HomeIcon />,
-      path: '/management-portal-secure/dashboard'
+      path: '/adminne/dashboard'
     },
     { 
       id: 'courses', 
       text: 'Quản lý môn học', 
       icon: <SchoolIcon />,
-      path: '/management-portal-secure/dashboard/courses'
+      path: '/adminne/dashboard/courses'
     },
     { 
       id: 'classes', 
       text: 'Quản lý lớp học', 
       icon: <ClassIcon />,
-      path: '/management-portal-secure/dashboard/classes'
+      path: '/adminne/dashboard/classes'
     },
     { 
       id: 'users', 
       text: 'Quản lý tài khoản', 
       icon: <PeopleIcon />,
-      path: '/management-portal-secure/dashboard/users'
+      path: '/adminne/dashboard/users'
     },
     { 
       id: 'certificates', 
       text: 'Quản lý chứng chỉ', 
       icon: <CertificateIcon />,
-      path: '/management-portal-secure/dashboard/certificates'
+      path: '/adminne/dashboard/certificates'
     },
     { 
       id: 'exams', 
       text: 'Quản lý kỳ thi', 
       icon: <ExamIcon />,
-      path: '/management-portal-secure/dashboard/exams'
+      path: '/adminne/dashboard/exams'
     },
     { 
       id: 'finance', 
       text: 'Quản lý tài chính', 
       icon: <MonetizationOnIcon />,
-      path: '/management-portal-secure/dashboard/finance'
+      path: '/adminne/dashboard/finance'
     },
   ];
 

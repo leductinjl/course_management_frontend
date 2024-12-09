@@ -38,7 +38,7 @@ const AdminLogin = () => {
       // Lưu token vào localStorage
       localStorage.setItem('adminToken', response.token);
       localStorage.setItem('adminData', JSON.stringify(response.admin));
-      navigate('/management-portal-secure/dashboard');
+      navigate('/adminne/dashboard');
     } catch (err: any) {
       const apiError = err.response?.data as ApiError;
       setError(apiError?.message || 'Đã xảy ra lỗi khi đăng nhập');

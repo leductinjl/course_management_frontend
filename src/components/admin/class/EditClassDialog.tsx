@@ -18,7 +18,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Instructor } from '../../../types/instructor.types';
 import { classService } from '../../../services/class.service';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import { DatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { Course } from '../../../types/course.types';
 import { 
@@ -150,10 +150,11 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <DateTimePicker
+              <DatePicker
                 label="Ngày bắt đầu"
                 value={formik.values.startDate}
                 onChange={(value: Dayjs | null) => formik.setFieldValue('startDate', value)}
+                format="DD/MM/YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,
@@ -165,10 +166,11 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <DateTimePicker
+              <DatePicker
                 label="Ngày kết thúc"
                 value={formik.values.endDate}
                 onChange={(value: Dayjs | null) => formik.setFieldValue('endDate', value)}
+                format="DD/MM/YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,

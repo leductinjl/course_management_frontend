@@ -38,9 +38,9 @@ const AppRouter: React.FC = () => {
       <Route path="/instructor-salary" element={<InstructorSalary />} />
 
       {/* Admin Routes */}
-      <Route path="/management-portal-secure/login" element={<AdminLogin />} />
+      <Route path="/adminne/login" element={<AdminLogin />} />
       <Route 
-        path="/management-portal-secure/dashboard/*" 
+        path="/adminne/dashboard/*" 
         element={
             <AdminDashboard />
         } 
