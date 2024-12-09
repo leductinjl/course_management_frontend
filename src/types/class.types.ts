@@ -1,37 +1,43 @@
+import { Dayjs } from "dayjs";
+
 export type ClassStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
+
+export const CLASS_STATUS_MAP: Record<ClassStatus, string> = {
+  'upcoming': 'Sắp diễn ra',
+  'ongoing': 'Đang diễn ra',
+  'completed': 'Đã hoàn thành',
+  'cancelled': 'Đã hủy'
+};
+
+export const CLASS_STATUS_OPTIONS = [
+  { value: 'upcoming' as ClassStatus, label: 'Sắp diễn ra' },
+  { value: 'ongoing' as ClassStatus, label: 'Đang diễn ra' },
+  { value: 'completed' as ClassStatus, label: 'Đã hoàn thành' },
+  { value: 'cancelled' as ClassStatus, label: 'Đã hủy' }
+];
 
 export interface Class {
   id: string;
+  classCode: string;
   courseId: string;
   instructorId: string;
-  classCode: string;
+  room: string;
+  capacity: number;
   startDate: string;
   endDate: string;
   schedule: string;
-  room: string;
-  capacity: number;
   status: ClassStatus;
   createdBy: string;
   updatedBy: string;
   created_at: string;
   updated_at: string;
-  
-  // Thêm các trường thống kê
-  enrollmentCount?: number;
-  totalLessons?: number;
-  completedLessons?: number;
-  announcements?: any[];
-
-  // Mở rộng thông tin course
   course?: {
     id: string;
     name: string;
     code: string;
-    credits: number;
-    fee: number;
+    credits?: number;
+    fee?: number;
   };
-  
-  // Giữ nguyên các trường khác
   instructor?: {
     id: string;
     fullName: string;
@@ -40,14 +46,22 @@ export interface Class {
     id: string;
     fullName: string;
   };
+  enrollmentCount?: number;
+  totalLessons?: number;
+  completedLessons?: number;
+  announcements?: any[];
 }
 
-export const CLASS_STATUS_MAP: Record<ClassStatus, string> = {
-  upcoming: 'Sắp diễn ra',
-  ongoing: 'Đang diễn ra',
-  completed: 'Đã kết thúc',
-  cancelled: 'Đã hủy'
-};
+export interface FormValues {
+  courseId: string;
+  instructorId: string;
+  startDate: Dayjs | null;
+  endDate: Dayjs | null;
+  schedule: string;
+  room: string;
+  capacity: string;
+  status: ClassStatus;
+}
 
 export interface CreateClassDTO {
   courseId: string;
@@ -57,7 +71,7 @@ export interface CreateClassDTO {
   schedule: string;
   room: string;
   capacity: number;
-  classCode?: string;
+  status: ClassStatus;
 }
 
 export interface UpdateClassDTO extends Partial<CreateClassDTO> {

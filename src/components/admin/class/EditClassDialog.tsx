@@ -11,31 +11,38 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormHelperText
+  FormHelperText,
+  Chip
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Class, CLASS_STATUS_MAP } from '../../../types/class.types';
 import { Instructor } from '../../../types/instructor.types';
-import { instructorService } from '../../../services/instructor.service';
-import { DateTimePicker } from '@mui/x-date-pickers';
 import { classService } from '../../../services/class.service';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { Course } from '../../../types/course.types';
+import { 
+  Class,
+  CLASS_STATUS_OPTIONS,
+  ClassStatus 
+} from '../../../types/class.types';
 
 interface EditClassDialogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (values: any) => void;
+  onSubmit: (classData: Partial<Class>) => void;
   classData: Class;
 }
 
 const validationSchema = Yup.object({
-  instructorId: Yup.string().required('Vui lòng chọn giảng viên'),
-  startDate: Yup.date().required('Vui lòng chọn ngày bắt đầu'),
-  endDate: Yup.date()
+  startDate: Yup.mixed().required('Vui lòng chọn ngày bắt đầu'),
+  endDate: Yup.mixed()
     .required('Vui lòng chọn ngày kết thúc')
-    .min(Yup.ref('startDate'), 'Ngày kết thúc phải sau ngày bắt đầu'),
+    .test('after-start', 'Ngày kết thúc phải sau ngày bắt đầu', function(value) {
+      const { startDate } = this.parent;
+      if (!startDate || !value) return true;
+      return value > startDate;
+    }),
   schedule: Yup.string().required('Vui lòng nhập lịch học'),
   room: Yup.string().required('Vui lòng nhập phòng học'),
   capacity: Yup.number()
@@ -218,9 +225,9 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
                   onChange={formik.handleChange}
                   label="Trạng thái"
                 >
-                  {Object.entries(CLASS_STATUS_MAP).map(([key, value]) => (
-                    <MenuItem key={key} value={key}>
-                      {value}
+                  {CLASS_STATUS_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
                     </MenuItem>
                   ))}
                 </Select>

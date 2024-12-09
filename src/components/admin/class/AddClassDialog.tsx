@@ -11,7 +11,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  FormHelperText
+  FormHelperText,
+  Chip
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -22,6 +23,11 @@ import type { Dayjs } from 'dayjs';
 import { CreateClassDTO } from '../../../types/class.types';
 import { classService } from '../../../services/class.service';
 import { useSnackbar } from 'notistack';
+import {
+  CLASS_STATUS_OPTIONS,
+  CLASS_STATUS_MAP,
+  ClassStatus
+} from '../../../types/class.types';
 
 interface AddClassDialogProps {
   open: boolean;
@@ -37,6 +43,7 @@ interface FormValues {
   schedule: string;
   room: string;
   capacity: string;
+  status: ClassStatus;
 }
 
 const validationSchema = Yup.object({
@@ -115,7 +122,8 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
       endDate: null,
       schedule: '',
       room: '',
-      capacity: ''
+      capacity: '',
+      status: 'upcoming' as ClassStatus
     },
     validationSchema,
     onSubmit: (values) => {
@@ -126,7 +134,8 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
         endDate: values.endDate ? values.endDate.toISOString() : '',
         schedule: values.schedule,
         room: values.room,
-        capacity: Number(values.capacity)
+        capacity: Number(values.capacity),
+        status: values.status
       };
       onSubmit(classData);
     }
@@ -245,6 +254,27 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                 error={formik.touched.capacity && Boolean(formik.errors.capacity)}
                 helperText={formik.touched.capacity && formik.errors.capacity}
               />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth error={formik.touched.status && Boolean(formik.errors.status)}>
+                <InputLabel>Trạng thái</InputLabel>
+                <Select
+                  name="status"
+                  value={formik.values.status}
+                  onChange={formik.handleChange}
+                  label="Trạng thái"
+                >
+                  {CLASS_STATUS_OPTIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {formik.touched.status && formik.errors.status && (
+                  <FormHelperText>{formik.errors.status}</FormHelperText>
+                )}
+              </FormControl>
             </Grid>
           </Grid>
         </DialogContent>

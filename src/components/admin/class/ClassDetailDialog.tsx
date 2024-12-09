@@ -12,6 +12,9 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  FormControl,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -20,7 +23,12 @@ import {
   Assignment as AssignmentIcon,
   People as PeopleIcon,
 } from '@mui/icons-material';
-import { Class, CLASS_STATUS_MAP } from '../../../types/class.types';
+import { 
+  Class, 
+  CLASS_STATUS_MAP, 
+  CLASS_STATUS_OPTIONS,
+  ClassStatus 
+} from '../../../types/class.types';
 import { formatDateTime } from '../../../utils/dateUtils';
 
 interface ClassDetailDialogProps {
@@ -38,7 +46,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: ClassStatus): "info" | "success" | "secondary" | "error" | "default" => {
     switch (status) {
       case 'upcoming':
         return 'info';
@@ -50,6 +58,15 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
         return 'error';
       default:
         return 'default';
+    }
+  };
+
+  const handleStatusChange = (newStatus: ClassStatus) => {
+    if (onEdit) {
+      onEdit({
+        ...classData,
+        status: newStatus
+      });
     }
   };
 
@@ -96,13 +113,33 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
             <Typography variant="subtitle2" color="textSecondary">
               Trạng thái
             </Typography>
-            <Box>
-              <Chip 
-                label={CLASS_STATUS_MAP[classData.status]} 
-                color={getStatusColor(classData.status)}
-                size="small"
-              />
-            </Box>
+            {onEdit ? (
+              <FormControl size="small" fullWidth>
+                <Select
+                  value={classData.status}
+                  onChange={(e) => handleStatusChange(e.target.value as ClassStatus)}
+                  size="small"
+                >
+                  {CLASS_STATUS_OPTIONS.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      <Chip 
+                        label={option.label}
+                        size="small"
+                        color={getStatusColor(option.value)}
+                      />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <Box>
+                <Chip 
+                  label={CLASS_STATUS_MAP[classData.status]} 
+                  color={getStatusColor(classData.status)}
+                  size="small"
+                />
+              </Box>
+            )}
           </Grid>
 
           <Grid item xs={12} md={6}>
