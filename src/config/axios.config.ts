@@ -6,14 +6,21 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 seconds
+  timeout: 10000,
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const userToken = localStorage.getItem('userToken');
+    const adminToken = localStorage.getItem('adminToken');
+    const instructorToken = localStorage.getItem('instructorToken');
+
+    if (instructorToken) {
+      config.headers.Authorization = `Bearer ${instructorToken}`;
+    } else if (userToken) {
+      config.headers.Authorization = `Bearer ${userToken}`;
+    } else if (adminToken) {
+      config.headers.Authorization = `Bearer ${adminToken}`;
     }
     return config;
   },
@@ -28,7 +35,18 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminData');
-      window.location.href = '/admin/login';
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userData');
+      localStorage.removeItem('instructorToken');
+      localStorage.removeItem('instructorData');
+      
+      if (window.location.pathname.startsWith('/admin')) {
+        window.location.href = '/admin/login';
+      } else if (window.location.pathname.startsWith('/instructor')) {
+        window.location.href = '/instructor/login';
+      } else {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

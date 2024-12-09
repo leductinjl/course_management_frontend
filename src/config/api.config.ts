@@ -43,5 +43,35 @@ export const API_ENDPOINTS = {
     INSTRUCTOR: {
       LOGIN: `${API_BASE_URL}/api/auth/instructor/login`,
     }
+  },
+  INSTRUCTOR: {
+    PROFILE: {
+      GET_CURRENT: `${API_BASE_URL}/api/instructors/me`,
+      UPDATE: (id: string) => `${API_BASE_URL}/api/instructors/${id}`,
+    },
+    ACHIEVEMENTS: {
+      LIST: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/achievements`,
+      CREATE: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/achievements`,
+      UPDATE: (instructorId: string, achievementId: string) => 
+        `${API_BASE_URL}/api/instructors/${instructorId}/achievements/${achievementId}`,
+      DELETE: (instructorId: string, achievementId: string) => 
+        `${API_BASE_URL}/api/instructors/${instructorId}/achievements/${achievementId}`,
+    },
+    CERTIFICATES: {
+      LIST: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/certificates`,
+      CREATE: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/certificates`,
+      UPDATE: (instructorId: string, certificateId: string) => 
+        `${API_BASE_URL}/api/instructors/${instructorId}/certificates/${certificateId}`,
+      DELETE: (instructorId: string, certificateId: string) => 
+        `${API_BASE_URL}/api/instructors/${instructorId}/certificates/${certificateId}`,
+    },
+    WORK_HISTORY: {
+      LIST: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/work-history`,
+      CREATE: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/work-history`,
+      UPDATE: (instructorId: string, historyId: string) => 
+        `${API_BASE_URL}/api/instructors/${instructorId}/work-history/${historyId}`,
+      DELETE: (instructorId: string, historyId: string) => 
+        `${API_BASE_URL}/api/instructors/${instructorId}/work-history/${historyId}`,
+    }
   }
 }; 

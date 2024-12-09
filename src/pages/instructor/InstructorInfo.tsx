@@ -62,7 +62,7 @@ const InstructorInfo: React.FC = () => {
   const professionalActivities = [
     {
       period: "2015 - Hiện tại",
-      role: "Giảng viên chính",
+      position: "Giảng viên chính",
       department: "Khoa Công nghệ thông tin",
       responsibilities: [
         "Giảng dạy các môn học chuyên ngành CNTT",
@@ -72,7 +72,7 @@ const InstructorInfo: React.FC = () => {
     },
     {
       period: "2012 - 2015",
-      role: "Giảng viên",
+      position: "Giảng viên",
       department: "Khoa Công nghệ thông tin",
       responsibilities: [
         "Giảng dạy tin học cơ bản",
@@ -175,7 +175,7 @@ const InstructorInfo: React.FC = () => {
                 <Box key={index} sx={{ mb: 3 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="subtitle1" fontWeight="bold">
-                      {activity.role}
+                      {activity.position}
                     </Typography>
                     <Chip 
                       label={activity.period} 

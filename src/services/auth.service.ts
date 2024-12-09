@@ -24,7 +24,11 @@ export const authService = {
       email,
       password
     });
-    return response.data.data;
+    if (response.data.success) {
+      localStorage.setItem('instructorToken', response.data.token);
+      localStorage.setItem('instructorData', JSON.stringify(response.data.instructor));
+    }
+    return response.data;
   },
 
   studentRegister: async (data: {

@@ -3,9 +3,9 @@ export interface Instructor {
   fullName: string;
   email: string;
   phone?: string;
-  department?: string;
-  title?: string;
+  address?: string;
   specialization?: string;
+  bio?: string;
   created_at: string;
   updated_at: string;
 }
@@ -19,4 +19,10 @@ export interface CreateInstructorDTO {
   specialization?: string;
 }
 
-export interface UpdateInstructorDTO extends Partial<CreateInstructorDTO> {} 
+export interface UpdateInstructorDTO {
+  fullName?: string;
+  phone?: string;
+  address?: string;
+  specialization?: string;
+  bio?: string;
+} 

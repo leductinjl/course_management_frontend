@@ -1,40 +1,21 @@
 import axios from '../config/axios.config';
-import { Instructor, CreateInstructorDTO, UpdateInstructorDTO } from '../types/instructor.types';
+import { API_ENDPOINTS } from '../config/api.config';
+import { Instructor, UpdateInstructorDTO } from '../types/instructor.types';
 
 class InstructorService {
-  async listInstructors(): Promise<Instructor[]> {
+  async getCurrentInstructor(): Promise<Instructor> {
     try {
-      const response = await axios.get('/api/instructors');
+      const response = await axios.get(API_ENDPOINTS.INSTRUCTOR.PROFILE.GET_CURRENT);
       return response.data.data;
     } catch (error) {
-      console.error('Error listing instructors:', error);
-      throw error;
-    }
-  }
-
-  async getInstructor(id: string): Promise<Instructor> {
-    try {
-      const response = await axios.get(`/api/instructors/${id}`);
-      return response.data.data;
-    } catch (error) {
-      console.error('Error getting instructor:', error);
-      throw error;
-    }
-  }
-
-  async createInstructor(data: CreateInstructorDTO): Promise<Instructor> {
-    try {
-      const response = await axios.post('/api/instructors', data);
-      return response.data.data;
-    } catch (error) {
-      console.error('Error creating instructor:', error);
+      console.error('Error getting current instructor:', error);
       throw error;
     }
   }
 
   async updateInstructor(id: string, data: UpdateInstructorDTO): Promise<Instructor> {
     try {
-      const response = await axios.put(`/api/instructors/${id}`, data);
+      const response = await axios.put(API_ENDPOINTS.INSTRUCTOR.PROFILE.UPDATE(id), data);
       return response.data.data;
     } catch (error) {
       console.error('Error updating instructor:', error);
@@ -42,11 +23,35 @@ class InstructorService {
     }
   }
 
-  async deleteInstructor(id: string): Promise<void> {
+  // Achievements
+  async getAchievements(instructorId: string) {
     try {
-      await axios.delete(`/api/instructors/${id}`);
+      const response = await axios.get(API_ENDPOINTS.INSTRUCTOR.ACHIEVEMENTS.LIST(instructorId));
+      return response.data.data;
     } catch (error) {
-      console.error('Error deleting instructor:', error);
+      console.error('Error getting achievements:', error);
+      throw error;
+    }
+  }
+
+  // Certificates
+  async getCertificates(instructorId: string) {
+    try {
+      const response = await axios.get(API_ENDPOINTS.INSTRUCTOR.CERTIFICATES.LIST(instructorId));
+      return response.data.data;
+    } catch (error) {
+      console.error('Error getting certificates:', error);
+      throw error;
+    }
+  }
+
+  // Work History
+  async getWorkHistory(instructorId: string) {
+    try {
+      const response = await axios.get(API_ENDPOINTS.INSTRUCTOR.WORK_HISTORY.LIST(instructorId));
+      return response.data.data;
+    } catch (error) {
+      console.error('Error getting work history:', error);
       throw error;
     }
   }
