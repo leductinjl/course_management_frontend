@@ -14,12 +14,24 @@ export const API_ENDPOINTS = {
     COURSES: {
       LIST: `${API_BASE_URL}/api/admin/courses`,
       CREATE: `${API_BASE_URL}/api/admin/courses`,
+      GET_BY_ID: (id: string) => `${API_BASE_URL}/api/admin/courses/${id}`,
       UPDATE: (id: string) => `${API_BASE_URL}/api/admin/courses/${id}`,
       DELETE: (id: string) => `${API_BASE_URL}/api/admin/courses/${id}`,
-      GET_BY_ID: (id: string) => `${API_BASE_URL}/api/admin/courses/${id}`,
-      REQUESTS: {
-        LIST: `${API_BASE_URL}/api/admin/course-requests`,
-        UPDATE_STATUS: (id: string) => `${API_BASE_URL}/api/admin/course-requests/${id}/status`
+      AVAILABLE: `${API_BASE_URL}/api/admin/courses/available`,
+    },
+    CLASSES: {
+      LIST: `${API_BASE_URL}/api/admin/classes`,
+      CREATE: `${API_BASE_URL}/api/admin/classes`,
+      GET_BY_ID: (id: string) => `${API_BASE_URL}/api/admin/classes/${id}`,
+      UPDATE: (id: string) => `${API_BASE_URL}/api/admin/classes/${id}`,
+      DELETE: (id: string) => `${API_BASE_URL}/api/admin/classes/${id}`,
+      GET_INSTRUCTORS: `${API_BASE_URL}/api/admin/classes/instructors`,
+      GET_AVAILABLE_COURSES: `${API_BASE_URL}/api/admin/classes/available-courses`,
+      STATS: {
+        SUMMARY: `${API_BASE_URL}/api/admin/classes/stats/summary`,
+        ENROLLMENT_COUNT: (id: string) => `${API_BASE_URL}/api/admin/classes/stats/enrollment-count/${id}`,
+        LESSON_PROGRESS: (id: string) => `${API_BASE_URL}/api/admin/classes/stats/lesson-progress/${id}`,
+        ANNOUNCEMENT_COUNT: (id: string) => `${API_BASE_URL}/api/admin/classes/stats/announcement-count/${id}`,
       }
     }
   }

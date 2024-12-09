@@ -26,6 +26,7 @@ import AddUserDialog from './user/AddUserDialog';
 import EditUserDialog from './user/EditUserDialog';
 import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
 import DeleteConfirmDialog from './common/DeleteConfirmDialog';
+import UserDetailDialog from './user/UserDetailDialog';
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -33,6 +34,7 @@ const UserManagement: React.FC = () => {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUserForDetail, setSelectedUserForDetail] = useState<User | null>(null);
 
   const { dialogProps, handleOpen: openDelete } = useDeleteConfirmation<string>({
     onDelete: async (userId) => {
@@ -155,6 +157,13 @@ const UserManagement: React.FC = () => {
     );
   };
 
+  const handleRowClick = (event: React.MouseEvent, user: User) => {
+    if ((event.target as HTMLElement).closest('.action-buttons')) {
+      return;
+    }
+    setSelectedUserForDetail(user);
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
@@ -186,7 +195,12 @@ const UserManagement: React.FC = () => {
             </TableHead>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}>
+                <TableRow 
+                  key={user.id}
+                  hover
+                  onClick={(e) => handleRowClick(e, user)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     {user.role === 'student' 
@@ -207,11 +221,19 @@ const UserManagement: React.FC = () => {
                       size="small"
                     />
                   </TableCell>
-                  <TableCell align="right">
-                    <IconButton onClick={() => openEdit(user)} size="small">
+                  <TableCell align="right" className="action-buttons">
+                    <IconButton 
+                      onClick={() => openEdit(user)}
+                      size="small"
+                      sx={{ mr: 1 }}
+                    >
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => openDelete(user.id)} size="small">
+                    <IconButton 
+                      onClick={() => openDelete(user.id)}
+                      size="small"
+                      color="error"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -231,6 +253,14 @@ const UserManagement: React.FC = () => {
       {renderEditDialog()}
 
       <DeleteConfirmDialog {...dialogProps} />
+
+      {selectedUserForDetail && (
+        <UserDetailDialog
+          open={!!selectedUserForDetail}
+          onClose={() => setSelectedUserForDetail(null)}
+          user={selectedUserForDetail}
+        />
+      )}
     </Box>
   );
 };

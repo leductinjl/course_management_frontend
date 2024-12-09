@@ -20,6 +20,8 @@ export interface User {
   status: 'active' | 'inactive';
   studentProfile?: StudentProfile;
   instructorProfile?: InstructorProfile;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CreateUserRequest {
