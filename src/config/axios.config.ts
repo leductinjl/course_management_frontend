@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from './api.config';
+import { AxiosHeaders } from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -12,8 +13,12 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config) => {
     const userToken = localStorage.getItem('userToken');
-    const adminToken = localStorage.getItem('adminToken');
     const instructorToken = localStorage.getItem('instructorToken');
+    const adminToken = localStorage.getItem('adminToken');
+
+    if (!config.headers) {
+      config.headers = new AxiosHeaders();
+    }
 
     if (instructorToken) {
       config.headers.Authorization = `Bearer ${instructorToken}`;
@@ -22,6 +27,8 @@ axiosInstance.interceptors.request.use(
     } else if (adminToken) {
       config.headers.Authorization = `Bearer ${adminToken}`;
     }
+
+    console.log('Request headers:', config.headers);
     return config;
   },
   (error) => {

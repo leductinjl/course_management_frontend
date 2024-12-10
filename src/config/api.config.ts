@@ -46,7 +46,7 @@ export const API_ENDPOINTS = {
   },
   INSTRUCTOR: {
     PROFILE: {
-      GET_CURRENT: `${API_BASE_URL}/api/instructors/me`,
+      GET_CURRENT: `${API_BASE_URL}/api/instructors/profile`,
       UPDATE: (id: string) => `${API_BASE_URL}/api/instructors/${id}`,
     },
     ACHIEVEMENTS: {

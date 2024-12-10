@@ -34,22 +34,22 @@ const LoginPage: React.FC = () => {
       let response;
       if (role === 'student') {
         response = await authService.studentLogin(email, password);
+        if (response.success && response.data.token) {
+          localStorage.setItem('userToken', response.data.token);
+          localStorage.setItem('userData', JSON.stringify(response.data.user));
+          navigate('/student-home');
+        }
       } else {
         response = await authService.instructorLogin(email, password);
-      }
-
-      // Lưu token và thông tin user
-      localStorage.setItem('userToken', response.token);
-      localStorage.setItem('userData', JSON.stringify(response.user));
-
-      // Chuyển hướng dựa vào role
-      if (role === 'student') {
-        navigate('/student-home');
-      } else {
-        navigate('/instructor-home');
+        if (response.success && response.data.token) {
+          localStorage.setItem('instructorToken', response.data.token);
+          localStorage.setItem('instructorData', JSON.stringify(response.data.user));
+          navigate('/instructor-home');
+        }
       }
     } catch (err: any) {
-      setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+      console.error('Login error:', err);
+      setError(err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }

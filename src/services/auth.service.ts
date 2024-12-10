@@ -2,11 +2,20 @@ import axiosInstance from '../config/axios.config';
 import { API_ENDPOINTS } from '../config/api.config';
 
 interface LoginResponse {
-  token: string;
-  user: any;
+  success: boolean;
+  data: {
+    token: string;
+    user: {
+      id: string;
+      email: string;
+      role: string;
+      profile: any;
+    }
+  }
 }
 
 interface RegisterResponse {
+  success: boolean;
   message: string;
 }
 
@@ -16,7 +25,7 @@ export const authService = {
       email,
       password
     });
-    return response.data.data;
+    return response.data;
   },
 
   instructorLogin: async (email: string, password: string): Promise<LoginResponse> => {
@@ -24,10 +33,6 @@ export const authService = {
       email,
       password
     });
-    if (response.data.success) {
-      localStorage.setItem('instructorToken', response.data.token);
-      localStorage.setItem('instructorData', JSON.stringify(response.data.instructor));
-    }
     return response.data;
   },
 
