@@ -72,6 +72,13 @@ export const API_ENDPOINTS = {
         `${API_BASE_URL}/api/instructors/${instructorId}/work-history/${historyId}`,
       DELETE: (instructorId: string, historyId: string) => 
         `${API_BASE_URL}/api/instructors/${instructorId}/work-history/${historyId}`,
-    }
+    },
+    TEACHING: {
+      SCHEDULE: `${API_BASE_URL}/api/instructor/teaching/schedule`,
+      GET_COURSES: `${API_BASE_URL}/api/instructor/teaching/courses`,
+      CLASS_STATUS: (classId: string) => 
+        `${API_BASE_URL}/api/instructor/teaching/classes/${classId}/status`,
+    },
+    COURSES: '/instructor/courses',
   }
 }; 

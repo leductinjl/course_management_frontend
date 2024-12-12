@@ -36,6 +36,21 @@ import ClassDetailDialog from './class/ClassDetailDialog';
 import DeleteConfirmDialog from './common/DeleteConfirmDialog';
 import { formatDateTime } from '../../utils/dateUtils';
 
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'upcoming':
+      return 'info';
+    case 'ongoing':
+      return 'success';
+    case 'completed':
+      return 'secondary';
+    case 'cancelled':
+      return 'error';
+    default:
+      return 'default';
+  }
+};
+
 const ClassManagement = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(false);
@@ -54,24 +69,25 @@ const ClassManagement = () => {
     instructorId: ''
   });
 
-  useEffect(() => {
-    loadClasses();
-  }, []);
-
   const loadClasses = async () => {
     try {
       setLoading(true);
       const data = await classService.listClasses();
+      console.log('Loaded classes:', data);
       setClasses(data);
       const summary = await classService.getClassSummary();
       setStats(summary);
     } catch (error) {
       console.error('Error loading classes:', error);
-      // Show error message
+      enqueueSnackbar('Không thể tải danh sách lớp học', { variant: 'error' });
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadClasses();
+  }, []);
 
   const handleAddClass = async (classData: any) => {
     try {
@@ -133,8 +149,8 @@ const ClassManagement = () => {
       (filter.status === '' || classData.status === filter.status) &&
       (filter.search === '' || 
         classData.classCode.toLowerCase().includes(filter.search.toLowerCase()) ||
-        classData.course?.name.toLowerCase().includes(filter.search.toLowerCase()) ||
-        classData.instructor?.fullName.toLowerCase().includes(filter.search.toLowerCase())
+        classData.Course?.name.toLowerCase().includes(filter.search.toLowerCase()) ||
+        classData.Instructor?.fullName.toLowerCase().includes(filter.search.toLowerCase())
       )
     );
   });
@@ -212,34 +228,50 @@ const ClassManagement = () => {
                   style={{ cursor: 'pointer' }}
                 >
                   <TableCell>{classData.classCode}</TableCell>
-                  <TableCell>{classData.course?.name}</TableCell>
-                  <TableCell>{classData.instructor?.fullName}</TableCell>
+                  <TableCell>
+                    {classData.Course ? (
+                      `${classData.Course.name} (${classData.Course.code})`
+                    ) : (
+                      <span style={{color: 'red'}}>
+                        {`Debug: courseId=${classData.courseId}`}
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {classData.Instructor ? (
+                      classData.Instructor.fullName
+                    ) : (
+                      <span style={{color: 'red'}}>
+                        {`Debug: instructorId=${classData.instructorId}`}
+                      </span>
+                    )}
+                  </TableCell>
                   <TableCell>
                     {formatDateTime(classData.startDate)} - {formatDateTime(classData.endDate)}
                   </TableCell>
                   <TableCell>
                     <Chip 
                       label={CLASS_STATUS_MAP[classData.status]} 
-                      color={
-                        classData.status === 'ongoing' ? 'success' :
-                        classData.status === 'upcoming' ? 'primary' :
-                        classData.status === 'completed' ? 'default' :
-                        'error'
-                      }
+                      color={getStatusColor(classData.status)}
                       size="small"
                     />
                   </TableCell>
                   <TableCell align="right" className="action-buttons">
                     <IconButton 
-                      onClick={() => openEdit(classData)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openEdit(classData);
+                      }}
                       size="small"
-                      sx={{ mr: 1 }}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton 
-                      onClick={() => handleDelete(classData)}
-                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(classData);
+                      }}
+                      size="small" 
                       color="error"
                     >
                       <DeleteIcon />

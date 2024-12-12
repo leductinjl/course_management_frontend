@@ -21,35 +21,36 @@ export interface Class {
   classCode: string;
   courseId: string;
   instructorId: string;
-  room: string;
-  capacity: number;
   startDate: string;
   endDate: string;
   schedule: string;
+  room: string;
+  capacity: number;
   status: ClassStatus;
-  createdBy: string;
-  updatedBy: string;
-  created_at: string;
-  updated_at: string;
-  course?: {
+  Course?: {
     id: string;
     name: string;
     code: string;
-    credits?: number;
-    fee?: number;
+    credits: number;
+    fee: number;
   };
-  instructor?: {
+  Instructor?: {
     id: string;
     fullName: string;
+    specialization?: string;
   };
   creator?: {
     id: string;
     fullName: string;
   };
-  enrollmentCount?: number;
-  totalLessons?: number;
-  completedLessons?: number;
-  announcements?: any[];
+  created_at: string;
+  updated_at: string;
+  stats?: {
+    enrollmentCount: number;
+    completedLessons: number;
+    totalLessons: number;
+    announcementCount: number;
+  };
 }
 
 export interface FormValues {

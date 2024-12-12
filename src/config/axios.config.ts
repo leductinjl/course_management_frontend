@@ -10,6 +10,12 @@ const axiosInstance = axios.create({
   timeout: 10000,
 });
 
+// Add token from localStorage if it exists
+const token = localStorage.getItem('adminToken');
+if (token) {
+  axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const userToken = localStorage.getItem('userToken');
@@ -48,9 +54,9 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('instructorData');
       
       if (window.location.pathname.startsWith('/admin')) {
-        window.location.href = '/admin/login';
+        window.location.href = '/adminne/login';
       } else if (window.location.pathname.startsWith('/instructor')) {
-        window.location.href = '/instructor/login';
+        window.location.href = 'login';
       } else {
         window.location.href = '/login';
       }

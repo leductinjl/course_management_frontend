@@ -9,14 +9,21 @@ export interface Course {
   type: 'basic' | 'advanced' | 'specialized';
   status: CourseStatus;
   fee: number;
-  createdBy: string;
-  updatedBy: string;
   created_at: string;
   updated_at: string;
   creator?: {
     id: string;
     fullName: string;
   };
+  updater?: {
+    id: string;
+    fullName: string;
+  };
+  instructors?: {
+    id: string;
+    fullName: string;
+    specialization?: string;
+  }[];
 }
 
 export const COURSE_STATUS_MAP: Record<CourseStatus, string> = {

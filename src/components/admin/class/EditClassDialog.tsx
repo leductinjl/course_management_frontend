@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
   DialogTitle,
@@ -26,6 +27,7 @@ import {
   CLASS_STATUS_OPTIONS,
   ClassStatus 
 } from '../../../types/class.types';
+import { useSnackbar } from 'notistack';
 
 interface EditClassDialogProps {
   open: boolean;
@@ -57,6 +59,8 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
   onSubmit,
   classData: initialClassData,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,8 +74,20 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
         ]);
         setInstructors(instructorsData);
         setCourses(coursesData);
-      } catch (error) {
-        console.error('Error loading data:', error);
+      } catch (error: any) {
+        if (error.response?.status === 403) {
+          enqueueSnackbar('Phiên đăng nhập đã hết hạn hoặc không có quyền truy cập', { 
+            variant: 'error',
+            autoHideDuration: 3000
+          });
+          onClose();
+          navigate('/login');
+        } else {
+          enqueueSnackbar('Có lỗi xảy ra khi tải dữ liệu', { 
+            variant: 'error',
+            autoHideDuration: 3000
+          });
+        }
       } finally {
         setLoading(false);
       }
@@ -80,7 +96,7 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
     if (open) {
       loadData();
     }
-  }, [open]);
+  }, [open, enqueueSnackbar, onClose, navigate]);
 
   const formik = useFormik({
     initialValues: {
@@ -93,13 +109,29 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
       status: initialClassData.status
     },
     validationSchema,
-    onSubmit: (values) => {
-      const submitData = {
-        ...values,
-        startDate: values.startDate.toISOString(),
-        endDate: values.endDate.toISOString()
-      };
-      onSubmit(submitData);
+    onSubmit: async (values) => {
+      try {
+        const submitData = {
+          ...values,
+          startDate: values.startDate.toISOString(),
+          endDate: values.endDate.toISOString()
+        };
+        await onSubmit(submitData);
+      } catch (error: any) {
+        if (error.response?.status === 403) {
+          enqueueSnackbar('Phiên đăng nhập đã hết hạn hoặc không có quyền truy cập', {
+            variant: 'error',
+            autoHideDuration: 3000
+          });
+          onClose();
+          navigate('/adminne/login');
+        } else {
+          enqueueSnackbar('Có lỗi xảy ra khi cập nhật lớp học', {
+            variant: 'error',
+            autoHideDuration: 3000
+          });
+        }
+      }
     },
     enableReinitialize: true
   });
@@ -123,7 +155,7 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
               <TextField
                 fullWidth
                 label="Môn học"
-                value={initialClassData.course?.name}
+                value={initialClassData.Course?.name}
                 disabled
               />
             </Grid>
@@ -167,7 +199,7 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
 
             <Grid item xs={12} md={6}>
               <DatePicker
-                label="Ngày kết thúc"
+                label="Ngày kết th��c"
                 value={formik.values.endDate}
                 onChange={(value: Dayjs | null) => formik.setFieldValue('endDate', value)}
                 format="DD/MM/YYYY"

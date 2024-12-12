@@ -11,8 +11,11 @@ export interface AdminLoginRequest {
 }
 
 export interface AdminLoginResponse {
-  token: string;
-  admin: Admin;
+  success: boolean;
+  data: {
+    token: string;
+    admin: Admin;
+  };
 }
 
 export interface ApiError {

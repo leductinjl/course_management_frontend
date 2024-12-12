@@ -7,6 +7,7 @@ class ClassService {
   async listClasses(): Promise<Class[]> {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.ADMIN.CLASSES.LIST);
+      console.log('Response from server:', response.data);
       return response.data.data;
     } catch (error) {
       console.error('Error listing classes:', error);
