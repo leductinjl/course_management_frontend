@@ -29,7 +29,7 @@ const UserDetailDialog: React.FC<UserDetailDialogProps> = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        Chi tiết {user.role === 'student' ? 'học viên' : 'giảng viên'}: {profile?.fullName}
+        Chi tiết {user.role === 'student' ? 'học viên' : 'giảng viên'}: {profile?.full_name}
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
@@ -79,7 +79,7 @@ const UserDetailDialog: React.FC<UserDetailDialogProps> = ({
                 Ngày sinh
               </Typography>
               <Typography variant="body1" gutterBottom>
-                {user.studentProfile?.dateOfBirth || 'Chưa cập nhật'}
+                {user.studentProfile?.date_of_birth || 'Chưa cập nhật'}
               </Typography>
             </Grid>
           )}

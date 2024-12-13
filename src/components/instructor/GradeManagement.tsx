@@ -19,7 +19,7 @@ import ClassGradeManagement from './ClassGradeManagement';
 
 interface CourseClass {
   id: string;
-  classCode: string;
+  class_code: string;
   schedule: string;
   enrollmentCount: number;
 }
@@ -64,8 +64,8 @@ const GradeManagement: React.FC = () => {
             Quay lại
           </Button>
           <ClassGradeManagement
-            classId={selectedClass.id}
-            className={selectedClass.classCode}
+            class_id={selectedClass.id}
+            className={selectedClass.class_code}
             courseName={selectedClass.courseName}
           />
         </>
@@ -93,7 +93,7 @@ const GradeManagement: React.FC = () => {
                       }}
                     >
                       <ListItemText
-                        primary={`Lớp ${classItem.classCode}`}
+                        primary={`Lớp ${classItem.class_code}`}
                         secondary={
                           <>
                             <Typography variant="body2">

@@ -45,5 +45,14 @@ export const courseService = {
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Không thể xóa khóa học');
     }
+  },
+
+  getAvailableCoursesForStudent: async (): Promise<Course[]> => {
+    try {
+      const response = await axiosInstance.get(API_ENDPOINTS.STUDENT.COURSES.AVAILABLE);
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Không thể tải danh sách khóa học');
+    }
   }
 };

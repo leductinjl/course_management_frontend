@@ -1,8 +1,9 @@
 import { API_ENDPOINTS } from '../config/api.config';
 import axiosInstance from '../config/axios.config';
-import { Class, CreateClassDTO, UpdateClassDTO } from '../types/class.types';
+import { Class, CreateClassDTO, UpdateClassDTO, ClassWithEnrollment } from '../types/class.types';
 import { Instructor } from '../types/instructor.types';
 import { Course } from '../types/course.types';
+
 class ClassService {
   async listClasses(): Promise<Class[]> {
     try {
@@ -102,6 +103,21 @@ class ClassService {
       throw error;
     }
   }
+
+  async getAvailableClasses(course_id: string): Promise<ClassWithEnrollment[]> {
+    try {
+      const response = await axiosInstance.get(
+        API_ENDPOINTS.STUDENT.CLASSES.AVAILABLE(course_id)
+      );
+      return response.data.data;
+    } catch (error: any) {
+      console.error('Error getting available classes:', error);
+      throw new Error(
+        error.response?.data?.message || 
+        'Không thể tải danh sách lớp học'
+      );
+    }
+  }
 }
 
-export const classService = new ClassService(); 
+export const classService = new ClassService();

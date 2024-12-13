@@ -2,10 +2,10 @@ export interface TeachingSchedule {
   id: string;
   courseCode: string;
   courseName: string;
-  classCode: string;
+  class_code: string;
   schedule: string;
   room: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
   status: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 } 

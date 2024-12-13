@@ -21,7 +21,7 @@ const RegisterPage: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    fullName: '',
+    full_name: '',
     phoneNumber: '',
     address: ''
   });
@@ -56,7 +56,7 @@ const RegisterPage: React.FC = () => {
       const response = await authService.studentRegister({
         email: formData.email,
         password: formData.password,
-        fullName: formData.fullName,
+        full_name: formData.full_name,
         phoneNumber: formData.phoneNumber,
         address: formData.address
       });
@@ -138,9 +138,9 @@ const RegisterPage: React.FC = () => {
           <PersonIcon />
           <TextField
             fullWidth
-            name="fullName"
+            name="full_name"
             label="Full Name"
-            value={formData.fullName}
+            value={formData.full_name}
             onChange={handleChange}
             disabled={loading}
             required

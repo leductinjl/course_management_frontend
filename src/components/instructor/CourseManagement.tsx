@@ -56,8 +56,8 @@ const CourseManagement: React.FC = () => {
     }
   };
 
-  const handleExpandCourse = (courseId: string) => {
-    setExpandedCourse(expandedCourse === courseId ? null : courseId);
+  const handleExpandCourse = (course_id: string) => {
+    setExpandedCourse(expandedCourse === course_id ? null : course_id);
   };
 
   if (loading) {
@@ -119,7 +119,7 @@ const CourseManagement: React.FC = () => {
                       {course.classes.map((classItem: Class) => (
                         <ListItem key={classItem.id}>
                           <ListItemText
-                            primary={`Lớp ${classItem.classCode}`}
+                            primary={`Lớp ${classItem.class_code}`}
                             secondary={
                               <>
                                 <Typography variant="body2">

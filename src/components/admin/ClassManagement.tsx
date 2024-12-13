@@ -65,8 +65,8 @@ const ClassManagement = () => {
   const [filter, setFilter] = useState({
     status: '',
     search: '',
-    courseId: '',
-    instructorId: ''
+    course_id: '',
+    instructor_id: ''
   });
 
   const loadClasses = async () => {
@@ -121,7 +121,7 @@ const ClassManagement = () => {
         enqueueSnackbar('Không thể xóa lớp học', { variant: 'error' });
       }
     },
-    getMessage: (classData) => `Bạn có chắc chắn muốn xóa lớp học ${classData.classCode}?`,
+    getMessage: (classData) => `Bạn có chắc chắn muốn xóa lớp học ${classData.class_code}?`,
     getTitle: () => 'Xác nhận xóa lớp học'
   });
 
@@ -148,9 +148,9 @@ const ClassManagement = () => {
     return (
       (filter.status === '' || classData.status === filter.status) &&
       (filter.search === '' || 
-        classData.classCode.toLowerCase().includes(filter.search.toLowerCase()) ||
+        classData.class_code.toLowerCase().includes(filter.search.toLowerCase()) ||
         classData.Course?.name.toLowerCase().includes(filter.search.toLowerCase()) ||
-        classData.Instructor?.fullName.toLowerCase().includes(filter.search.toLowerCase())
+        classData.Instructor?.full_name.toLowerCase().includes(filter.search.toLowerCase())
       )
     );
   });
@@ -227,27 +227,27 @@ const ClassManagement = () => {
                   onClick={(e) => handleRowClick(e, classData)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <TableCell>{classData.classCode}</TableCell>
+                  <TableCell>{classData.class_code}</TableCell>
                   <TableCell>
                     {classData.Course ? (
                       `${classData.Course.name} (${classData.Course.code})`
                     ) : (
                       <span style={{color: 'red'}}>
-                        {`Debug: courseId=${classData.courseId}`}
+                        {`Debug: course_id=${classData.course_id}`}
                       </span>
                     )}
                   </TableCell>
                   <TableCell>
                     {classData.Instructor ? (
-                      classData.Instructor.fullName
+                      classData.Instructor.full_name
                     ) : (
                       <span style={{color: 'red'}}>
-                        {`Debug: instructorId=${classData.instructorId}`}
+                        {`Debug: instructor_id=${classData.instructor_id}`}
                       </span>
                     )}
                   </TableCell>
                   <TableCell>
-                    {formatDateTime(classData.startDate)} - {formatDateTime(classData.endDate)}
+                    {formatDateTime(classData.start_date)} - {formatDateTime(classData.end_date)}
                   </TableCell>
                   <TableCell>
                     <Chip 

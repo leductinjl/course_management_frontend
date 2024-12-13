@@ -78,7 +78,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
         alignItems: 'center'
       }}>
         <Typography variant="h6">
-          Chi tiết lớp học: {classData.classCode}
+          Chi tiết lớp học: {classData.class_code}
         </Typography>
         <Box>
           {onEdit && (
@@ -105,7 +105,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Mã lớp
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {classData.classCode}
+              {classData.class_code}
             </Typography>
           </Grid>
 
@@ -123,7 +123,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Giảng viên
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {classData.Instructor?.fullName}
+              {classData.Instructor?.full_name}
             </Typography>
             {classData.Instructor?.specialization && (
               <Typography variant="caption" color="textSecondary">
@@ -170,7 +170,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Ngày bắt đầu
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {formatDate(classData.startDate)}
+              {formatDate(classData.start_date)}
             </Typography>
           </Grid>
 
@@ -179,7 +179,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Ngày kết thúc
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {formatDate(classData.endDate)}
+              {formatDate(classData.end_date)}
             </Typography>
           </Grid>
 
@@ -215,7 +215,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Người tạo
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {classData.creator?.fullName}
+              {classData.creator?.full_name}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {formatDate(classData.created_at)}

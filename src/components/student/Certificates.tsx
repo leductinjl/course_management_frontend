@@ -16,7 +16,7 @@ const Certificates: React.FC = () => {
     {
       id: 1,
       name: 'Chứng chỉ Tin học văn phòng',
-      issueDate: '2024-01-20',
+      issue_date: '2024-01-20',
       grade: 'Khá',
       downloadUrl: '#',
       viewUrl: '#',
@@ -24,7 +24,7 @@ const Certificates: React.FC = () => {
     {
       id: 2,
       name: 'Chứng chỉ Tiếng Anh B1',
-      issueDate: '2024-02-15',
+      issue_date: '2024-02-15',
       grade: 'Giỏi',
       downloadUrl: '#',
       viewUrl: '#',
@@ -45,7 +45,7 @@ const Certificates: React.FC = () => {
                   {cert.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Ngày cấp: {cert.issueDate}
+                  Ngày cấp: {cert.issue_date}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Xếp loại: {cert.grade}

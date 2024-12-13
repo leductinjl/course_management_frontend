@@ -34,7 +34,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
     password: Yup.string()
       .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
       .required('Mật khẩu là bắt buộc'),
-    fullName: Yup.string()
+    full_name: Yup.string()
       .required('Họ tên là bắt buộc'),
     role: Yup.string()
       .oneOf(['student', 'instructor'], 'Vai trò không hợp lệ')
@@ -44,7 +44,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
       .default('active'),
     phone: Yup.string(),
     address: Yup.string(),
-    dateOfBirth: Yup.string().when('role', {
+    date_of_birth: Yup.string().when('role', {
       is: 'student',
       then: (schema) => schema
     }),
@@ -62,12 +62,12 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
     initialValues: {
       email: '',
       password: '',
-      fullName: '',
+      full_name: '',
       role: 'student',
       status: 'active',
       phone: '',
       address: '',
-      dateOfBirth: '',
+      date_of_birth: '',
       specialization: '',
       bio: ''
     },
@@ -76,7 +76,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
       const userData: CreateUserRequest = {
         email: values.email,
         password: values.password,
-        fullName: values.fullName,
+        full_name: values.full_name,
         role: values.role,
         status: values.status,
         phone: values.phone || undefined,
@@ -84,7 +84,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
       };
 
       if (values.role === 'student') {
-        userData.dateOfBirth = values.dateOfBirth || undefined;
+        userData.date_of_birth = values.date_of_birth || undefined;
       } else {
         userData.specialization = values.specialization || undefined;
         userData.bio = values.bio || undefined;
@@ -130,9 +130,9 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
                 fullWidth
                 label="Họ và tên"
                 required
-                {...formik.getFieldProps('fullName')}
-                error={formik.touched.fullName && Boolean(formik.errors.fullName)}
-                helperText={formik.touched.fullName && formik.errors.fullName}
+                {...formik.getFieldProps('full_name')}
+                error={formik.touched.full_name && Boolean(formik.errors.full_name)}
+                helperText={formik.touched.full_name && formik.errors.full_name}
               />
             </Grid>
             <Grid item xs={12}>
@@ -171,7 +171,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({
                   label="Ngày sinh"
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  {...formik.getFieldProps('dateOfBirth')}
+                  {...formik.getFieldProps('date_of_birth')}
                 />
               </Grid>
             )}

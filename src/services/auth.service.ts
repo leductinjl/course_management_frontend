@@ -39,7 +39,7 @@ export const authService = {
   studentRegister: async (data: {
     email: string;
     password: string;
-    fullName: string;
+    full_name: string;
     phoneNumber: string;
     address: string;
   }): Promise<RegisterResponse> => {

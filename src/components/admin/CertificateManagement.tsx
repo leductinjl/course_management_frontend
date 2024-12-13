@@ -30,7 +30,7 @@ const CertificateManagement = () => {
       code: 'CERT001', 
       name: 'Chứng chỉ Tiếng Anh B1', 
       type: 'Ngoại ngữ',
-      issueDate: '2024-03-15',
+      issue_date: '2024-03-15',
       expiryDate: '2026-03-15',
       status: 'Có hiệu lực' 
     },
@@ -39,7 +39,7 @@ const CertificateManagement = () => {
       code: 'CERT002', 
       name: 'Chứng chỉ Tin học văn phòng', 
       type: 'Công nghệ thông tin',
-      issueDate: '2024-02-20',
+      issue_date: '2024-02-20',
       expiryDate: '2026-02-20',
       status: 'Có hiệu lực' 
     },
@@ -129,7 +129,7 @@ const CertificateManagement = () => {
                     }
                   />
                 </TableCell>
-                <TableCell>{certificate.issueDate}</TableCell>
+                <TableCell>{certificate.issue_date}</TableCell>
                 <TableCell>{certificate.expiryDate}</TableCell>
                 <TableCell>
                   <Chip 

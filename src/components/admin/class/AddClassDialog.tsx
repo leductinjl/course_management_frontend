@@ -36,10 +36,10 @@ interface AddClassDialogProps {
 }
 
 interface FormValues {
-  courseId: string;
-  instructorId: string;
-  startDate: Dayjs | null;
-  endDate: Dayjs | null;
+  course_id: string;
+  instructor_id: string;
+  start_date: Dayjs | null;
+  end_date: Dayjs | null;
   schedule: string;
   room: string;
   capacity: string;
@@ -47,15 +47,15 @@ interface FormValues {
 }
 
 const validationSchema = Yup.object({
-  courseId: Yup.string().required('Vui lòng chọn môn học'),
-  instructorId: Yup.string().required('Vui lòng chọn giảng viên'),
-  startDate: Yup.mixed().required('Vui lòng chọn ngày bắt đầu'),
-  endDate: Yup.mixed()
+  course_id: Yup.string().required('Vui lòng chọn môn học'),
+  instructor_id: Yup.string().required('Vui lòng chọn giảng viên'),
+  start_date: Yup.mixed().required('Vui lòng chọn ngày bắt đầu'),
+  end_date: Yup.mixed()
     .required('Vui lòng chọn ngày kết thúc')
     .test('after-start', 'Ngày kết thúc phải sau ngày bắt đầu', function(value) {
-      const { startDate } = this.parent;
-      if (!startDate || !value) return true;
-      return value > startDate;
+      const { start_date } = this.parent;
+      if (!start_date || !value) return true;
+      return value > start_date;
     }),
   schedule: Yup.string().required('Vui lòng nhập lịch học'),
   room: Yup.string().required('Vui lòng nhập phòng học'),
@@ -116,10 +116,10 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
 
   const formik = useFormik<FormValues>({
     initialValues: {
-      courseId: '',
-      instructorId: '',
-      startDate: null,
-      endDate: null,
+      course_id: '',
+      instructor_id: '',
+      start_date: null,
+      end_date: null,
       schedule: '',
       room: '',
       capacity: '',
@@ -128,10 +128,10 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
     validationSchema,
     onSubmit: (values) => {
       const classData: CreateClassDTO = {
-        courseId: values.courseId,
-        instructorId: values.instructorId,
-        startDate: values.startDate ? values.startDate.toISOString() : '',
-        endDate: values.endDate ? values.endDate.toISOString() : '',
+        course_id: values.course_id,
+        instructor_id: values.instructor_id,
+        start_date: values.start_date ? values.start_date.toISOString() : '',
+        end_date: values.end_date ? values.end_date.toISOString() : '',
         schedule: values.schedule,
         room: values.room,
         capacity: Number(values.capacity),
@@ -148,11 +148,11 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth error={formik.touched.courseId && Boolean(formik.errors.courseId)}>
+              <FormControl fullWidth error={formik.touched.course_id && Boolean(formik.errors.course_id)}>
                 <InputLabel>Môn học</InputLabel>
                 <Select
-                  name="courseId"
-                  value={formik.values.courseId}
+                  name="course_id"
+                  value={formik.values.course_id}
                   onChange={formik.handleChange}
                   label="Môn học"
                 >
@@ -162,29 +162,29 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
                     </MenuItem>
                   ))}
                 </Select>
-                {formik.touched.courseId && formik.errors.courseId && (
-                  <FormHelperText>{formik.errors.courseId}</FormHelperText>
+                {formik.touched.course_id && formik.errors.course_id && (
+                  <FormHelperText>{formik.errors.course_id}</FormHelperText>
                 )}
               </FormControl>
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth error={formik.touched.instructorId && Boolean(formik.errors.instructorId)}>
+              <FormControl fullWidth error={formik.touched.instructor_id && Boolean(formik.errors.instructor_id)}>
                 <InputLabel>Giảng viên</InputLabel>
                 <Select
-                  name="instructorId"
-                  value={formik.values.instructorId}
+                  name="instructor_id"
+                  value={formik.values.instructor_id}
                   onChange={formik.handleChange}
                   label="Giảng viên"
                 >
                   {instructors.map((instructor) => (
                     <MenuItem key={instructor.id} value={instructor.id}>
-                      {instructor.fullName}
+                      {instructor.full_name}
                     </MenuItem>
                   ))}
                 </Select>
-                {formik.touched.instructorId && formik.errors.instructorId && (
-                  <FormHelperText>{formik.errors.instructorId}</FormHelperText>
+                {formik.touched.instructor_id && formik.errors.instructor_id && (
+                  <FormHelperText>{formik.errors.instructor_id}</FormHelperText>
                 )}
               </FormControl>
             </Grid>
@@ -192,14 +192,14 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Ngày bắt đầu"
-                value={formik.values.startDate}
-                onChange={(value: Dayjs | null) => formik.setFieldValue('startDate', value)}
+                value={formik.values.start_date}
+                onChange={(value: Dayjs | null) => formik.setFieldValue('start_date', value)}
                 format="DD/MM/YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    error: formik.touched.startDate && Boolean(formik.errors.startDate),
-                    helperText: formik.touched.startDate && formik.errors.startDate as string
+                    error: formik.touched.start_date && Boolean(formik.errors.start_date),
+                    helperText: formik.touched.start_date && formik.errors.start_date as string
                   }
                 }}
               />
@@ -208,14 +208,14 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Ngày kết thúc"
-                value={formik.values.endDate}
-                onChange={(value: Dayjs | null) => formik.setFieldValue('endDate', value)}
+                value={formik.values.end_date}
+                onChange={(value: Dayjs | null) => formik.setFieldValue('end_date', value)}
                 format="DD/MM/YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    error: formik.touched.endDate && Boolean(formik.errors.endDate),
-                    helperText: formik.touched.endDate && formik.errors.endDate as string
+                    error: formik.touched.end_date && Boolean(formik.errors.end_date),
+                    helperText: formik.touched.end_date && formik.errors.end_date as string
                   }
                 }}
               />

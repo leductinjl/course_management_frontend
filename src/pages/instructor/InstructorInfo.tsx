@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import InstructorHeader from '../../components/instructor/InstructorHeader';
 import Footer from '../../components/Footer';
 import PersonalInfo from '../../components/instructor/PersonalInfo';
@@ -14,6 +15,8 @@ import {
   ListItemIcon,
   ListItemText,
   Chip,
+  Button,
+  IconButton,
 } from '@mui/material';
 import SchoolIcon from '@mui/icons-material/School';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
@@ -21,65 +24,168 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
-
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { InstructorAchievement, InstructorCertificate, InstructorWorkHistory, CreateAchievementDTO, CreateCertificateDTO } from '../../types/instructor.types';
+import { instructorService } from '../../services/instructor.service';
+import { AchievementForm } from '../../components/instructor/AchievementForm';
+import { CertificateForm } from '../../components/instructor/CertificateForm';
+import { WorkHistoryForm } from '../../components/instructor/WorkHistoryForm';
+import { CreateWorkHistoryDTO } from '../../types/instructor.types';
 const InstructorInfo: React.FC = () => {
-  const achievements = [
-    {
-      icon: <SchoolIcon color="primary" />,
-      title: "Học vị",
-      content: "Tiến sĩ Công nghệ thông tin (2015)",
-    },
-    {
-      icon: <WorkHistoryIcon color="primary" />,
-      title: "Kinh nghiệm",
-      content: "10 năm giảng dạy tại TTTH ĐHSP",
-    },
-    {
-      icon: <EmojiEventsIcon color="primary" />,
-      title: "Thành tích",
-      content: "Giảng viên xuất sắc năm 2022",
-    },
-  ];
+  const [instructor_id, setinstructor_id] = useState<string | null>(null);
+  const [achievements, setAchievements] = useState<InstructorAchievement[]>([]);
+  const [certificates, setCertificates] = useState<InstructorCertificate[]>([]);
+  const [workHistory, setWorkHistory] = useState<InstructorWorkHistory[]>([]);
+  const [openAchievementForm, setOpenAchievementForm] = useState(false);
+  const [selectedAchievement, setSelectedAchievement] = useState<InstructorAchievement | null>(null);
+  const [openCertificateForm, setOpenCertificateForm] = useState(false);
+  const [selectedCertificate, setSelectedCertificate] = useState<InstructorCertificate | null>(null);
+  const [openWorkHistoryForm, setOpenWorkHistoryForm] = useState(false);
+  const [selectedWorkHistory, setSelectedWorkHistory] = useState<InstructorWorkHistory | null>(null);
 
-  const certificates = [
-    {
-      name: "Chứng chỉ sư phạm đại học",
-      issuer: "Bộ Giáo dục và Đào tạo",
-      year: "2012",
-    },
-    {
-      name: "IELTS Academic 7.5",
-      issuer: "British Council",
-      year: "2020",
-    },
-    {
-      name: "Chứng chỉ Tin học IC3",
-      issuer: "Certiport",
-      year: "2019",
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const instructor = await instructorService.getCurrentInstructor();
+        setinstructor_id(instructor.id);
+        await loadData(instructor.id);
+      } catch (error) {
+        console.error('Error fetching instructor data:', error);
+      }
+    };
 
-  const professionalActivities = [
-    {
-      period: "2015 - Hiện tại",
-      position: "Giảng viên chính",
-      department: "Khoa Công nghệ thông tin",
-      responsibilities: [
-        "Giảng dạy các môn học chuyên ngành CNTT",
-        "Phụ trách bộ môn Lập trình cơ bản",
-        "Tham gia nghiên cứu khoa học",
-      ]
-    },
-    {
-      period: "2012 - 2015",
-      position: "Giảng viên",
-      department: "Khoa Công nghệ thông tin",
-      responsibilities: [
-        "Giảng dạy tin học cơ bản",
-        "Hỗ trợ sinh viên thực hành",
-      ]
-    },
-  ];
+    fetchData();
+  }, []);
+
+  const loadData = async (id: string) => {
+    try {
+      const [achievementsData, certificatesData, workHistoryData] = await Promise.all([
+        instructorService.getAchievements(id),
+        instructorService.getCertificates(id),
+        instructorService.getWorkHistory(id)
+      ]);
+
+      setAchievements(achievementsData);
+      setCertificates(certificatesData);
+      setWorkHistory(workHistoryData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+  };
+
+  const handleAchievementSubmit = async (data: CreateAchievementDTO) => {
+    try {
+      if (instructor_id) {
+        if (selectedAchievement) {
+          await instructorService.updateAchievement(instructor_id, selectedAchievement.id, data);
+        } else {
+          await instructorService.createAchievement(instructor_id, data);
+        }
+        await loadData(instructor_id);
+        setOpenAchievementForm(false);
+        setSelectedAchievement(null);
+      }
+    } catch (error) {
+      console.error('Error handling achievement:', error);
+    }
+  };
+
+  const handleDeleteAchievement = async (achievementId: string) => {
+    try {
+      if (instructor_id) {
+        await instructorService.deleteAchievement(instructor_id, achievementId);
+        await loadData(instructor_id);
+      }
+    } catch (error) {
+      console.error('Error deleting achievement:', error);
+    }
+  };
+
+  const handleCertificateSubmit = async (data: CreateCertificateDTO) => {
+    try {
+      if (instructor_id) {
+        if (selectedCertificate) {
+          await instructorService.updateCertificate(instructor_id, selectedCertificate.id, data);
+        } else {
+          await instructorService.createCertificate(instructor_id, data);
+        }
+        await loadData(instructor_id);
+        setOpenCertificateForm(false);
+        setSelectedCertificate(null);
+      }
+    } catch (error) {
+      console.error('Error handling certificate:', error);
+    }
+  };
+
+  const getInitialCertificateData = (cert: InstructorCertificate | null): CreateCertificateDTO | undefined => {
+    if (!cert) return undefined;
+    return {
+      name: cert.name,
+      issuer: cert.issuer,
+      issue_year: cert.issue_year
+    };
+  };
+
+  const getInitialWorkHistoryData = (history: InstructorWorkHistory | null): CreateWorkHistoryDTO | undefined => {
+    if (!history) return undefined;
+    return {
+      position: history.position,
+      department: history.department,
+      start_date: history.start_date,
+      end_date: history.end_date,
+      responsibilities: history.responsibilities
+    };
+  };
+
+  const getInitialAchievementData = (achievement: InstructorAchievement | null): CreateAchievementDTO | undefined => {
+    if (!achievement) return undefined;
+    return {
+      title: achievement.title,
+      description: achievement.description,
+      achievementDate: achievement.achievementDate
+    };
+  };
+
+  const handleDeleteCertificate = async (certificateId: string) => {
+    try {
+      if (instructor_id) {
+        await instructorService.deleteCertificate(instructor_id, certificateId);
+        await loadData(instructor_id);
+      }
+    } catch (error) {
+      console.error('Error deleting certificate:', error);
+    }
+  };
+
+  const handleWorkHistorySubmit = async (data: CreateWorkHistoryDTO) => {
+    try {
+      if (instructor_id) {
+        if (selectedWorkHistory) {
+          await instructorService.updateWorkHistory(instructor_id, selectedWorkHistory.id, data);
+        } else {
+          await instructorService.createWorkHistory(instructor_id, data);
+        }
+        await loadData(instructor_id);
+        setOpenWorkHistoryForm(false);
+        setSelectedWorkHistory(null);
+      }
+    } catch (error) {
+      console.error('Error handling work history:', error);
+    }
+  };
+
+  const handleDeleteWorkHistory = async (historyId: string) => {
+    try {
+      if (instructor_id) {
+        await instructorService.deleteWorkHistory(instructor_id, historyId);
+        await loadData(instructor_id);
+      }
+    } catch (error) {
+      console.error('Error deleting work history:', error);
+    }
+  };
 
   return (
     <>
@@ -92,68 +198,54 @@ const InstructorInfo: React.FC = () => {
             </Paper>
           </Grid>
           
-          <Grid item xs={12}>
-            <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Thông tin chuyên môn
-              </Typography>
-              <Divider sx={{ mb: 3 }} />
-              <Grid container spacing={3}>
-                {achievements.map((item, index) => (
-                  <Grid item xs={12} md={4} key={index}>
-                    <Box sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 2,
-                      p: 2,
-                      border: '1px solid #e0e0e0',
-                      borderRadius: 1,
-                      height: '100%'
-                    }}>
-                      {item.icon}
-                      <Box>
-                        <Typography variant="subtitle1" fontWeight="bold">
-                          {item.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {item.content}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <WorkspacePremiumIcon color="primary" />
-                <Typography variant="h6">
-                  Chứng chỉ
-                </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <EmojiEventsIcon color="primary" />
+                  <Typography variant="h6">
+                    Thành tích
+                  </Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setOpenAchievementForm(true)}
+                >
+                  Thêm thành tích
+                </Button>
               </Box>
-              <Divider sx={{ mb: 2 }} />
               <List>
-                {certificates.map((cert, index) => (
-                  <ListItem key={index}>
-                    <ListItemIcon>
-                      <VerifiedIcon color="primary" />
-                    </ListItemIcon>
+                {achievements.map((achievement) => (
+                  <ListItem
+                    key={achievement.id}
+                    secondaryAction={
+                      <Box>
+                        <IconButton onClick={() => {
+                          setSelectedAchievement(achievement);
+                          setOpenAchievementForm(true);
+                        }}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteAchievement(achievement.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    }
+                  >
                     <ListItemText
-                      primary={cert.name}
+                      primary={achievement.title}
                       secondary={
-                        <React.Fragment>
+                        <>
                           <Typography variant="body2" color="text.secondary">
-                            {cert.issuer}
+                            {new Date(achievement.achievementDate).toLocaleDateString()}
                           </Typography>
-                          <Chip 
-                            label={cert.year} 
-                            size="small" 
-                            sx={{ mt: 0.5 }}
-                          />
-                        </React.Fragment>
+                          {achievement.description && (
+                            <Typography variant="body2" color="text.secondary">
+                              {achievement.description}
+                            </Typography>
+                          )}
+                        </>
                       }
                     />
                   </ListItem>
@@ -162,33 +254,96 @@ const InstructorInfo: React.FC = () => {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <BusinessCenterIcon color="primary" />
-                <Typography variant="h6">
-                  Quá trình công tác
-                </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <SchoolIcon color="primary" />
+                  <Typography variant="h6">
+                    Chứng chỉ
+                  </Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setOpenCertificateForm(true)}
+                >
+                  Thêm chứng chỉ
+                </Button>
               </Box>
-              <Divider sx={{ mb: 2 }} />
-              {professionalActivities.map((activity, index) => (
-                <Box key={index} sx={{ mb: 3 }}>
+              <List>
+                {certificates.map((cert) => (
+                  <ListItem
+                    key={cert.id}
+                    secondaryAction={
+                      <Box>
+                        <IconButton onClick={() => {
+                          setSelectedCertificate(cert);
+                          setOpenCertificateForm(true);
+                        }}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeleteCertificate(cert.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    }
+                  >
+                    <ListItemText
+                      primary={cert.name}
+                      secondary={`${cert.issuer} - ${cert.issue_year}`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <Paper elevation={3} sx={{ p: 3, height: '100%' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <WorkHistoryIcon color="primary" />
+                  <Typography variant="h6">
+                    Quá trình công tác
+                  </Typography>
+                </Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setOpenWorkHistoryForm(true)}
+                >
+                  Thêm quá trình công tác
+                </Button>
+              </Box>
+              {workHistory.map((history) => (
+                <Box key={history.id} sx={{ mb: 3 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="subtitle1" fontWeight="bold">
-                      {activity.position}
+                      {history.position}
                     </Typography>
-                    <Chip 
-                      label={activity.period} 
-                      size="small" 
-                      color="primary" 
-                      variant="outlined"
-                    />
+                    <Box>
+                      <IconButton onClick={() => {
+                        setSelectedWorkHistory(history);
+                        setOpenWorkHistoryForm(true);
+                      }}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteWorkHistory(history.id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
                   </Box>
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
-                    {activity.department}
+                  <Typography variant="body2" color="text.secondary">
+                    {history.department}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {`${new Date(history.start_date).toLocaleDateString()} - ${
+                      history.end_date ? new Date(history.end_date).toLocaleDateString() : 'Hiện tại'
+                    }`}
                   </Typography>
                   <List dense>
-                    {activity.responsibilities.map((resp, idx) => (
+                    {history.responsibilities.map((resp, idx) => (
                       <ListItem key={idx}>
                         <ListItemIcon sx={{ minWidth: 30 }}>
                           <Box sx={{ width: 4, height: 4, bgcolor: 'primary.main', borderRadius: '50%' }} />
@@ -202,6 +357,36 @@ const InstructorInfo: React.FC = () => {
             </Paper>
           </Grid>
         </Grid>
+        
+        <AchievementForm
+          open={openAchievementForm}
+          onClose={() => {
+            setOpenAchievementForm(false);
+            setSelectedAchievement(null);
+          }}
+          onSubmit={handleAchievementSubmit}
+          initialData={getInitialAchievementData(selectedAchievement)}
+        />
+        
+        <CertificateForm
+          open={openCertificateForm}
+          onClose={() => {
+            setOpenCertificateForm(false);
+            setSelectedCertificate(null);
+          }}
+          onSubmit={handleCertificateSubmit}
+          initialData={getInitialCertificateData(selectedCertificate)}
+        />
+
+        <WorkHistoryForm
+          open={openWorkHistoryForm}
+          onClose={() => {
+            setOpenWorkHistoryForm(false);
+            setSelectedWorkHistory(null);
+          }}
+          onSubmit={handleWorkHistorySubmit}
+          initialData={getInitialWorkHistoryData(selectedWorkHistory)}
+        />
       </Container>
       <Footer />
     </>

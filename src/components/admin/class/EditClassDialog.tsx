@@ -37,13 +37,13 @@ interface EditClassDialogProps {
 }
 
 const validationSchema = Yup.object({
-  startDate: Yup.mixed().required('Vui lòng chọn ngày bắt đầu'),
-  endDate: Yup.mixed()
+  start_date: Yup.mixed().required('Vui lòng chọn ngày bắt đầu'),
+  end_date: Yup.mixed()
     .required('Vui lòng chọn ngày kết thúc')
     .test('after-start', 'Ngày kết thúc phải sau ngày bắt đầu', function(value) {
-      const { startDate } = this.parent;
-      if (!startDate || !value) return true;
-      return value > startDate;
+      const { start_date } = this.parent;
+      if (!start_date || !value) return true;
+      return value > start_date;
     }),
   schedule: Yup.string().required('Vui lòng nhập lịch học'),
   room: Yup.string().required('Vui lòng nhập phòng học'),
@@ -100,9 +100,9 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
 
   const formik = useFormik({
     initialValues: {
-      instructorId: initialClassData.instructorId,
-      startDate: dayjs(initialClassData.startDate),
-      endDate: dayjs(initialClassData.endDate),
+      instructor_id: initialClassData.instructor_id,
+      start_date: dayjs(initialClassData.start_date),
+      end_date: dayjs(initialClassData.end_date),
       schedule: initialClassData.schedule,
       room: initialClassData.room,
       capacity: initialClassData.capacity,
@@ -113,8 +113,8 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
       try {
         const submitData = {
           ...values,
-          startDate: values.startDate.toISOString(),
-          endDate: values.endDate.toISOString()
+          start_date: values.start_date.toISOString(),
+          end_date: values.end_date.toISOString()
         };
         await onSubmit(submitData);
       } catch (error: any) {
@@ -146,7 +146,7 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
               <TextField
                 fullWidth
                 label="Mã lớp"
-                value={initialClassData.classCode}
+                value={initialClassData.class_code}
                 disabled
               />
             </Grid>
@@ -161,22 +161,22 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth error={formik.touched.instructorId && Boolean(formik.errors.instructorId)}>
+              <FormControl fullWidth error={formik.touched.instructor_id && Boolean(formik.errors.instructor_id)}>
                 <InputLabel>Giảng viên</InputLabel>
                 <Select
-                  name="instructorId"
-                  value={formik.values.instructorId}
+                  name="instructor_id"
+                  value={formik.values.instructor_id}
                   onChange={formik.handleChange}
                   label="Giảng viên"
                 >
                   {instructors.map((instructor) => (
                     <MenuItem key={instructor.id} value={instructor.id}>
-                      {instructor.fullName}
+                      {instructor.full_name}
                     </MenuItem>
                   ))}
                 </Select>
-                {formik.touched.instructorId && formik.errors.instructorId && (
-                  <FormHelperText>{formik.errors.instructorId}</FormHelperText>
+                {formik.touched.instructor_id && formik.errors.instructor_id && (
+                  <FormHelperText>{formik.errors.instructor_id}</FormHelperText>
                 )}
               </FormControl>
             </Grid>
@@ -184,14 +184,14 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Ngày bắt đầu"
-                value={formik.values.startDate}
-                onChange={(value: Dayjs | null) => formik.setFieldValue('startDate', value)}
+                value={formik.values.start_date}
+                onChange={(value: Dayjs | null) => formik.setFieldValue('start_date', value)}
                 format="DD/MM/YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    error: formik.touched.startDate && Boolean(formik.errors.startDate),
-                    helperText: formik.touched.startDate && formik.errors.startDate as string
+                    error: formik.touched.start_date && Boolean(formik.errors.start_date),
+                    helperText: formik.touched.start_date && formik.errors.start_date as string
                   }
                 }}
               />
@@ -200,14 +200,14 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
             <Grid item xs={12} md={6}>
               <DatePicker
                 label="Ngày kết th��c"
-                value={formik.values.endDate}
-                onChange={(value: Dayjs | null) => formik.setFieldValue('endDate', value)}
+                value={formik.values.end_date}
+                onChange={(value: Dayjs | null) => formik.setFieldValue('end_date', value)}
                 format="DD/MM/YYYY"
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    error: formik.touched.endDate && Boolean(formik.errors.endDate),
-                    helperText: formik.touched.endDate && formik.errors.endDate as string
+                    error: formik.touched.end_date && Boolean(formik.errors.end_date),
+                    helperText: formik.touched.end_date && formik.errors.end_date as string
                   }
                 }}
               />

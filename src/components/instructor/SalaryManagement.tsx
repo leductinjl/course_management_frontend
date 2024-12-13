@@ -23,7 +23,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PendingIcon from '@mui/icons-material/Pending';
 
 interface TeachingHours {
-  classId: string;
+  class_id: string;
   className: string;
   totalHours: number;
   confirmedHours: number;
@@ -44,7 +44,7 @@ interface SalaryDetail {
 const SalaryManagement: React.FC = () => {
   const [teachingHours, setTeachingHours] = useState<TeachingHours[]>([
     {
-      classId: 'CS101',
+      class_id: 'CS101',
       className: 'Lập trình cơ bản A1',
       totalHours: 45,
       confirmedHours: 45,
@@ -52,7 +52,7 @@ const SalaryManagement: React.FC = () => {
       period: '03/2024'
     },
     {
-      classId: 'CS102',
+      class_id: 'CS102',
       className: 'Lập trình nâng cao B2',
       totalHours: 30,
       confirmedHours: 0,
@@ -103,7 +103,7 @@ const SalaryManagement: React.FC = () => {
     if (adjustedHours !== null) {
       setTeachingHours(hours =>
         hours.map(h =>
-          h.classId === selectedItem.classId
+          h.class_id === selectedItem.class_id
             ? { ...h, status: 'confirmed', confirmedHours: adjustedHours }
             : h
         )
@@ -148,8 +148,8 @@ const SalaryManagement: React.FC = () => {
           </TableHead>
           <TableBody>
             {teachingHours.map((hour) => (
-              <TableRow key={hour.classId}>
-                <TableCell>{hour.classId}</TableCell>
+              <TableRow key={hour.class_id}>
+                <TableCell>{hour.class_id}</TableCell>
                 <TableCell>{hour.className}</TableCell>
                 <TableCell align="center">{hour.period}</TableCell>
                 <TableCell align="center">{hour.totalHours}</TableCell>

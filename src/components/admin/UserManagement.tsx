@@ -37,10 +37,10 @@ const UserManagement: React.FC = () => {
   const [selectedUserForDetail, setSelectedUserForDetail] = useState<User | null>(null);
 
   const { dialogProps, handleOpen: openDelete } = useDeleteConfirmation<string>({
-    onDelete: async (userId) => {
+    onDelete: async (user_id) => {
       try {
-        await userService.deleteUser(userId);
-        setUsers(users.filter(user => user.id !== userId));
+        await userService.deleteUser(user_id);
+        setUsers(users.filter(user => user.id !== user_id));
         toast.success('Xóa người dùng thành công');
       } catch (error: any) {
         toast.error(error.message || 'Không thể xóa người dùng');
@@ -95,17 +95,17 @@ const UserManagement: React.FC = () => {
               if (user.role === 'student' && user.studentProfile) {
                 updatedUserData.studentProfile = {
                   ...user.studentProfile,
-                  fullName: userData.fullName || user.studentProfile.fullName,
+                  full_name: userData.full_name || user.studentProfile.full_name,
                   phone: userData.phone || user.studentProfile.phone || '',
                   address: userData.address || user.studentProfile.address || '',
-                  dateOfBirth: userData.dateOfBirth || user.studentProfile.dateOfBirth || ''
+                  date_of_birth: userData.date_of_birth || user.studentProfile.date_of_birth || ''
                 };
               }
 
               if (user.role === 'instructor' && user.instructorProfile) {
                 updatedUserData.instructorProfile = {
                   ...user.instructorProfile,
-                  fullName: userData.fullName || user.instructorProfile.fullName,
+                  full_name: userData.full_name || user.instructorProfile.full_name,
                   phone: userData.phone || user.instructorProfile.phone || '',
                   address: userData.address || user.instructorProfile.address || '',
                   specialization: userData.specialization || user.instructorProfile.specialization || '',
@@ -204,8 +204,8 @@ const UserManagement: React.FC = () => {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     {user.role === 'student' 
-                      ? user.studentProfile?.fullName 
-                      : user.instructorProfile?.fullName}
+                      ? user.studentProfile?.full_name 
+                      : user.instructorProfile?.full_name}
                   </TableCell>
                   <TableCell>
                     <Chip

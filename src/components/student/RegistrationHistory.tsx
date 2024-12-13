@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Table,
@@ -9,25 +9,73 @@ import {
   TableRow,
   Paper,
   Chip,
+  CircularProgress,
+  Box
 } from '@mui/material';
+import { format } from 'date-fns';
+import { enrollmentService } from '../../services/enrollment.service';
+
+interface EnrollmentHistory {
+  id: string;
+  enrollment_id: string;
+  class_id: string;
+  action: 'enrolled' | 'cancelled';
+  action_date: string;
+  reason?: string;
+  note?: string;
+  Class: {
+    id: string;
+    name: string;
+    Course: {
+      code: string;
+      name: string;
+    }
+  }
+}
 
 const RegistrationHistory: React.FC = () => {
-  const registrations = [
-    {
-      id: 1,
-      courseCode: 'CS101',
-      courseName: 'Tin học văn phòng',
-      registrationDate: '2024-01-15',
-      status: 'Đã xác nhận',
-    },
-    {
-      id: 2,
-      courseCode: 'ENG201',
-      courseName: 'Tiếng Anh B1',
-      registrationDate: '2024-02-01',
-      status: 'Chờ xác nhận',
-    },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState<EnrollmentHistory[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEnrollmentHistory = async () => {
+      try {
+        const response = await enrollmentService.getEnrollmentHistory();
+        setHistory(response);
+      } catch (err: any) {
+        setError(err.message || 'Không thể tải lịch sử đăng ký');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEnrollmentHistory();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Typography color="error" align="center">
+        {error}
+      </Typography>
+    );
+  }
+
+  if (!history || history.length === 0) {
+    return (
+      <Typography align="center" sx={{ my: 3 }}>
+        Chưa có lịch sử đăng ký nào
+      </Typography>
+    );
+  }
 
   return (
     <>
@@ -40,23 +88,29 @@ const RegistrationHistory: React.FC = () => {
             <TableRow>
               <TableCell>Mã khóa học</TableCell>
               <TableCell>Tên khóa học</TableCell>
-              <TableCell>Ngày đăng ký</TableCell>
-              <TableCell>Trạng thái</TableCell>
+              <TableCell>Tên lớp</TableCell>
+              <TableCell>Thời gian</TableCell>
+              <TableCell>Hành động</TableCell>
+              <TableCell>Ghi chú</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {registrations.map((row) => (
+            {history.map((row) => (
               <TableRow key={row.id}>
-                <TableCell>{row.courseCode}</TableCell>
-                <TableCell>{row.courseName}</TableCell>
-                <TableCell>{row.registrationDate}</TableCell>
+                <TableCell>{row.Class?.Course?.code || '-'}</TableCell>
+                <TableCell>{row.Class?.Course?.name || '-'}</TableCell>
+                <TableCell>{row.Class?.name || '-'}</TableCell>
+                <TableCell>
+                  {format(new Date(row.action_date), 'dd/MM/yyyy HH:mm')}
+                </TableCell>
                 <TableCell>
                   <Chip
-                    label={row.status}
-                    color={row.status === 'Đã xác nhận' ? 'success' : 'warning'}
+                    label={row.action === 'enrolled' ? 'Đăng ký' : 'Hủy đăng ký'}
+                    color={row.action === 'enrolled' ? 'success' : 'error'}
                     size="small"
                   />
                 </TableCell>
+                <TableCell>{row.note || row.reason || '-'}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -66,4 +120,4 @@ const RegistrationHistory: React.FC = () => {
   );
 };
 
-export default RegistrationHistory; 
+export default RegistrationHistory;

@@ -32,7 +32,7 @@ const WEEKDAYS = [
 interface TeachingSchedule {
   id: string;
   courseName: string;
-  classCode: string;
+  class_code: string;
   room: string;
   status: ClassStatus;
   schedule: string; // Format: "MON,WED,FRI|09:30-11:30"
@@ -41,7 +41,7 @@ interface TeachingSchedule {
 interface ScheduleItem {
   id: string;
   courseName: string;
-  classCode: string;
+  class_code: string;
   room: string;
   status: ClassStatus;
   dayOfWeek: string;
@@ -51,8 +51,8 @@ interface ScheduleItem {
 interface WeekOption {
   value: string;
   label: string;
-  startDate: Date;
-  endDate: Date;
+  start_date: Date;
+  end_date: Date;
 }
 
 const TeachingSchedule: React.FC = () => {
@@ -126,8 +126,8 @@ const TeachingSchedule: React.FC = () => {
           options.push({
             value: weekKey,
             label: weekLabel,
-            startDate: currentWeekStart,
-            endDate: weekEnd
+            start_date: currentWeekStart,
+            end_date: weekEnd
           });
         }
         
@@ -140,7 +140,7 @@ const TeachingSchedule: React.FC = () => {
     // Nếu chưa chọn tuần nào, chọn tuần hiện tại
     if (!selectedWeek && options.length > 0) {
       const currentWeek = options.find(week => 
-        new Date() >= week.startDate && new Date() <= week.endDate
+        new Date() >= week.start_date && new Date() <= week.end_date
       );
       setSelectedWeek(currentWeek?.value || options[0].value);
     }
@@ -297,7 +297,7 @@ const TeachingSchedule: React.FC = () => {
                             {scheduleItem.courseName}
                           </Typography>
                           <Typography variant="body2" sx={{ mb: 0.5 }}>
-                            Lớp: {scheduleItem.classCode}
+                            Lớp: {scheduleItem.class_code}
                           </Typography>
                           <Typography variant="body2" sx={{ mb: 1 }}>
                             Phòng: {scheduleItem.room}
