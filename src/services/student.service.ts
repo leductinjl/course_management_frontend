@@ -47,5 +47,22 @@ export const studentService = {
         'Không thể cập nhật thông tin học viên'
       );
     }
+  },
+
+  getEnrolledCourses: async () => {
+    try {
+      const response = await axiosInstance.get(API_ENDPOINTS.STUDENT.COURSES.ENROLLED);
+      
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Không thể tải danh sách môn học');
+      }
+      
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || 
+        'Không thể tải danh sách môn học'
+      );
+    }
   }
 }; 

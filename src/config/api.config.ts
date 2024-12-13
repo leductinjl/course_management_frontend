@@ -95,6 +95,7 @@ export const API_ENDPOINTS = {
     COURSES: {
       AVAILABLE: `${API_BASE_URL}/api/student/courses/available`,
       SEARCH: `${API_BASE_URL}/api/student/courses/available`,
+      ENROLLED: `${API_BASE_URL}/api/student/courses/enrolled`,
     },
     CLASSES: {
       AVAILABLE: (course_id: string) => 
@@ -104,7 +105,8 @@ export const API_ENDPOINTS = {
       ENROLL: `${API_BASE_URL}/api/student/enrollments/enroll`,
       UNENROLL: (id: string) => `${API_BASE_URL}/api/student/enrollments/unenroll/${id}`,
       MY_ENROLLMENTS: `${API_BASE_URL}/api/student/enrollments/my-enrollments`,
-      HISTORY: `${API_BASE_URL}/api/student/enrollments/history`
-    }
+      HISTORY: `${API_BASE_URL}/api/student/enrollments/history`,
+    },
+    SCHEDULE: `${API_BASE_URL}/api/student/schedule`,
   }
 }; 

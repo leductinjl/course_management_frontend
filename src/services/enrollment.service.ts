@@ -32,15 +32,23 @@ export const enrollmentService = {
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Không thể hủy đăng ký lớp h���c');
+      throw new Error(error.response?.data?.message || 'Không thể hủy đăng ký lớp học');
     }
   },
 
   getEnrollmentHistory: async () => {
     try {
-      const response = await axiosInstance.get('/api/student/enrollments/history');
+      console.log('Fetching enrollment history...');
+      const response = await axiosInstance.get(API_ENDPOINTS.STUDENT.ENROLLMENTS.HISTORY);
+      console.log('Enrollment history response:', response.data);
+      
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Không thể tải lịch sử đăng ký');
+      }
+      
       return response.data.data;
     } catch (error: any) {
+      console.error('Error fetching enrollment history:', error);
       throw new Error(
         error.response?.data?.message || 
         'Không thể tải lịch sử đăng ký'

@@ -14,24 +14,8 @@ import {
 } from '@mui/material';
 import { format } from 'date-fns';
 import { enrollmentService } from '../../services/enrollment.service';
+import { EnrollmentHistory } from '../../types/enrollment.types';
 
-interface EnrollmentHistory {
-  id: string;
-  enrollment_id: string;
-  class_id: string;
-  action: 'enrolled' | 'cancelled';
-  action_date: string;
-  reason?: string;
-  note?: string;
-  Class: {
-    id: string;
-    name: string;
-    Course: {
-      code: string;
-      name: string;
-    }
-  }
-}
 
 const RegistrationHistory: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -88,7 +72,7 @@ const RegistrationHistory: React.FC = () => {
             <TableRow>
               <TableCell>Mã khóa học</TableCell>
               <TableCell>Tên khóa học</TableCell>
-              <TableCell>Tên lớp</TableCell>
+              <TableCell>Mã lớp</TableCell>
               <TableCell>Thời gian</TableCell>
               <TableCell>Hành động</TableCell>
               <TableCell>Ghi chú</TableCell>
@@ -99,7 +83,7 @@ const RegistrationHistory: React.FC = () => {
               <TableRow key={row.id}>
                 <TableCell>{row.Class?.Course?.code || '-'}</TableCell>
                 <TableCell>{row.Class?.Course?.name || '-'}</TableCell>
-                <TableCell>{row.Class?.name || '-'}</TableCell>
+                <TableCell>{row.Class?.class_code || '-'}</TableCell>
                 <TableCell>
                   {format(new Date(row.action_date), 'dd/MM/yyyy HH:mm')}
                 </TableCell>
