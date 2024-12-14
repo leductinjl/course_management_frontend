@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Typography,
@@ -18,6 +18,7 @@ import {
   Select,
   MenuItem,
   Grid,
+  CircularProgress,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -49,27 +50,34 @@ const CourseManagement = () => {
   const [selectedCourseForDetail, setSelectedCourseForDetail] = useState<Course | null>(null);
   const { enqueueSnackbar } = useSnackbar();
 
-  // Thêm state cho bộ lọc
   const [filter, setFilter] = useState<CourseFilter>({
     status: undefined,
     type: undefined,
     search: '',
   });
 
-  useEffect(() => {
-    loadCourses();
-  }, []);
-
   const loadCourses = async () => {
     try {
-      const data = await courseService.listCourses();
-      setCourses(data);
+      setLoading(true);
+      const response = await courseService.listCourses();
+      if (Array.isArray(response)) {
+        setCourses(response);
+      } else {
+        console.error('Invalid response format:', response);
+        setCourses([]);
+      }
     } catch (error) {
+      console.error('Error loading courses:', error);
       enqueueSnackbar('Không thể tải danh sách khóa học', { variant: 'error' });
+      setCourses([]);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadCourses();
+  }, []);
 
   const handleAddCourse = async (courseData: any) => {
     try {
@@ -114,28 +122,45 @@ const CourseManagement = () => {
     setOpenEditDialog(true);
   };
 
-  // Lọc danh sách khóa học
-  const filteredCourses = courses.filter(course => {
-    if (filter.status && course.status !== filter.status) return false;
-    if (filter.type && course.type !== filter.type) return false;
-    if (filter.search) {
-      const searchTerm = filter.search.toLowerCase();
-      return (
-        course.code.toLowerCase().includes(searchTerm) ||
-        course.name.toLowerCase().includes(searchTerm) ||
-        course.description?.toLowerCase().includes(searchTerm)
-      );
-    }
-    return true;
-  });
+  const filteredCourses = useMemo(() => {
+    if (!Array.isArray(courses)) return [];
+    
+    return courses.filter(course => {
+      if (!course) return false;
+      
+      const matchStatus = !filter.status || course.status === filter.status;
+      const matchType = !filter.type || course.type === filter.type;
+      
+      if (!matchStatus || !matchType) return false;
+      
+      if (filter.search) {
+        const searchTerm = filter.search.toLowerCase();
+        return (
+          (course.code || '').toLowerCase().includes(searchTerm) ||
+          (course.name || '').toLowerCase().includes(searchTerm) ||
+          (course.description || '').toLowerCase().includes(searchTerm)
+        );
+      }
+      return true;
+    });
+  }, [courses, filter]);
 
   const handleRowClick = (event: React.MouseEvent, course: Course) => {
-    // Kiểm tra nếu click vào nút trong cột thao tác thì không mở dialog chi tiết
     if ((event.target as HTMLElement).closest('.action-buttons')) {
       return;
     }
     setSelectedCourseForDetail(course);
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const coursesToRender = Array.isArray(filteredCourses) ? filteredCourses : [];
 
   return (
     <Box>
@@ -150,7 +175,6 @@ const CourseManagement = () => {
         </Button>
       </Box>
 
-      {/* Bộ lọc */}
       <Paper sx={{ p: 2, mb: 2 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={4}>
@@ -199,62 +223,68 @@ const CourseManagement = () => {
         </Grid>
       </Paper>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Mã môn học</TableCell>
-              <TableCell>Tên môn học</TableCell>
-              <TableCell>Số tín chỉ</TableCell>
-              <TableCell>Loại</TableCell>
-              <TableCell>Trạng thái</TableCell>
-              <TableCell>Thao tác</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredCourses.map((course) => (
-              <TableRow 
-                key={course.id}
-                hover
-                onClick={(e) => handleRowClick(e, course)}
-                style={{ cursor: 'pointer' }}
-              >
-                <TableCell>{course.code}</TableCell>
-                <TableCell>{course.name}</TableCell>
-                <TableCell>{course.credits}</TableCell>
-                <TableCell>
-                  {course.type === 'basic' && 'Cơ bản'}
-                  {course.type === 'advanced' && 'Nâng cao'}
-                  {course.type === 'specialized' && 'Chuyên ngành'}
-                </TableCell>
-                <TableCell>
-                  <Chip 
-                    label={COURSE_STATUS_MAP[course.status]} 
-                    color={COURSE_STATUS_COLORS[course.status]}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell align="right" className="action-buttons">
-                  <IconButton 
-                    color="primary" 
-                    onClick={() => openEdit(course)}
-                    size="small"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton 
-                    color="error" 
-                    onClick={() => openDelete(course)}
-                    size="small"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+      {coursesToRender.length > 0 ? (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Mã môn học</TableCell>
+                <TableCell>Tên môn học</TableCell>
+                <TableCell>Số tín chỉ</TableCell>
+                <TableCell>Loại</TableCell>
+                <TableCell>Trạng thái</TableCell>
+                <TableCell>Thao tác</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {coursesToRender.map((course) => (
+                <TableRow 
+                  key={course.id}
+                  hover
+                  onClick={(e) => handleRowClick(e, course)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <TableCell>{course.code}</TableCell>
+                  <TableCell>{course.name}</TableCell>
+                  <TableCell>{course.credits}</TableCell>
+                  <TableCell>
+                    {course.type === 'basic' && 'Cơ bản'}
+                    {course.type === 'advanced' && 'Nâng cao'}
+                    {course.type === 'specialized' && 'Chuyên ngành'}
+                  </TableCell>
+                  <TableCell>
+                    <Chip 
+                      label={COURSE_STATUS_MAP[course.status]} 
+                      color={COURSE_STATUS_COLORS[course.status]}
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell align="right" className="action-buttons">
+                    <IconButton 
+                      color="primary" 
+                      onClick={() => openEdit(course)}
+                      size="small"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton 
+                      color="error" 
+                      onClick={() => openDelete(course)}
+                      size="small"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography variant="body1" sx={{ textAlign: 'center', mt: 2 }}>
+          Không có khóa học nào
+        </Typography>
+      )}
 
       <AddCourseDialog
         open={openAddDialog}

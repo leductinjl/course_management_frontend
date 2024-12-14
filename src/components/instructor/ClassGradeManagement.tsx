@@ -25,40 +25,40 @@ import EditIcon from '@mui/icons-material/Edit';
 interface Student {
   id: string;
   name: string;
-  midtermGrade?: number;
-  finalGrade?: number;
+  midterm_grade?: number;
+  final_grade?: number;
   attendance?: number;
 }
 
 interface ClassGradeProps {
-  classId: string;
+  class_id: string;
   className: string;
   courseName: string;
 }
 
 const ClassGradeManagement: React.FC<ClassGradeProps> = ({
-  classId,
+  class_id,
   className,
   courseName,
 }) => {
   const [students, setStudents] = useState<Student[]>([
-    { id: 'SV001', name: 'Nguyễn Văn A', midtermGrade: 8, finalGrade: 7.5, attendance: 90 },
-    { id: 'SV002', name: 'Trần Thị B', midtermGrade: 7, finalGrade: 8, attendance: 85 },
-    { id: 'SV003', name: 'Lê Văn C', midtermGrade: 9, finalGrade: 8.5, attendance: 95 },
+    { id: 'SV001', name: 'Nguyễn Văn A', midterm_grade: 8, final_grade: 7.5, attendance: 90 },
+    { id: 'SV002', name: 'Trần Thị B', midterm_grade: 7, final_grade: 8, attendance: 85 },
+    { id: 'SV003', name: 'Lê Văn C', midterm_grade: 9, final_grade: 8.5, attendance: 95 },
   ]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [editedGrades, setEditedGrades] = useState({
-    midtermGrade: '',
-    finalGrade: '',
+    midterm_grade: '',
+    final_grade: '',
     attendance: '',
   });
 
   const handleOpenDialog = (student: Student) => {
     setSelectedStudent(student);
     setEditedGrades({
-      midtermGrade: student.midtermGrade?.toString() || '',
-      finalGrade: student.finalGrade?.toString() || '',
+      midterm_grade: student.midterm_grade?.toString() || '',
+      final_grade: student.final_grade?.toString() || '',
       attendance: student.attendance?.toString() || '',
     });
     setOpenDialog(true);
@@ -70,8 +70,8 @@ const ClassGradeManagement: React.FC<ClassGradeProps> = ({
         student.id === selectedStudent.id
           ? {
               ...student,
-              midtermGrade: editedGrades.midtermGrade ? Number(editedGrades.midtermGrade) : undefined,
-              finalGrade: editedGrades.finalGrade ? Number(editedGrades.finalGrade) : undefined,
+              midterm_grade: editedGrades.midterm_grade ? Number(editedGrades.midterm_grade) : undefined,
+              final_grade: editedGrades.final_grade ? Number(editedGrades.final_grade) : undefined,
               attendance: editedGrades.attendance ? Number(editedGrades.attendance) : undefined,
             }
           : student
@@ -91,9 +91,9 @@ const ClassGradeManagement: React.FC<ClassGradeProps> = ({
     console.log('Importing from Excel...');
   };
 
-  const calculateFinalGrade = (student: Student) => {
-    if (student.midtermGrade !== undefined && student.finalGrade !== undefined) {
-      return ((student.midtermGrade + student.finalGrade) / 2).toFixed(1);
+  const calculatefinal_grade = (student: Student) => {
+    if (student.midterm_grade !== undefined && student.final_grade !== undefined) {
+      return ((student.midterm_grade + student.final_grade) / 2).toFixed(1);
     }
     return '-';
   };
@@ -141,9 +141,9 @@ const ClassGradeManagement: React.FC<ClassGradeProps> = ({
                 <TableCell>{student.id}</TableCell>
                 <TableCell>{student.name}</TableCell>
                 <TableCell align="center">{student.attendance || '-'}</TableCell>
-                <TableCell align="center">{student.midtermGrade || '-'}</TableCell>
-                <TableCell align="center">{student.finalGrade || '-'}</TableCell>
-                <TableCell align="center">{calculateFinalGrade(student)}</TableCell>
+                <TableCell align="center">{student.midterm_grade || '-'}</TableCell>
+                <TableCell align="center">{student.final_grade || '-'}</TableCell>
+                <TableCell align="center">{calculatefinal_grade(student)}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Sửa điểm">
                     <IconButton 
@@ -172,15 +172,15 @@ const ClassGradeManagement: React.FC<ClassGradeProps> = ({
           />
           <TextField
             label="Điểm giữa kỳ"
-            value={editedGrades.midtermGrade}
-            onChange={(e) => setEditedGrades({ ...editedGrades, midtermGrade: e.target.value })}
+            value={editedGrades.midterm_grade}
+            onChange={(e) => setEditedGrades({ ...editedGrades, midterm_grade: e.target.value })}
             fullWidth
             margin="normal"
           />
           <TextField
             label="Điểm cuối kỳ"
-            value={editedGrades.finalGrade}
-            onChange={(e) => setEditedGrades({ ...editedGrades, finalGrade: e.target.value })}
+            value={editedGrades.final_grade}
+            onChange={(e) => setEditedGrades({ ...editedGrades, final_grade: e.target.value })}
             fullWidth
             margin="normal"
           />

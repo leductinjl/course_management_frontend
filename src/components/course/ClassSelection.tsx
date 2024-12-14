@@ -1,105 +1,155 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
+  DialogTitle,
+  DialogContent,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Button,
+  Alert,
+  CircularProgress,
   Box,
+  Typography,
+  Chip,
 } from '@mui/material';
+import { classService } from '../../services/class.service';
+import { enrollmentService } from '../../services/enrollment.service';
+import { useSnackbar } from 'notistack';
+import { ClassWithEnrollment } from '../../types/class.types';
+import dayjs from 'dayjs';
 
 interface ClassSelectionProps {
-  courseId: string;
+  course_id: string;
   onClose: () => void;
 }
 
-interface ClassSection {
-  id: string;
-  classCode: string;
-  instructor: string;
-  schedule: string;
-  time: string;
-  room: string;
-  capacity: number;
-  enrolled: number;
-}
+const ClassSelection: React.FC<ClassSelectionProps> = ({ course_id, onClose }) => {
+  const [classes, setClasses] = useState<ClassWithEnrollment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [enrolledClassId, setEnrolledClassId] = useState<string | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
-const ClassSelection: React.FC<ClassSelectionProps> = ({ onClose }) => {
-  const classSections: ClassSection[] = [
-    {
-      id: '1',
-      classCode: 'CS101.1',
-      instructor: 'Nguyễn Văn A',
-      schedule: 'Thứ 2, 4, 6',
-      time: '7:30 - 9:30',
-      room: 'A101',
-      capacity: 40,
-      enrolled: 35,
-    },
-    {
-      id: '2',
-      classCode: 'CS101.2',
-      instructor: 'Trần Thị B',
-      schedule: 'Thứ 3, 5',
-      time: '13:30 - 16:30',
-      room: 'A102',
-      capacity: 40,
-      enrolled: 28,
-    },
-    // Add more class sections as needed
-  ];
+  const fetchClasses = async () => {
+    try {
+      const data = await classService.getAvailableClasses(course_id);
+      setClasses(data || []);
+      // Kiểm tra lớp đã đăng ký
+      const enrolledClass = data.find(c => c.isEnrolled);
+      if (enrolledClass) {
+        setEnrolledClassId(enrolledClass.id);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const handleRegisterClass = (classSection: ClassSection) => {
-    // Handle class registration logic here
-    console.log('Registering for class:', classSection);
-    onClose();
+  useEffect(() => {
+    fetchClasses();
+  }, [course_id]);
+
+  const handleEnroll = async (class_id: string) => {
+    try {
+      await enrollmentService.enrollClass(class_id);
+      enqueueSnackbar('Đăng ký lớp học thành công!', { variant: 'success' });
+      setEnrolledClassId(class_id);
+      await fetchClasses(); // Refresh data
+    } catch (err: any) {
+      enqueueSnackbar(err.message || 'Đăng ký lớp học thất bại', { variant: 'error' });
+    }
+  };
+
+  const handleUnenroll = async (class_id: string) => {
+    try {
+      await enrollmentService.unenrollClass(class_id);
+      enqueueSnackbar('Hủy đăng ký lớp học thành công!', { variant: 'success' });
+      setEnrolledClassId(null);
+      await fetchClasses(); // Refresh data
+    } catch (err: any) {
+      enqueueSnackbar(err.message || 'Hủy đăng ký lớp học thất bại', { variant: 'error' });
+    }
   };
 
   return (
-    <Box sx={{ mt: 2 }}>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Mã lớp</TableCell>
-              <TableCell>Giảng viên</TableCell>
-              <TableCell>Lịch học</TableCell>
-              <TableCell>Thời gian</TableCell>
-              <TableCell>Phòng</TableCell>
-              <TableCell>Sĩ số</TableCell>
-              <TableCell align="center">Thao tác</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {classSections.map((section) => (
-              <TableRow key={section.id}>
-                <TableCell>{section.classCode}</TableCell>
-                <TableCell>{section.instructor}</TableCell>
-                <TableCell>{section.schedule}</TableCell>
-                <TableCell>{section.time}</TableCell>
-                <TableCell>{section.room}</TableCell>
-                <TableCell>
-                  {section.enrolled}/{section.capacity}
-                </TableCell>
-                <TableCell align="center">
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleRegisterClass(section)}
-                  >
-                    Đăng ký
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+    <>
+      <DialogContent>
+        {loading ? (
+          <Box display="flex" justifyContent="center" p={3}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Alert severity="error">{error}</Alert>
+        ) : classes.length === 0 ? (
+          <Typography variant="body1" sx={{ p: 2, textAlign: 'center' }}>
+            Không có lớp học nào khả dụng cho môn học này
+          </Typography>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Mã lớp</TableCell>
+                  <TableCell>Giảng viên</TableCell>
+                  <TableCell>Lịch học</TableCell>
+                  <TableCell>Ngày học</TableCell>
+                  <TableCell>Phòng</TableCell>
+                  <TableCell>Sĩ số</TableCell>
+                  <TableCell align="center">Thao tác</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {classes.map((classItem) => (
+                  <TableRow key={classItem.id}>
+                    <TableCell>{classItem.class_code}</TableCell>
+                    <TableCell>
+                      {classItem.instructor?.full_name || 'Chưa phân công'}
+                    </TableCell>
+                    <TableCell>{classItem.schedule}</TableCell>
+                    <TableCell>
+                      {dayjs(classItem.start_date).format('DD/MM/YYYY')} - 
+                      {dayjs(classItem.end_date).format('DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>{classItem.room}</TableCell>
+                    <TableCell>
+                      {classItem.enrollmentCount}/{classItem.capacity}
+                    </TableCell>
+                    <TableCell align="center">
+                      {enrolledClassId === classItem.id ? (
+                        <Button
+                          variant="outlined"
+                          color="error"
+                          size="small"
+                          onClick={() => handleUnenroll(classItem.id)}
+                        >
+                          Hủy đăng ký
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => handleEnroll(classItem.id)}
+                          disabled={
+                            classItem.enrollmentCount >= classItem.capacity ||
+                            enrolledClassId !== null
+                          }
+                        >
+                          Đăng ký
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </DialogContent>
+    </>
   );
 };
 

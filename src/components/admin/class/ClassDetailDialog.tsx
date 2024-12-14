@@ -78,7 +78,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
         alignItems: 'center'
       }}>
         <Typography variant="h6">
-          Chi tiết lớp học: {classData.classCode}
+          Chi tiết lớp học: {classData.class_code}
         </Typography>
         <Box>
           {onEdit && (
@@ -105,8 +105,31 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Mã lớp
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {classData.classCode}
+              {classData.class_code}
             </Typography>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" color="textSecondary">
+              Môn học
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {classData.Course?.name} ({classData.Course?.code})
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" color="textSecondary">
+              Giảng viên
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {classData.Instructor?.full_name}
+            </Typography>
+            {classData.Instructor?.specialization && (
+              <Typography variant="caption" color="textSecondary">
+                Chuyên môn: {classData.Instructor.specialization}
+              </Typography>
+            )}
           </Grid>
 
           <Grid item xs={12} md={6}>
@@ -144,28 +167,10 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
 
           <Grid item xs={12} md={6}>
             <Typography variant="subtitle2" color="textSecondary">
-              Môn học
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              {classData.course?.name} ({classData.course?.code})
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Typography variant="subtitle2" color="textSecondary">
-              Giảng viên
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              {classData.instructor?.fullName}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <Typography variant="subtitle2" color="textSecondary">
               Ngày bắt đầu
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {formatDate(classData.startDate)}
+              {formatDate(classData.start_date)}
             </Typography>
           </Grid>
 
@@ -174,7 +179,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Ngày kết thúc
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {formatDate(classData.endDate)}
+              {formatDate(classData.end_date)}
             </Typography>
           </Grid>
 
@@ -210,7 +215,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Người tạo
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {classData.creator?.fullName}
+              {classData.creator?.full_name}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {formatDate(classData.created_at)}
@@ -242,7 +247,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
             }}>
               <PeopleIcon color="primary" />
               <Typography variant="h6">
-                {classData.enrollmentCount || 0}/{classData.capacity}
+                {classData.stats?.enrollmentCount || 0}/{classData.capacity}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 Học viên đã đăng ký
@@ -259,7 +264,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
             }}>
               <AssignmentIcon color="primary" />
               <Typography variant="h6">
-                {classData.completedLessons || 0}/{classData.totalLessons || '?'}
+                {classData.stats?.completedLessons || 0}/{classData.stats?.totalLessons || '?'}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 Buổi học đã hoàn thành
@@ -276,7 +281,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
             }}>
               <EmailIcon color="primary" />
               <Typography variant="h6">
-                {classData.announcements?.length || 0}
+                {classData.stats?.announcementCount || 0}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 Thông báo đã gửi
@@ -296,10 +301,10 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Học phí
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {classData.course?.fee ? new Intl.NumberFormat('vi-VN', { 
+              {classData.Course?.fee ? new Intl.NumberFormat('vi-VN', { 
                 style: 'currency', 
                 currency: 'VND' 
-              }).format(classData.course.fee) : 'Chưa cập nhật'}
+              }).format(classData.Course.fee) : 'Chưa cập nhật'}
             </Typography>
           </Grid>
 
@@ -308,7 +313,7 @@ const ClassDetailDialog: React.FC<ClassDetailDialogProps> = ({
               Số tín chỉ
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {classData.course?.credits || 'Chưa cập nhật'}
+              {classData.Course?.credits || 'Chưa cập nhật'}
             </Typography>
           </Grid>
         </Grid>

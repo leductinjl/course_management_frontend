@@ -23,7 +23,7 @@ const ExamSchedule: React.FC = () => {
       id: 1,
       courseCode: 'CS101',
       courseName: 'Tin học văn phòng',
-      examDate: '2024-03-20',
+      exam_date: '2024-03-20',
       examTime: '18:00 - 19:30',
       room: 'A101',
       type: 'Cuối kỳ',
@@ -35,7 +35,7 @@ const ExamSchedule: React.FC = () => {
       id: 2,
       courseCode: 'ENG201',
       courseName: 'Tiếng Anh B1',
-      examDate: '2024-03-25',
+      exam_date: '2024-03-25',
       examTime: '18:00 - 20:00',
       room: 'B203',
       type: 'Giữa kỳ',
@@ -91,7 +91,7 @@ const ExamSchedule: React.FC = () => {
               <TableRow key={exam.id}>
                 <TableCell>{exam.courseCode}</TableCell>
                 <TableCell>{exam.courseName}</TableCell>
-                <TableCell>{exam.examDate}</TableCell>
+                <TableCell>{exam.exam_date}</TableCell>
                 <TableCell>{exam.examTime}</TableCell>
                 <TableCell>{exam.room}</TableCell>
                 <TableCell>{exam.type}</TableCell>
@@ -131,7 +131,7 @@ const ExamSchedule: React.FC = () => {
             }
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Thời gian thi: {selectedExam?.examDate} {selectedExam?.examTime}
+            Thời gian thi: {selectedExam?.exam_date} {selectedExam?.examTime}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Phòng thi: {selectedExam?.room}

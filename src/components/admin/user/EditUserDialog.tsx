@@ -30,9 +30,9 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
 }) => {
   const [formData, setFormData] = useState<UpdateUserRequest>({
     email: userData.email,
-    fullName: userData.role === 'student' 
-      ? userData.studentProfile?.fullName || ''
-      : userData.instructorProfile?.fullName || '',
+    full_name: userData.role === 'student' 
+      ? userData.studentProfile?.full_name || ''
+      : userData.instructorProfile?.full_name || '',
     status: userData.status,
     phone: userData.role === 'student'
       ? userData.studentProfile?.phone || ''
@@ -41,7 +41,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
       ? userData.studentProfile?.address || ''
       : userData.instructorProfile?.address || '',
     ...(userData.role === 'student'
-      ? { dateOfBirth: userData.studentProfile?.dateOfBirth || '' }
+      ? { date_of_birth: userData.studentProfile?.date_of_birth || '' }
       : {
           specialization: userData.instructorProfile?.specialization || '',
           bio: userData.instructorProfile?.bio || ''
@@ -53,9 +53,9 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
   useEffect(() => {
     setFormData({
       email: userData.email,
-      fullName: userData.role === 'student' 
-        ? userData.studentProfile?.fullName || ''
-        : userData.instructorProfile?.fullName || '',
+      full_name: userData.role === 'student' 
+        ? userData.studentProfile?.full_name || ''
+        : userData.instructorProfile?.full_name || '',
       status: userData.status,
       phone: userData.role === 'student'
         ? userData.studentProfile?.phone || ''
@@ -64,7 +64,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
         ? userData.studentProfile?.address || ''
         : userData.instructorProfile?.address || '',
       ...(userData.role === 'student'
-        ? { dateOfBirth: userData.studentProfile?.dateOfBirth || '' }
+        ? { date_of_birth: userData.studentProfile?.date_of_birth || '' }
         : {
             specialization: userData.instructorProfile?.specialization || '',
             bio: userData.instructorProfile?.bio || ''
@@ -125,8 +125,8 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
               <TextField
                 fullWidth
                 label="Họ tên"
-                value={formData.fullName || ''}
-                onChange={handleChange('fullName')}
+                value={formData.full_name || ''}
+                onChange={handleChange('full_name')}
               />
             </Grid>
 
@@ -171,8 +171,8 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
                   label="Ngày sinh"
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  value={formData.dateOfBirth || ''}
-                  onChange={handleChange('dateOfBirth')}
+                  value={formData.date_of_birth || ''}
+                  onChange={handleChange('date_of_birth')}
                 />
               </Grid>
             )}

@@ -1,8 +1,8 @@
 export interface Admin {
   id: string;
   email: string;
-  fullName: string;
-  adminType: 'super_admin' | 'course_admin' | 'user_admin' | 'finance_admin';
+  full_name: string;
+  admin_type: 'super_admin' | 'course_admin' | 'user_admin' | 'finance_admin';
 }
 
 export interface AdminLoginRequest {
@@ -11,8 +11,11 @@ export interface AdminLoginRequest {
 }
 
 export interface AdminLoginResponse {
-  token: string;
-  admin: Admin;
+  success: boolean;
+  data: {
+    token: string;
+    admin: Admin;
+  };
 }
 
 export interface ApiError {

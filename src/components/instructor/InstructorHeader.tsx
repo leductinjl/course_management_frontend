@@ -1,13 +1,29 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem, Avatar } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import PersonIcon from '@mui/icons-material/Person';
 import SchoolIcon from '@mui/icons-material/School';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import { authService } from '../../services/auth.service';
 
 const InstructorHeader: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    navigate('/login');
+    handleMenuClose();
+  };
 
   return (
     <AppBar position="static" sx={{ bgcolor: '#1a237e' }}>
@@ -21,7 +37,7 @@ const InstructorHeader: React.FC = () => {
           TTTH ĐHSP TPHCM
         </Typography>
         
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <Button 
             color="inherit" 
             startIcon={<PersonIcon />}
@@ -60,6 +76,31 @@ const InstructorHeader: React.FC = () => {
           >
             Quản lý lương
           </Button>
+
+          <IconButton
+            onClick={handleMenuOpen}
+            sx={{ ml: 2 }}
+          >
+            <Avatar sx={{ bgcolor: '#fff', color: '#1a237e', width: 32, height: 32 }}>
+              <PersonIcon />
+            </Avatar>
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
     </AppBar>

@@ -36,6 +36,21 @@ import ClassDetailDialog from './class/ClassDetailDialog';
 import DeleteConfirmDialog from './common/DeleteConfirmDialog';
 import { formatDateTime } from '../../utils/dateUtils';
 
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'upcoming':
+      return 'info';
+    case 'ongoing':
+      return 'success';
+    case 'completed':
+      return 'secondary';
+    case 'cancelled':
+      return 'error';
+    default:
+      return 'default';
+  }
+};
+
 const ClassManagement = () => {
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(false);
@@ -50,28 +65,29 @@ const ClassManagement = () => {
   const [filter, setFilter] = useState({
     status: '',
     search: '',
-    courseId: '',
-    instructorId: ''
+    course_id: '',
+    instructor_id: ''
   });
-
-  useEffect(() => {
-    loadClasses();
-  }, []);
 
   const loadClasses = async () => {
     try {
       setLoading(true);
       const data = await classService.listClasses();
+      console.log('Loaded classes:', data);
       setClasses(data);
       const summary = await classService.getClassSummary();
       setStats(summary);
     } catch (error) {
       console.error('Error loading classes:', error);
-      // Show error message
+      enqueueSnackbar('Không thể tải danh sách lớp học', { variant: 'error' });
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadClasses();
+  }, []);
 
   const handleAddClass = async (classData: any) => {
     try {
@@ -105,7 +121,7 @@ const ClassManagement = () => {
         enqueueSnackbar('Không thể xóa lớp học', { variant: 'error' });
       }
     },
-    getMessage: (classData) => `Bạn có chắc chắn muốn xóa lớp học ${classData.classCode}?`,
+    getMessage: (classData) => `Bạn có chắc chắn muốn xóa lớp học ${classData.class_code}?`,
     getTitle: () => 'Xác nhận xóa lớp học'
   });
 
@@ -132,9 +148,9 @@ const ClassManagement = () => {
     return (
       (filter.status === '' || classData.status === filter.status) &&
       (filter.search === '' || 
-        classData.classCode.toLowerCase().includes(filter.search.toLowerCase()) ||
-        classData.course?.name.toLowerCase().includes(filter.search.toLowerCase()) ||
-        classData.instructor?.fullName.toLowerCase().includes(filter.search.toLowerCase())
+        classData.class_code.toLowerCase().includes(filter.search.toLowerCase()) ||
+        classData.Course?.name.toLowerCase().includes(filter.search.toLowerCase()) ||
+        classData.Instructor?.full_name.toLowerCase().includes(filter.search.toLowerCase())
       )
     );
   });
@@ -211,35 +227,51 @@ const ClassManagement = () => {
                   onClick={(e) => handleRowClick(e, classData)}
                   style={{ cursor: 'pointer' }}
                 >
-                  <TableCell>{classData.classCode}</TableCell>
-                  <TableCell>{classData.course?.name}</TableCell>
-                  <TableCell>{classData.instructor?.fullName}</TableCell>
+                  <TableCell>{classData.class_code}</TableCell>
                   <TableCell>
-                    {formatDateTime(classData.startDate)} - {formatDateTime(classData.endDate)}
+                    {classData.Course ? (
+                      `${classData.Course.name} (${classData.Course.code})`
+                    ) : (
+                      <span style={{color: 'red'}}>
+                        {`Debug: course_id=${classData.course_id}`}
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {classData.Instructor ? (
+                      classData.Instructor.full_name
+                    ) : (
+                      <span style={{color: 'red'}}>
+                        {`Debug: instructor_id=${classData.instructor_id}`}
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {formatDateTime(classData.start_date)} - {formatDateTime(classData.end_date)}
                   </TableCell>
                   <TableCell>
                     <Chip 
                       label={CLASS_STATUS_MAP[classData.status]} 
-                      color={
-                        classData.status === 'ongoing' ? 'success' :
-                        classData.status === 'upcoming' ? 'primary' :
-                        classData.status === 'completed' ? 'default' :
-                        'error'
-                      }
+                      color={getStatusColor(classData.status)}
                       size="small"
                     />
                   </TableCell>
                   <TableCell align="right" className="action-buttons">
                     <IconButton 
-                      onClick={() => openEdit(classData)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openEdit(classData);
+                      }}
                       size="small"
-                      sx={{ mr: 1 }}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton 
-                      onClick={() => handleDelete(classData)}
-                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(classData);
+                      }}
+                      size="small" 
                       color="error"
                     >
                       <DeleteIcon />

@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 import { adminService } from '../../services/admin.service';
 import { AdminLoginRequest, ApiError } from '../../types/admin.types';
+import axiosInstance from '../../config/axios.config';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -35,12 +36,19 @@ const AdminLogin = () => {
 
     try {
       const response = await adminService.login(credentials);
-      // Lưu token vào localStorage
-      localStorage.setItem('adminToken', response.token);
-      localStorage.setItem('adminData', JSON.stringify(response.admin));
-      navigate('/adminne/dashboard');
+      
+      if (response.success && response.data) {
+        // Store token from the correct response structure
+        localStorage.setItem('adminToken', response.data.token);
+        localStorage.setItem('adminData', JSON.stringify(response.data.admin));
+        
+        // Set the token in axios defaults
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        
+        navigate('/adminne/dashboard');
+      }
     } catch (err: any) {
-      const apiError = err.response?.data as ApiError;
+      const apiError = err.response?.data;
       setError(apiError?.message || 'Đã xảy ra lỗi khi đăng nhập');
     } finally {
       setLoading(false);

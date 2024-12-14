@@ -1,11 +1,11 @@
 export interface BaseProfile {
-  fullName: string;
+  full_name: string;
   phone?: string;
   address?: string;
 }
 
 export interface StudentProfile extends BaseProfile {
-  dateOfBirth?: string;
+  date_of_birth?: string;
 }
 
 export interface InstructorProfile extends BaseProfile {
@@ -28,22 +28,22 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   role: 'student' | 'instructor';
-  fullName: string;
+  full_name: string;
   status?: 'active' | 'inactive';
   phone?: string;
   address?: string;
-  dateOfBirth?: string;
+  date_of_birth?: string;
   specialization?: string;
   bio?: string;
 }
 
 export interface UpdateUserRequest {
   email?: string;
-  fullName?: string;
+  full_name?: string;
   status?: 'active' | 'inactive';
   phone?: string;
   address?: string;
-  dateOfBirth?: string;
+  date_of_birth?: string;
   specialization?: string;
   bio?: string;
 }

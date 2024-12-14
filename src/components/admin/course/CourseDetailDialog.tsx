@@ -109,7 +109,7 @@ const CourseDetailDialog: React.FC<CourseDetailDialogProps> = ({
               Người tạo
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {course.creator?.fullName || 'N/A'}
+              {course.creator?.full_name || 'N/A'}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {course.created_at ? formatDate(course.created_at) : 'N/A'}
@@ -121,7 +121,7 @@ const CourseDetailDialog: React.FC<CourseDetailDialogProps> = ({
               Cập nhật lần cuối
             </Typography>
             <Typography variant="body1" gutterBottom>
-              {course.creator?.fullName || 'N/A'}
+              {course.creator?.full_name || 'N/A'}
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {course.updated_at ? formatDate(course.updated_at) : 'N/A'}

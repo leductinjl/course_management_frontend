@@ -35,6 +35,8 @@ export const API_ENDPOINTS = {
       }
     }
   },
+
+
   AUTH: {
     STUDENT: {
       LOGIN: `${API_BASE_URL}/api/auth/student/login`,
@@ -44,34 +46,67 @@ export const API_ENDPOINTS = {
       LOGIN: `${API_BASE_URL}/api/auth/instructor/login`,
     }
   },
+
+
   INSTRUCTOR: {
     PROFILE: {
-      GET_CURRENT: `${API_BASE_URL}/api/instructors/profile`,
-      UPDATE: (id: string) => `${API_BASE_URL}/api/instructors/${id}`,
+      GET_CURRENT: `${API_BASE_URL}/api/instructor/profile`,
+      UPDATE: (id: string) => `${API_BASE_URL}/api/instructor/${id}`,
     },
     ACHIEVEMENTS: {
-      LIST: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/achievements`,
-      CREATE: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/achievements`,
-      UPDATE: (instructorId: string, achievementId: string) => 
-        `${API_BASE_URL}/api/instructors/${instructorId}/achievements/${achievementId}`,
-      DELETE: (instructorId: string, achievementId: string) => 
-        `${API_BASE_URL}/api/instructors/${instructorId}/achievements/${achievementId}`,
+      LIST: (instructor_id: string) => `${API_BASE_URL}/api/instructor/${instructor_id}/achievements`,
+      CREATE: (instructor_id: string) => `${API_BASE_URL}/api/instructor/${instructor_id}/achievements`,
+      UPDATE: (instructor_id: string, achievementId: string) => 
+        `${API_BASE_URL}/api/instructor/${instructor_id}/achievements/${achievementId}`,
+      DELETE: (instructor_id: string, achievementId: string) => 
+        `${API_BASE_URL}/api/instructor/${instructor_id}/achievements/${achievementId}`,
     },
     CERTIFICATES: {
-      LIST: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/certificates`,
-      CREATE: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/certificates`,
-      UPDATE: (instructorId: string, certificateId: string) => 
-        `${API_BASE_URL}/api/instructors/${instructorId}/certificates/${certificateId}`,
-      DELETE: (instructorId: string, certificateId: string) => 
-        `${API_BASE_URL}/api/instructors/${instructorId}/certificates/${certificateId}`,
+      LIST: (instructor_id: string) => `${API_BASE_URL}/api/instructor/${instructor_id}/certificates`,
+      CREATE: (instructor_id: string) => `${API_BASE_URL}/api/instructor/${instructor_id}/certificates`,
+      UPDATE: (instructor_id: string, certificateId: string) => 
+        `${API_BASE_URL}/api/instructor/${instructor_id}/certificates/${certificateId}`,
+      DELETE: (instructor_id: string, certificateId: string) => 
+        `${API_BASE_URL}/api/instructor/${instructor_id}/certificates/${certificateId}`,
     },
     WORK_HISTORY: {
-      LIST: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/work-history`,
-      CREATE: (instructorId: string) => `${API_BASE_URL}/api/instructors/${instructorId}/work-history`,
-      UPDATE: (instructorId: string, historyId: string) => 
-        `${API_BASE_URL}/api/instructors/${instructorId}/work-history/${historyId}`,
-      DELETE: (instructorId: string, historyId: string) => 
-        `${API_BASE_URL}/api/instructors/${instructorId}/work-history/${historyId}`,
-    }
+      LIST: (instructor_id: string) => `${API_BASE_URL}/api/instructor/${instructor_id}/work-history`,
+      CREATE: (instructor_id: string) => `${API_BASE_URL}/api/instructor/${instructor_id}/work-history`,
+      UPDATE: (instructor_id: string, historyId: string) => 
+        `${API_BASE_URL}/api/instructor/${instructor_id}/work-history/${historyId}`,
+      DELETE: (instructor_id: string, historyId: string) => 
+        `${API_BASE_URL}/api/instructor/${instructor_id}/work-history/${historyId}`,
+    },
+    TEACHING: {
+      SCHEDULE: `${API_BASE_URL}/api/instructor/teaching/schedule`,
+      GET_COURSES: `${API_BASE_URL}/api/instructor/teaching/courses`,
+      CLASS_STATUS: (class_id: string) => 
+        `${API_BASE_URL}/api/instructor/teaching/classes/${class_id}/status`,
+    },
+    COURSES: '/instructor/courses',
+  },
+
+  
+  STUDENT: {
+    PROFILE: {
+      GET_CURRENT: `${API_BASE_URL}/api/student/profile`,
+      UPDATE: (id: string) => `${API_BASE_URL}/api/student/${id}`,
+    },
+    COURSES: {
+      AVAILABLE: `${API_BASE_URL}/api/student/courses/available`,
+      SEARCH: `${API_BASE_URL}/api/student/courses/available`,
+      ENROLLED: `${API_BASE_URL}/api/student/courses/enrolled`,
+    },
+    CLASSES: {
+      AVAILABLE: (course_id: string) => 
+        `${API_BASE_URL}/api/student/classes/available/${course_id}`,
+    },
+    ENROLLMENTS: {
+      ENROLL: `${API_BASE_URL}/api/student/enrollments/enroll`,
+      UNENROLL: (id: string) => `${API_BASE_URL}/api/student/enrollments/unenroll/${id}`,
+      MY_ENROLLMENTS: `${API_BASE_URL}/api/student/enrollments/my-enrollments`,
+      HISTORY: `${API_BASE_URL}/api/student/enrollments/history`,
+    },
+    SCHEDULE: `${API_BASE_URL}/api/student/schedule`,
   }
 }; 

@@ -39,11 +39,16 @@ export const authService = {
   studentRegister: async (data: {
     email: string;
     password: string;
-    fullName: string;
+    full_name: string;
     phoneNumber: string;
     address: string;
   }): Promise<RegisterResponse> => {
     const response = await axiosInstance.post(API_ENDPOINTS.AUTH.STUDENT.REGISTER, data);
     return response.data;
+  },
+
+  logout: () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 }; 

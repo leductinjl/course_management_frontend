@@ -7,6 +7,7 @@ import {
   Button,
   Divider,
   Alert,
+  CircularProgress,
 } from '@mui/material';
 import { instructorService } from '../../services/instructor.service';
 import { Instructor } from '../../types/instructor.types';
@@ -14,9 +15,10 @@ import { Instructor } from '../../types/instructor.types';
 const PersonalInfo: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<Instructor>({
     id: '',
-    fullName: '',
+    full_name: '',
     email: '',
     phone: '',
     address: '',
@@ -27,16 +29,27 @@ const PersonalInfo: React.FC = () => {
   });
 
   useEffect(() => {
+    const token = localStorage.getItem('instructorToken');
+    if (!token) {
+      console.error('No instructor token found');
+      // Redirect to login if needed
+      return;
+    }
     loadInstructorData();
   }, []);
 
   const loadInstructorData = async () => {
     try {
+      setLoading(true);
       const data = await instructorService.getCurrentInstructor();
+      console.log('Loaded instructor data:', data);
       setFormData(data);
       setError(null);
     } catch (err: any) {
+      console.error('Error loading instructor:', err);
       setError(err.response?.data?.message || 'Không thể tải thông tin giảng viên');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,7 +63,7 @@ const PersonalInfo: React.FC = () => {
 
   const handleSubmit = async () => {
     try {
-      const { id, email, created_at, updated_at, ...updateData } = formData;
+      const { id, email, created_att, updated_at, ...updateData } = formData;
       await instructorService.updateInstructor(id, updateData);
       setIsEditing(false);
       setError(null);
@@ -58,6 +71,14 @@ const PersonalInfo: React.FC = () => {
       setError('Không thể cập nhật thông tin');
     }
   };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -86,8 +107,8 @@ const PersonalInfo: React.FC = () => {
           <TextField
             fullWidth
             label="Họ và tên"
-            name="fullName"
-            value={formData.fullName}
+            name="full_name"
+            value={formData.full_name}
             onChange={handleChange}
             InputProps={{ readOnly: !isEditing }}
           />

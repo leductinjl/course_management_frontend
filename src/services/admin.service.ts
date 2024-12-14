@@ -8,43 +8,36 @@ export const adminService = {
       const response = await axiosInstance.post(API_ENDPOINTS.ADMIN.LOGIN, credentials);
       
       if (response.data.success && response.data.data.token) {
-        // Lưu token và thông tin admin
-        localStorage.setItem('adminToken', response.data.data.token);
-        localStorage.setItem('adminData', JSON.stringify(response.data.data.admin));
-        localStorage.setItem('tokenExpires', String(Date.now() + 8 * 60 * 60 * 1000)); // 8 hours
+        // Clear any existing tokens
+        localStorage.clear();
         
-        // Cập nhật header cho axios instance
-        axiosInstance.defaults.headers.common['Authorization'] = 
-          `Bearer ${response.data.data.token}`;
+        const { token, admin } = response.data.data;
+        
+        // Store new token and data
+        localStorage.setItem('adminToken', token);
+        localStorage.setItem('adminData', JSON.stringify(admin));
+        
+        // Set authorization header
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       }
       
       return response.data;
     } catch (error: any) {
-      // Xử lý các loại lỗi cụ thể
-      if (error.response) {
-        switch (error.response.data.code) {
-          case 'ACCOUNT_LOCKED':
-            throw new Error(`Tài khoản đã bị khóa. Vui lòng thử lại sau ${
-              new Date(error.response.data.details.unlockTime).toLocaleTimeString()
-            }`);
-          case 'INVALID_CREDENTIALS':
-            throw new Error(
-              `Sai thông tin đăng nhập. Còn ${
-                error.response.data.details.remainingAttempts
-              } lần thử`
-            );
-          default:
-            throw new Error(error.response.data.message);
-        }
-      }
+      console.error('Login error:', error);
       throw error;
     }
   },
 
   logout: async (): Promise<void> => {
-    await axiosInstance.post(API_ENDPOINTS.ADMIN.LOGOUT);
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminData');
+    try {
+      await axiosInstance.post(API_ENDPOINTS.ADMIN.LOGOUT);
+    } finally {
+      // Always clear local storage and headers
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminData');
+      localStorage.removeItem('tokenExpires');
+      delete axiosInstance.defaults.headers.common['Authorization'];
+    }
   },
 
   getProfile: async (): Promise<Admin> => {

@@ -18,45 +18,35 @@ export const CLASS_STATUS_OPTIONS = [
 
 export interface Class {
   id: string;
-  classCode: string;
-  courseId: string;
-  instructorId: string;
+  class_code: string;
+  schedule: string;
   room: string;
   capacity: number;
-  startDate: string;
-  endDate: string;
-  schedule: string;
+  start_date: string;
+  end_date: string;
   status: ClassStatus;
-  createdBy: string;
-  updatedBy: string;
-  created_at: string;
-  updated_at: string;
-  course?: {
-    id: string;
-    name: string;
-    code: string;
-    credits?: number;
-    fee?: number;
-  };
   instructor?: {
     id: string;
-    fullName: string;
+    full_name: string;
+    specialization?: string;
   };
-  creator?: {
+}
+
+export interface ClassWithEnrollment extends Class {
+  enrollmentCount: number;
+  isEnrolled?: boolean;
+  instructor?: {
     id: string;
-    fullName: string;
+    full_name: string;
+    specialization?: string;
   };
-  enrollmentCount?: number;
-  totalLessons?: number;
-  completedLessons?: number;
-  announcements?: any[];
 }
 
 export interface FormValues {
-  courseId: string;
-  instructorId: string;
-  startDate: Dayjs | null;
-  endDate: Dayjs | null;
+  course_id: string;
+  instructor_id: string;
+  start_date: Dayjs | null;
+  end_date: Dayjs | null;
   schedule: string;
   room: string;
   capacity: string;
@@ -64,10 +54,10 @@ export interface FormValues {
 }
 
 export interface CreateClassDTO {
-  courseId: string;
-  instructorId: string;
-  startDate: string;
-  endDate: string;
+  course_id: string;
+  instructor_id: string;
+  start_date: string;
+  end_date: string;
   schedule: string;
   room: string;
   capacity: number;

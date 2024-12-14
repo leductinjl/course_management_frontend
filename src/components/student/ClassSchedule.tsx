@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Paper,
@@ -8,64 +8,108 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
+import { scheduleService } from '../../services/schedule.service';
+import { WeekSchedule, WeekDay } from '../../types/schedule.types';
 
 const ClassSchedule: React.FC = () => {
-  const schedule = [
-    {
-      id: 1,
-      time: '18:00 - 20:00',
-      monday: 'Tin học văn phòng (A101)',
-      tuesday: '-',
-      wednesday: 'Tin học văn phòng (A101)',
-      thursday: '-',
-      friday: 'Tin học văn phòng (A101)',
-      saturday: '-',
-      sunday: '-',
-    },
-    {
-      id: 2,
-      time: '20:00 - 21:30',
-      monday: '-',
-      tuesday: 'Tiếng Anh B1 (B203)',
-      wednesday: '-',
-      thursday: 'Tiếng Anh B1 (B203)',
-      friday: '-',
-      saturday: '-',
-      sunday: '-',
-    },
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [weekSchedule, setWeekSchedule] = useState<WeekSchedule | null>(null);
+
+  const dayHeaders: { key: WeekDay; label: string }[] = [
+    { key: 'MON', label: 'Thứ 2' },
+    { key: 'TUE', label: 'Thứ 3' },
+    { key: 'WED', label: 'Thứ 4' },
+    { key: 'THU', label: 'Thứ 5' },
+    { key: 'FRI', label: 'Thứ 6' },
+    { key: 'SAT', label: 'Thứ 7' }
   ];
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        setLoading(true);
+        const enrolledClasses = await scheduleService.getEnrolledClasses();
+        const schedule = scheduleService.generateWeekSchedule(enrolledClasses);
+        setWeekSchedule(schedule);
+        setError(null);
+      } catch (err: any) {
+        setError(err.message || 'Có lỗi xảy ra khi tải lịch học');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSchedule();
+  }, []);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <Alert severity="error">{error}</Alert>;
+  }
+
+  // Lấy tất cả các time slot có lớp học
+  const getUniqueTimeSlots = () => {
+    if (!weekSchedule) return [];
+    
+    const timeSlots = new Set<string>();
+    dayHeaders.forEach(({ key }) => {
+      Object.keys(weekSchedule[key]).forEach(timeSlot => {
+        timeSlots.add(timeSlot);
+      });
+    });
+    return Array.from(timeSlots).sort((a, b) => {
+      const [aStart] = a.split('-');
+      const [bStart] = b.split('-');
+      return aStart.localeCompare(bStart);
+    });
+  };
 
   return (
     <>
       <Typography variant="h6" gutterBottom>
-        Lịch học
+        Thời Khóa Biểu
       </Typography>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
-        <Table>
+        <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>Thời gian</TableCell>
-              <TableCell>Thứ 2</TableCell>
-              <TableCell>Thứ 3</TableCell>
-              <TableCell>Thứ 4</TableCell>
-              <TableCell>Thứ 5</TableCell>
-              <TableCell>Thứ 6</TableCell>
-              <TableCell>Thứ 7</TableCell>
-              <TableCell>Chủ nhật</TableCell>
+              {dayHeaders.map(day => (
+                <TableCell key={day.key}>{day.label}</TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {schedule.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.time}</TableCell>
-                <TableCell>{row.monday}</TableCell>
-                <TableCell>{row.tuesday}</TableCell>
-                <TableCell>{row.wednesday}</TableCell>
-                <TableCell>{row.thursday}</TableCell>
-                <TableCell>{row.friday}</TableCell>
-                <TableCell>{row.saturday}</TableCell>
-                <TableCell>{row.sunday}</TableCell>
+            {getUniqueTimeSlots().map(timeSlot => (
+              <TableRow key={timeSlot}>
+                <TableCell>{timeSlot}</TableCell>
+                {dayHeaders.map(day => {
+                  const cell = weekSchedule?.[day.key][timeSlot];
+                  return (
+                    <TableCell key={`${timeSlot}-${day.key}`}>
+                      {cell ? (
+                        <div>
+                          <Typography variant="body2" fontWeight="bold">
+                            {cell.courseName}
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            Phòng: {cell.room}
+                          </Typography>
+                          <Typography variant="caption" display="block">
+                            GV: {cell.instructor}
+                          </Typography>
+                        </div>
+                      ) : '-'}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             ))}
           </TableBody>

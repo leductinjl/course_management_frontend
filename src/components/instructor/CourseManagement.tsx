@@ -1,162 +1,165 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
   Paper,
-  Tabs,
-  Tab,
-  Grid,
-  Card,
-  CardContent,
-  CardActions,
-  Button,
   Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Collapse,
+  CircularProgress,
+  Divider
 } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { instructorService } from '../../services/instructor.service';
+import { useSnackbar } from 'notistack';
+import { Course } from '../../types/course.types';
+import { Class } from '../../types/class.types';
 
-interface Course {
-  id: string;
-  code: string;
-  name: string;
-  classes: {
-    id: string;
-    name: string;
-    schedule: string;
-    time: string;
-    room: string;
-    students: number;
-    status: 'Đang dạy' | 'Sắp dạy' | 'Đã kết thúc';
-  }[];
+interface CourseWithClasses extends Course {
+  classes: Class[];
 }
 
 const CourseManagement: React.FC = () => {
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [openStatusDialog, setOpenStatusDialog] = useState(false);
-  const [selectedClass, setSelectedClass] = useState<any>(null);
-  const [newStatus, setNewStatus] = useState('');
+  const [courses, setCourses] = useState<CourseWithClasses[]>([]);
+  const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const courses: Course[] = [
-    {
-      id: 'CS101',
-      code: 'CS101',
-      name: 'Tin học văn phòng',
-      classes: [
-        {
-          id: 'CS101-A1',
-          name: 'A1',
-          schedule: 'Thứ 2, 4, 6',
-          time: '18:00 - 20:00',
-          room: 'A101',
-          students: 35,
-          status: 'Đang dạy',
-        },
-        // Thêm các lớp khác
-      ]
-    },
-    // Thêm các môn học khác
-  ];
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
-  const handleStatusUpdate = () => {
-    // Xử lý cập nhật trạng thái
-    console.log('Update status:', selectedClass?.id, newStatus);
-    setOpenStatusDialog(false);
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const data = await instructorService.getInstructorCourses();
+      console.log('API Response:', data);
+      
+      if (data && Array.isArray(data)) {
+        setCourses(data);
+      } else {
+        console.error('Invalid response format:', data);
+        setCourses([]);
+        enqueueSnackbar('Không thể tải danh sách môn học', { variant: 'error' });
+      }
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      enqueueSnackbar('Đã xảy ra lỗi khi tải danh sách môn học', { variant: 'error' });
+      setCourses([]);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleExpandCourse = (course_id: string) => {
+    setExpandedCourse(expandedCourse === course_id ? null : course_id);
+  };
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Quản lý môn học
+        Danh sách môn học giảng dạy
       </Typography>
 
-      <Paper sx={{ mt: 2 }}>
-        <Tabs
-          value={selectedTab}
-          onChange={(e, newValue) => setSelectedTab(newValue)}
-          variant="scrollable"
-        >
+      {courses && courses.length > 0 ? (
+        <List component={Paper}>
           {courses.map((course, index) => (
-            <Tab key={course.id} label={course.name} />
-          ))}
-        </Tabs>
-      </Paper>
-
-      <Box sx={{ mt: 3 }}>
-        <Grid container spacing={2}>
-          {courses[selectedTab]?.classes.map((classItem) => (
-            <Grid item xs={12} md={6} key={classItem.id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">
-                    Lớp {classItem.name}
-                  </Typography>
-                  <Box sx={{ mt: 2 }}>
-                    <Typography>Lịch học: {classItem.schedule}</Typography>
-                    <Typography>Thời gian: {classItem.time}</Typography>
-                    <Typography>Phòng: {classItem.room}</Typography>
-                    <Typography>Sĩ số: {classItem.students}</Typography>
-                    <Chip
-                      label={classItem.status}
-                      color={
-                        classItem.status === 'Đang dạy' 
-                          ? 'success' 
-                          : classItem.status === 'Sắp dạy' 
-                            ? 'warning' 
-                            : 'default'
-                      }
-                      sx={{ mt: 1 }}
-                    />
-                  </Box>
-                </CardContent>
-                <CardActions>
-                  <Button 
-                    size="small" 
-                    onClick={() => {
-                      setSelectedClass(classItem);
-                      setOpenStatusDialog(true);
-                    }}
+            <React.Fragment key={course.id}>
+              {index > 0 && <Divider />}
+              <ListItem>
+                <ListItemText
+                  primary={
+                    <Typography variant="subtitle1">
+                      {course.name} ({course.code})
+                    </Typography>
+                  }
+                  secondary={
+                    <Box sx={{ mt: 1 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        Số tín chỉ: {course.credits}
+                      </Typography>
+                      {course.description && (
+                        <Typography variant="body2" color="text.secondary">
+                          Mô tả: {course.description}
+                        </Typography>
+                      )}
+                    </Box>
+                  }
+                />
+                <ListItemSecondaryAction>
+                  <IconButton 
+                    onClick={() => handleExpandCourse(course.id)}
+                    edge="end"
                   >
-                    Cập nhật trạng thái
-                  </Button>
-                  <Button size="small">
-                    Xem chi tiết lớp
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+                    {expandedCourse === course.id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
 
-      <Dialog open={openStatusDialog} onClose={() => setOpenStatusDialog(false)}>
-        <DialogTitle>Cập nhật trạng thái dạy</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <InputLabel>Trạng thái</InputLabel>
-            <Select
-              value={newStatus}
-              label="Trạng thái"
-              onChange={(e) => setNewStatus(e.target.value)}
-            >
-              <MenuItem value="Đang dạy">Đang dạy</MenuItem>
-              <MenuItem value="Sắp dạy">Sắp dạy</MenuItem>
-              <MenuItem value="Đã kết thúc">Đã kết thúc</MenuItem>
-            </Select>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenStatusDialog(false)}>Hủy</Button>
-          <Button onClick={handleStatusUpdate} variant="contained">
-            Cập nhật
-          </Button>
-        </DialogActions>
-      </Dialog>
+              <Collapse in={expandedCourse === course.id}>
+                <Box sx={{ p: 2, bgcolor: 'background.default' }}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Danh sách lớp học:
+                  </Typography>
+                  {course.classes && course.classes.length > 0 ? (
+                    <List>
+                      {course.classes.map((classItem: Class) => (
+                        <ListItem key={classItem.id}>
+                          <ListItemText
+                            primary={`Lớp ${classItem.class_code}`}
+                            secondary={
+                              <>
+                                <Typography variant="body2">
+                                  Lịch học: {classItem.schedule}
+                                </Typography>
+                                <Typography variant="body2">
+                                  Phòng: {classItem.room}
+                                </Typography>
+                              </>
+                            }
+                          />
+                          <Chip
+                            label={classItem.status}
+                            color={
+                              classItem.status === 'ongoing' 
+                                ? 'success' 
+                                : classItem.status === 'upcoming' 
+                                  ? 'warning' 
+                                  : 'default'
+                            }
+                            size="small"
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      Chưa có lớp học nào
+                    </Typography>
+                  )}
+                </Box>
+              </Collapse>
+            </React.Fragment>
+          ))}
+        </List>
+      ) : (
+        <Typography variant="body1" sx={{ textAlign: 'center', mt: 2 }}>
+          Chưa có môn học nào được phân công
+        </Typography>
+      )}
     </Box>
   );
 };

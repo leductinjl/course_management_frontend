@@ -28,7 +28,7 @@ const AddCertificateDialog: React.FC<AddCertificateDialogProps> = ({
     code: '',
     name: '',
     type: '',
-    issueDate: '',
+    issue_date: '',
     expiryDate: '',
     description: '',
   });
@@ -84,8 +84,8 @@ const AddCertificateDialog: React.FC<AddCertificateDialogProps> = ({
                 type="date"
                 required
                 InputLabelProps={{ shrink: true }}
-                value={certificateData.issueDate}
-                onChange={(e) => setCertificateData({...certificateData, issueDate: e.target.value})}
+                value={certificateData.issue_date}
+                onChange={(e) => setCertificateData({...certificateData, issue_date: e.target.value})}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
