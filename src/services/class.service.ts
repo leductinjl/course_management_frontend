@@ -8,11 +8,16 @@ class ClassService {
   async listClasses(): Promise<Class[]> {
     try {
       const response = await axiosInstance.get(API_ENDPOINTS.ADMIN.CLASSES.LIST);
-      console.log('Response from server:', response.data);
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Không thể tải danh sách lớp học');
+      }
       return response.data.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error listing classes:', error);
-      throw error;
+      throw new Error(
+        error.response?.data?.message || 
+        'Không thể tải danh sách lớp học'
+      );
     }
   }
 
@@ -115,6 +120,35 @@ class ClassService {
       throw new Error(
         error.response?.data?.message || 
         'Không thể tải danh sách lớp học'
+      );
+    }
+  }
+
+  async getClassStudents(classId: string): Promise<any[]> {
+    try {
+      const response = await axiosInstance.get(
+        `${API_ENDPOINTS.ADMIN.CLASSES.BASE}/${classId}/students`
+      );
+      return response.data.data;
+    } catch (error: any) {
+      console.error('Error getting class students:', error);
+      throw new Error(
+        error.response?.data?.message || 
+        'Không thể tải danh sách học viên'
+      );
+    }
+  }
+
+  async getClassLessons(classId: string): Promise<any[]> {
+    try {
+      const response = await axiosInstance.get(
+        `${API_ENDPOINTS.ADMIN.CLASSES.GET_LESSONS}/${classId}`
+      );
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || 
+        'Không thể tải danh sách bài học'
       );
     }
   }

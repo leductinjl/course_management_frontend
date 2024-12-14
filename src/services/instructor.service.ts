@@ -144,13 +144,30 @@ class InstructorService {
 
   async getInstructorCourses(): Promise<CourseWithClasses[]> {
     try {
-      const response = await axios.get(API_ENDPOINTS.INSTRUCTOR.TEACHING.GET_COURSES);
-      if (response.data) {
-        return response.data;
+      const response = await axiosInstance.get(API_ENDPOINTS.INSTRUCTOR.TEACHING.GET_COURSES);
+      console.log('Raw API Response:', response); // Debug full response
+      
+      if (!response.data || !Array.isArray(response.data)) {
+        console.error('Invalid response format:', response);
+        return []; // Return empty array instead of undefined
       }
-      throw new Error('Invalid response format');
+      
+      return response.data; // Return array directly
     } catch (error) {
       console.error('Error in getInstructorCourses:', error);
+      throw error;
+    }
+  }
+
+  async getClassGrades(classId: string) {
+    try {
+      const response = await axiosInstance.get(
+        API_ENDPOINTS.INSTRUCTOR.GRADES.GET_CLASS_GRADES(classId)
+      );
+      console.log('Grades Response:', response.data); // Debug log
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching grades:', error);
       throw error;
     }
   }

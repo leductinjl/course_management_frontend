@@ -32,8 +32,18 @@ export const API_ENDPOINTS = {
         ENROLLMENT_COUNT: (id: string) => `${API_BASE_URL}/api/admin/classes/stats/enrollment-count/${id}`,
         LESSON_PROGRESS: (id: string) => `${API_BASE_URL}/api/admin/classes/stats/lesson-progress/${id}`,
         ANNOUNCEMENT_COUNT: (id: string) => `${API_BASE_URL}/api/admin/classes/stats/announcement-count/${id}`,
-      }
-    }
+      },
+      GET_STUDENTS: (classId: string) => `${API_BASE_URL}/api/admin/classes/${classId}/students`,
+      GET_LESSONS: (classId: string) => `${API_BASE_URL}/api/admin/classes/${classId}/lessons`,
+      BASE: `${API_BASE_URL}/api/admin/classes`,
+    },
+    GRADES: {
+      PENDING: `${API_BASE_URL}/api/admin/grades/pending`,
+      VERIFY: (id: string) => `${API_BASE_URL}/api/admin/grades/verify/${id}`,
+      VERIFY_BULK: `${API_BASE_URL}/api/admin/grades/verify-bulk`,
+      GET_CLASS_GRADES: (class_id: string) => 
+        `${API_BASE_URL}/api/admin/grades/class/${class_id}`,
+    },
   },
 
 
@@ -84,6 +94,23 @@ export const API_ENDPOINTS = {
         `${API_BASE_URL}/api/instructor/teaching/classes/${class_id}/status`,
     },
     COURSES: '/instructor/courses',
+    GRADES: {
+      GET_CLASS_GRADES: (class_id: string) => 
+        `${API_BASE_URL}/api/instructor/grades/class/${class_id}`,
+      BULK_UPDATE: (class_id: string) => 
+        `${API_BASE_URL}/api/instructor/grades/${class_id}/bulk-update`,
+      UPDATE: (id: string) => 
+        `${API_BASE_URL}/api/instructor/grades/${id}`,
+      EXPORT: (class_id: string) => 
+        `${API_BASE_URL}/api/instructor/grades/export/${class_id}`,
+      IMPORT: (class_id: string) => 
+        `${API_BASE_URL}/api/instructor/grades/import/${class_id}`
+    },
+    CLASS_GRADES: {
+      GET_STUDENTS: (class_id: string) => 
+        `${API_BASE_URL}/api/instructor/class-grades/${class_id}/students`,
+      UPDATE: `${API_BASE_URL}/api/instructor/class-grades/update`,
+    },
   },
 
   

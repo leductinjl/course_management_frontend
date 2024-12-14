@@ -17,23 +17,23 @@ import { useNavigate } from 'react-router-dom';
 import { instructorService } from '../../services/instructor.service';
 import ClassGradeManagement from './ClassGradeManagement';
 
-interface CourseClass {
+interface Class {
   id: string;
   class_code: string;
   schedule: string;
-  enrollmentCount: number;
+  student_count: number;
 }
 
 interface Course {
   id: string;
   name: string;
   code: string;
-  classes?: CourseClass[];
+  classes?: Class[];
 }
 
 const GradeManagement: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedClass, setSelectedClass] = useState<(CourseClass & { courseName: string }) | null>(null);
+  const [selectedClass, setSelectedClass] = useState<(Class & { courseName: string }) | null>(null);
   
   useEffect(() => {
     fetchCourses();
@@ -41,10 +41,33 @@ const GradeManagement: React.FC = () => {
 
   const fetchCourses = async () => {
     try {
-      const data = await instructorService.getInstructorCourses();
-      setCourses(data);
+      console.log('Fetching courses...'); // Debug log
+      const response = await instructorService.getInstructorCourses();
+      console.log('Raw courses data:', response); // Debug log
+      
+      if (!response || !Array.isArray(response)) {
+        console.error('Invalid response format:', response);
+        setCourses([]);
+        return;
+      }
+
+      const transformedData: Course[] = response.map((course: any) => ({
+        id: course.id || '',
+        name: course.name || '',
+        code: course.code || '',
+        classes: Array.isArray(course.classes) ? course.classes.map((cls: any) => ({
+          id: cls.id || '',
+          class_code: cls.class_code || '',
+          schedule: cls.schedule || '',
+          student_count: cls.student_count || 0
+        })) : []
+      }));
+
+      console.log('Transformed courses:', transformedData); // Debug log
+      setCourses(transformedData);
     } catch (error) {
       console.error('Error fetching courses:', error);
+      setCourses([]); // Set empty array on error
     }
   };
 
@@ -95,14 +118,16 @@ const GradeManagement: React.FC = () => {
                       <ListItemText
                         primary={`Lớp ${classItem.class_code}`}
                         secondary={
-                          <>
-                            <Typography variant="body2">
+                          <Box component="span">
+                            <Typography 
+                              component="span" 
+                              variant="body2" 
+                              display="block"
+                            >
                               Lịch học: {classItem.schedule}
                             </Typography>
-                            <Typography variant="body2">
-                              Sĩ số: {classItem.enrollmentCount} học viên
-                            </Typography>
-                          </>
+                            
+                          </Box>
                         }
                       />
                     </ListItem>

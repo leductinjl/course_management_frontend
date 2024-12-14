@@ -155,7 +155,7 @@ const EditClassDialog: React.FC<EditClassDialogProps> = ({
               <TextField
                 fullWidth
                 label="Môn học"
-                value={initialClassData.Course?.name}
+                value={initialClassData.course?.name}
                 disabled
               />
             </Grid>

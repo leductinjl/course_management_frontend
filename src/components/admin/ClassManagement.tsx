@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Typography,
   Button,
-  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Chip,
-  Grid,
+  IconButton,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  CircularProgress
+  InputAdornment,
+  Chip,
+  Typography,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -26,194 +26,173 @@ import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
-import { Class, CLASS_STATUS_MAP } from '../../types/class.types';
+import { Class, CLASS_STATUS_MAP, CreateClassDTO } from '../../types/class.types';
 import { classService } from '../../services/class.service';
-import { useSnackbar } from 'notistack';
-import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
 import AddClassDialog from './class/AddClassDialog';
 import EditClassDialog from './class/EditClassDialog';
 import ClassDetailDialog from './class/ClassDetailDialog';
-import DeleteConfirmDialog from './common/DeleteConfirmDialog';
+import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
+import { useSnackbar } from 'notistack';
 import { formatDateTime } from '../../utils/dateUtils';
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'upcoming':
-      return 'info';
-    case 'ongoing':
-      return 'success';
-    case 'completed':
-      return 'secondary';
-    case 'cancelled':
-      return 'error';
-    default:
-      return 'default';
-  }
-};
-
-const ClassManagement = () => {
+const ClassManagement: React.FC = () => {
   const [classes, setClasses] = useState<Class[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [openAddDialog, setOpenAddDialog] = useState(false);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [openForm, setOpenForm] = useState(false);
+  const [openDetail, setOpenDetail] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [selectedClass, setSelectedClass] = useState<Class | null>(null);
-  const [selectedClassForDetail, setSelectedClassForDetail] = useState<Class | null>(null);
-  const [stats, setStats] = useState<any>(null);
   const { enqueueSnackbar } = useSnackbar();
 
-  // Thêm state cho bộ lọc
-  const [filter, setFilter] = useState({
-    status: '',
-    search: '',
-    course_id: '',
-    instructor_id: ''
-  });
+  useEffect(() => {
+    fetchClasses();
+  }, []);
 
-  const loadClasses = async () => {
+  const fetchClasses = async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await classService.listClasses();
-      console.log('Loaded classes:', data);
       setClasses(data);
-      const summary = await classService.getClassSummary();
-      setStats(summary);
-    } catch (error) {
-      console.error('Error loading classes:', error);
+    } catch (err: any) {
+      setError(err.message || 'Có lỗi xảy ra khi tải danh sách lớp học');
       enqueueSnackbar('Không thể tải danh sách lớp học', { variant: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadClasses();
-  }, []);
+  const filteredClasses = classes.filter((classItem) =>
+    classItem.class_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    classItem.Course?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    classItem.Course?.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    classItem.Instructor?.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const handleAddClass = async (classData: any) => {
-    try {
-      await classService.createClass(classData);
-      enqueueSnackbar('Thêm lớp học thành công', { variant: 'success' });
-      loadClasses();
-      setOpenAddDialog(false);
-    } catch (error) {
-      enqueueSnackbar('Không thể thêm lớp học', { variant: 'error' });
-    }
+  const handleRowClick = (event: React.MouseEvent, classData: Class) => {
+    setSelectedClass(classData);
+    setOpenDetail(true);
   };
 
-  const handleEditClass = async (classData: any) => {
-    try {
-      await classService.updateClass(selectedClass!.id, classData);
-      enqueueSnackbar('Cập nhật lớp học thành công', { variant: 'success' });
-      loadClasses();
-      setOpenEditDialog(false);
-    } catch (error) {
-      enqueueSnackbar('Không thể cập nhật lớp học', { variant: 'error' });
-    }
+  const handleAdd = () => {
+    setEditMode(false);
+    setSelectedClass(null);
+    setOpenForm(true);
   };
 
-  const { dialogProps, handleOpen: openDelete } = useDeleteConfirmation<Class>({
+  const handleEdit = (classData: Class) => {
+    setEditMode(true);
+    setSelectedClass(classData);
+    setOpenForm(true);
+    setOpenDetail(false);
+  };
+
+  const handleDelete = (classData: Class) => {
+    deleteConfirmation.handleOpen(classData);
+    setOpenDetail(false);
+  };
+
+  const deleteConfirmation = useDeleteConfirmation<Class>({
     onDelete: async (classData) => {
       try {
         await classService.deleteClass(classData.id);
-        setClasses(classes.filter(c => c.id !== classData.id));
         enqueueSnackbar('Xóa lớp học thành công', { variant: 'success' });
+        fetchClasses();
       } catch (error) {
         enqueueSnackbar('Không thể xóa lớp học', { variant: 'error' });
       }
     },
     getMessage: (classData) => `Bạn có chắc chắn muốn xóa lớp học ${classData.class_code}?`,
-    getTitle: () => 'Xác nhận xóa lớp học'
+    getTitle: () => 'Xác nhận xóa',
   });
 
-  const openEdit = (classData: Class) => {
-    setSelectedClass(classData);
-    setOpenEditDialog(true);
-    setSelectedClassForDetail(null);
-  };
-
-  const handleRowClick = (event: React.MouseEvent, classData: Class) => {
-    if ((event.target as HTMLElement).closest('.action-buttons')) {
-      return;
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'upcoming':
+        return 'info';
+      case 'ongoing':
+        return 'success';
+      case 'completed':
+        return 'secondary';
+      case 'cancelled':
+        return 'error';
+      default:
+        return 'default';
     }
-    setSelectedClassForDetail(classData);
   };
 
-  const handleDelete = (classData: Class) => {
-    openDelete(classData);
-    setSelectedClassForDetail(null);
+  const handleSubmitAdd = async (classData: CreateClassDTO) => {
+    try {
+      await classService.createClass(classData);
+      enqueueSnackbar('Thêm lớp học thành công', { variant: 'success' });
+      setOpenForm(false);
+      fetchClasses();
+    } catch (error) {
+      enqueueSnackbar('Không thể thêm lớp học', { variant: 'error' });
+    }
   };
 
-  // Lọc danh sách lớp học
-  const filteredClasses = classes.filter(classData => {
-    return (
-      (filter.status === '' || classData.status === filter.status) &&
-      (filter.search === '' || 
-        classData.class_code.toLowerCase().includes(filter.search.toLowerCase()) ||
-        classData.Course?.name.toLowerCase().includes(filter.search.toLowerCase()) ||
-        classData.Instructor?.full_name.toLowerCase().includes(filter.search.toLowerCase())
-      )
-    );
-  });
+  const handleSubmitEdit = async (classData: Partial<Class>) => {
+    if (!selectedClass) return;
+    try {
+      await classService.updateClass(selectedClass.id, classData);
+      enqueueSnackbar('Cập nhật lớp học thành công', { variant: 'success' });
+      setOpenForm(false);
+      fetchClasses();
+    } catch (error) {
+      enqueueSnackbar('Không thể cập nhật lớp học', { variant: 'error' });
+    }
+  };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h5">Quản lý lớp học</Typography>
+    <Box>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h6">Quản lý lớp học</Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setOpenAddDialog(true)}
+          onClick={handleAdd}
         >
           Thêm lớp học
         </Button>
       </Box>
 
-      {/* Bộ lọc */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              size="small"
-              label="Tìm kiếm"
-              value={filter.search}
-              onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-              InputProps={{
-                startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Trạng thái</InputLabel>
-              <Select
-                value={filter.status}
-                label="Trạng thái"
-                onChange={(e) => setFilter({ ...filter, status: e.target.value })}
-              >
-                <MenuItem value="">Tất cả</MenuItem>
-                <MenuItem value="upcoming">Sắp diễn ra</MenuItem>
-                <MenuItem value="ongoing">Đang diễn ra</MenuItem>
-                <MenuItem value="completed">Đã kết thúc</MenuItem>
-                <MenuItem value="cancelled">Đã hủy</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-      </Paper>
+      <TextField
+        fullWidth
+        variant="outlined"
+        placeholder="Tìm kiếm theo mã lớp, tên môn học, mã môn học hoặc tên giảng viên"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        sx={{ mb: 2 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
 
-      <TableContainer component={Paper}>
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-            <CircularProgress />
-          </Box>
-        ) : (
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Box sx={{ p: 3, textAlign: 'center', color: 'error.main' }}>
+          <Typography>{error}</Typography>
+        </Box>
+      ) : (
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Mã lớp</TableCell>
                 <TableCell>Môn học</TableCell>
                 <TableCell>Giảng viên</TableCell>
+                <TableCell>Lịch học</TableCell>
+                <TableCell>Phòng</TableCell>
                 <TableCell>Thời gian</TableCell>
                 <TableCell>Trạng thái</TableCell>
                 <TableCell align="right">Thao tác</TableCell>
@@ -229,23 +208,11 @@ const ClassManagement = () => {
                 >
                   <TableCell>{classData.class_code}</TableCell>
                   <TableCell>
-                    {classData.Course ? (
-                      `${classData.Course.name} (${classData.Course.code})`
-                    ) : (
-                      <span style={{color: 'red'}}>
-                        {`Debug: course_id=${classData.course_id}`}
-                      </span>
-                    )}
+                    {classData.Course?.name} ({classData.Course?.code})
                   </TableCell>
-                  <TableCell>
-                    {classData.Instructor ? (
-                      classData.Instructor.full_name
-                    ) : (
-                      <span style={{color: 'red'}}>
-                        {`Debug: instructor_id=${classData.instructor_id}`}
-                      </span>
-                    )}
-                  </TableCell>
+                  <TableCell>{classData.Instructor?.full_name}</TableCell>
+                  <TableCell>{classData.schedule}</TableCell>
+                  <TableCell>{classData.room}</TableCell>
                   <TableCell>
                     {formatDateTime(classData.start_date)} - {formatDateTime(classData.end_date)}
                   </TableCell>
@@ -260,7 +227,7 @@ const ClassManagement = () => {
                     <IconButton 
                       onClick={(e) => {
                         e.stopPropagation();
-                        openEdit(classData);
+                        handleEdit(classData);
                       }}
                       size="small"
                     >
@@ -281,35 +248,55 @@ const ClassManagement = () => {
               ))}
             </TableBody>
           </Table>
-        )}
-      </TableContainer>
-
-      <AddClassDialog
-        open={openAddDialog}
-        onClose={() => setOpenAddDialog(false)}
-        onSubmit={handleAddClass}
-      />
-
-      {selectedClass && (
-        <EditClassDialog
-          open={openEditDialog}
-          onClose={() => setOpenEditDialog(false)}
-          onSubmit={handleEditClass}
-          classData={selectedClass}
-        />
+        </TableContainer>
       )}
 
-      {selectedClassForDetail && (
+      {selectedClass && (
         <ClassDetailDialog
-          open={!!selectedClassForDetail}
-          onClose={() => setSelectedClassForDetail(null)}
-          classData={selectedClassForDetail}
-          onEdit={openEdit}
+          open={openDetail}
+          onClose={() => setOpenDetail(false)}
+          classData={selectedClass}
+          onEdit={handleEdit}
           onDelete={handleDelete}
         />
       )}
 
-      <DeleteConfirmDialog {...dialogProps} />
+      {openForm && !editMode && (
+        <AddClassDialog
+          open={openForm}
+          onClose={() => setOpenForm(false)}
+          onSubmit={handleSubmitAdd}
+        />
+      )}
+
+      {openForm && editMode && selectedClass && (
+        <EditClassDialog
+          open={openForm}
+          onClose={() => setOpenForm(false)}
+          onSubmit={handleSubmitEdit}
+          classData={selectedClass}
+        />
+      )}
+
+      <Dialog
+        open={deleteConfirmation.open}
+        onClose={deleteConfirmation.dialogProps.onClose}
+      >
+        <DialogTitle>{deleteConfirmation.dialogProps.title}</DialogTitle>
+        <DialogContent>
+          <Typography>{deleteConfirmation.dialogProps.content}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={deleteConfirmation.dialogProps.onClose}>Hủy</Button>
+          <Button
+            onClick={deleteConfirmation.dialogProps.onConfirm}
+            color="error"
+            variant="contained"
+          >
+            Xóa
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

@@ -25,10 +25,31 @@ export interface Class {
   start_date: string;
   end_date: string;
   status: ClassStatus;
-  instructor?: {
+  course_id: string;
+  instructor_id: string;
+  created_at: string;
+  updated_at: string;
+  Course?: {
+    id: string;
+    name: string;
+    code: string;
+    credits: number;
+    fee: number;
+  };
+  Instructor?: {
     id: string;
     full_name: string;
-    specialization?: string;
+    specialization: string;
+  };
+  creator?: {
+    id: string;
+    full_name: string;
+  };
+  stats?: {
+    enrollmentCount: number;
+    completedLessons: number;
+    totalLessons: number;
+    announcementCount: number;
   };
 }
 
