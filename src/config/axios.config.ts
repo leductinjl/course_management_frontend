@@ -24,12 +24,17 @@ axiosInstance.interceptors.request.use(
       config.headers = new AxiosHeaders();
     }
 
-    if (instructorToken) {
-      config.headers.Authorization = `Bearer ${instructorToken}`;
-    } else if (userToken) {
-      config.headers.Authorization = `Bearer ${userToken}`;
-    } else if (adminToken) {
-      config.headers.Authorization = `Bearer ${adminToken}`;
+    let token = null;
+    if (window.location.pathname.startsWith('/admin')) {
+      token = adminToken;
+    } else if (window.location.pathname.startsWith('/instructor')) {
+      token = instructorToken;
+    } else {
+      token = userToken;
+    }
+
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
 
     console.log('Request headers:', config.headers);
