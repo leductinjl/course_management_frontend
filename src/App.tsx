@@ -9,15 +9,18 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { SnackbarProvider } from 'notistack';
 
 const App: React.FC = () => {
   return (
     <StrictMode>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <BrowserRouter>
-          <AppRouter />
-        </BrowserRouter>
+        <SnackbarProvider maxSnack={3}>
+          <BrowserRouter>
+            <AppRouter />
+          </BrowserRouter>
+        </SnackbarProvider>
         <ToastContainer />
       </ThemeProvider>
     </StrictMode>

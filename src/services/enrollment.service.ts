@@ -7,12 +7,18 @@ export const enrollmentService = {
       const response = await axiosInstance.post(API_ENDPOINTS.STUDENT.ENROLLMENTS.ENROLL, {
         class_id
       });
+      console.log('Enrollment service response:', response);
       return response.data;
     } catch (error: any) {
-      throw new Error(
-        error.response?.data?.message || 
-        'Không thể đăng ký lớp học'
-      );
+      console.error('Enrollment service error:', {
+        error,
+        response: error.response,
+        data: error.response?.data
+      });
+      
+      // Đảm bảo luôn throw error với message
+      const errorMessage = error.response?.data?.message || 'Không thể đăng ký lớp học';
+      throw new Error(errorMessage);
     }
   },
 

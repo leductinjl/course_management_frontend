@@ -14,6 +14,7 @@ import {
   Box,
   Typography,
   Chip,
+  Snackbar,
 } from '@mui/material';
 import { classService } from '../../services/class.service';
 import { enrollmentService } from '../../services/enrollment.service';
@@ -32,6 +33,8 @@ const ClassSelection: React.FC<ClassSelectionProps> = ({ course_id, onClose }) =
   const [error, setError] = useState<string | null>(null);
   const [enrolledClassId, setEnrolledClassId] = useState<string | null>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const fetchClasses = async () => {
     try {
@@ -55,35 +58,105 @@ const ClassSelection: React.FC<ClassSelectionProps> = ({ course_id, onClose }) =
 
   const handleEnroll = async (class_id: string) => {
     try {
+      setLoading(true);
       await enrollmentService.enrollClass(class_id);
-      enqueueSnackbar('Đăng ký lớp học thành công!', { variant: 'success' });
+      
+      // Thông báo đăng ký thành công - màu xanh lá
+      enqueueSnackbar('Đăng ký lớp học thành công!', { 
+        variant: 'success',
+        autoHideDuration: 3000,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        }
+      });
+      
       setEnrolledClassId(class_id);
-      await fetchClasses(); // Refresh data
+      await fetchClasses();
+      
     } catch (err: any) {
-      enqueueSnackbar(err.message || 'Đăng ký lớp học thất bại', { variant: 'error' });
+      console.error('Enrollment error:', err);
+      
+      // Thông báo lỗi trùng lịch - màu cam
+      if (err.message.includes('trùng')) {
+        enqueueSnackbar(err.message, { 
+          variant: 'warning',
+          autoHideDuration: 5000,
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right'
+          }
+        });
+      } else {
+        // Các lỗi khác - màu đỏ
+        enqueueSnackbar(err.message || 'Có lỗi xảy ra khi đăng ký', { 
+          variant: 'error',
+          autoHideDuration: 5000,
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right'
+          }
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleUnenroll = async (class_id: string) => {
     try {
+      setLoading(true);
       await enrollmentService.unenrollClass(class_id);
-      enqueueSnackbar('Hủy đăng ký lớp học thành công!', { variant: 'success' });
+      
+      // Thông báo hủy thành công - màu xanh dương
+      enqueueSnackbar('Hủy đăng ký lớp học thành công!', { 
+        variant: 'info',
+        autoHideDuration: 3000,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        }
+      });
+      
       setEnrolledClassId(null);
-      await fetchClasses(); // Refresh data
+      await fetchClasses();
     } catch (err: any) {
-      enqueueSnackbar(err.message || 'Hủy đăng ký lớp học thất bại', { variant: 'error' });
+      // Lỗi khi hủy - màu đỏ
+      enqueueSnackbar(err.message || 'Có lỗi xảy ra khi hủy đăng ký', { 
+        variant: 'error',
+        autoHideDuration: 5000,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        }
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <DialogContent>
+        <Snackbar 
+          open={showError} 
+          autoHideDuration={6000} 
+          onClose={() => setShowError(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert 
+            onClose={() => setShowError(false)} 
+            severity="error" 
+            sx={{ width: '100%' }}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
+
         {loading ? (
           <Box display="flex" justifyContent="center" p={3}>
             <CircularProgress />
           </Box>
-        ) : error ? (
-          <Alert severity="error">{error}</Alert>
         ) : classes.length === 0 ? (
           <Typography variant="body1" sx={{ p: 2, textAlign: 'center' }}>
             Không có lớp học nào khả dụng cho môn học này
