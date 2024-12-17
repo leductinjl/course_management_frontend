@@ -54,5 +54,14 @@ export const courseService = {
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Không thể tải danh sách khóa học');
     }
-  }
+  },
+
+  getAvailableCoursesForInstructor: async (): Promise<Course[]> => {
+    try {
+      const response = await axiosInstance.get(API_ENDPOINTS.INSTRUCTOR.COURSES.AVAILABLE);
+      return response.data.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Không thể tải danh sách khóa học');
+    }
+  },
 };

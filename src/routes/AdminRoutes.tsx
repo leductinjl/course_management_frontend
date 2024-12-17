@@ -6,6 +6,7 @@ import CertificateManagement from '../components/admin/CertificateManagement';
 import ExamManagement from '../components/admin/ExamManagement';
 import FinanceManagement from '../components/admin/FinanceManagement';
 import AdminHome from '../pages/admin/AdminHome';
+import ClassRequestManagement from '../components/classRequest/ClassRequestManagement';
 
 const AdminRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AdminRoutes = () => {
       <Route path="certificates/*" element={<CertificateManagement />} />
       <Route path="exams/*" element={<ExamManagement />} />
       <Route path="finance/*" element={<FinanceManagement />} />
+      <Route path="/class-requests" element={<ClassRequestManagement />} />
     </Routes>
   );
 };

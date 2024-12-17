@@ -13,7 +13,7 @@ import {
 import TeachingSchedule from '../../components/instructor/TeachingSchedule';
 import CourseManagement from '../../components/instructor/CourseManagement';
 import GradeManagement from '../../components/instructor/GradeManagement';
-import CourseRequest from '../../components/instructor/CourseRequest';
+import ClassRequest from '../../components/instructor/ClassRequest';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -61,7 +61,7 @@ const InstructorTeaching: React.FC = () => {
               <Tab label="Lịch giảng dạy" />
               <Tab label="Quản lý môn học" />
               <Tab label="Quản lý điểm" />
-              <Tab label="Yêu cầu mở môn" />
+              <Tab label="Yêu cầu mở lớp" />
             </Tabs>
           </Box>
 
@@ -75,7 +75,7 @@ const InstructorTeaching: React.FC = () => {
             <GradeManagement />
           </TabPanel>
           <TabPanel value={selectedTab} index={3}>
-            <CourseRequest />
+            <ClassRequest />
           </TabPanel>
         </Paper>
       </Container>

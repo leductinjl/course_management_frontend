@@ -44,6 +44,10 @@ export const API_ENDPOINTS = {
       GET_CLASS_GRADES: (class_id: string) => 
         `${API_BASE_URL}/api/admin/grades/class/${class_id}`,
     },
+    CLASS_REQUESTS: {
+      LIST: `${API_BASE_URL}/api/admin/class-requests`,
+      REVIEW: (id: string) => `${API_BASE_URL}/api/admin/class-requests/${id}/review`,
+    },
   },
 
 
@@ -93,7 +97,9 @@ export const API_ENDPOINTS = {
       CLASS_STATUS: (class_id: string) => 
         `${API_BASE_URL}/api/instructor/teaching/classes/${class_id}/status`,
     },
-    COURSES: '/instructor/courses',
+    COURSES: {
+      AVAILABLE: `${API_BASE_URL}/api/instructor/courses/available`,
+    },
     GRADES: {
       GET_CLASS_GRADES: (class_id: string) => 
         `${API_BASE_URL}/api/instructor/grades/class/${class_id}`,
@@ -110,6 +116,12 @@ export const API_ENDPOINTS = {
       GET_STUDENTS: (class_id: string) => 
         `${API_BASE_URL}/api/instructor/class-grades/${class_id}/students`,
       UPDATE: `${API_BASE_URL}/api/instructor/class-grades/update`,
+    },
+    CLASS_REQUESTS: {
+      CREATE: `${API_BASE_URL}/api/instructor/class-requests/create`,
+      MY_REQUESTS: `${API_BASE_URL}/api/instructor/class-requests/my-requests`,
+      UPDATE: (id: string) => `${API_BASE_URL}/api/instructor/class-requests/update/${id}`,
+      DELETE: (id: string) => `${API_BASE_URL}/api/instructor/class-requests/delete/${id}`,
     },
   },
 

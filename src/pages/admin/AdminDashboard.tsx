@@ -27,6 +27,7 @@ const AdminDashboard: React.FC = () => {
     if (path.includes('/users')) return 'Quản lý tài khoản';
     if (path.includes('/certificates')) return 'Quản lý chứng chỉ';
     if (path.includes('/exams')) return 'Quản lý kỳ thi';
+    if (path.includes('/class-requests')) return 'Quản lý yêu cầu mở lớp';
     return 'Admin Dashboard';
   };
 

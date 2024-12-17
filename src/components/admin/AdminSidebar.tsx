@@ -18,7 +18,8 @@ import {
   Logout as LogoutIcon,
   Home as HomeIcon,
   Class as ClassIcon,
-  MonetizationOn as MonetizationOnIcon
+  MonetizationOn as MonetizationOnIcon,
+  RequestPage as RequestIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -54,6 +55,12 @@ const AdminSidebar: React.FC<SidebarProps> = ({
       text: 'Quản lý lớp học', 
       icon: <ClassIcon />,
       path: '/adminne/dashboard/classes'
+    },
+    { 
+      id: 'class-requests', 
+      text: 'Yêu cầu mở lớp', 
+      icon: <RequestIcon />,
+      path: '/adminne/dashboard/class-requests'
     },
     { 
       id: 'users', 

@@ -33,6 +33,16 @@ interface AddClassDialogProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (classData: CreateClassDTO) => void;
+  defaultValues?: {
+    course_id: string;
+    instructor_id: string;
+    start_date: Dayjs;
+    end_date: Dayjs | null;
+    schedule: string;
+    room: string;
+    capacity: string;
+    status: string;
+  };
 }
 
 interface FormValues {
@@ -67,7 +77,8 @@ const validationSchema = Yup.object({
 const AddClassDialog: React.FC<AddClassDialogProps> = ({
   open,
   onClose,
-  onSubmit
+  onSubmit,
+  defaultValues
 }) => {
   const [instructors, setInstructors] = useState<Instructor[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
@@ -116,14 +127,14 @@ const AddClassDialog: React.FC<AddClassDialogProps> = ({
 
   const formik = useFormik<FormValues>({
     initialValues: {
-      course_id: '',
-      instructor_id: '',
-      start_date: null,
-      end_date: null,
-      schedule: '',
-      room: '',
-      capacity: '',
-      status: 'upcoming' as ClassStatus
+      course_id: defaultValues?.course_id || '',
+      instructor_id: defaultValues?.instructor_id || '',
+      start_date: defaultValues?.start_date || null,
+      end_date: defaultValues?.end_date || null,
+      schedule: defaultValues?.schedule || '',
+      room: defaultValues?.room || '',
+      capacity: defaultValues?.capacity || '',
+      status: defaultValues?.status as ClassStatus || 'upcoming'
     },
     validationSchema,
     onSubmit: (values) => {

@@ -16,7 +16,8 @@ import {
   Notifications as NotificationIcon,
   Settings as SettingsIcon,
   Class as ClassIcon,
-  MonetizationOn as MonetizationOnIcon
+  MonetizationOn as MonetizationOnIcon,
+  RequestPage as RequestIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -107,6 +108,16 @@ const AdminHome = () => {
       count: '₫',
       color: '#14b8a6',
       delay: '0.5s'
+    },
+    {
+      id: 'class-requests',
+      title: 'Yêu cầu mở lớp',
+      description: 'Quản lý và phê duyệt các yêu cầu mở lớp mới',
+      icon: <RequestIcon />,
+      path: 'class-requests',
+      count: '8',
+      color: '#ef4444',
+      delay: '0.25s'
     }
   ];
 
