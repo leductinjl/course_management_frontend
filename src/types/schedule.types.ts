@@ -30,9 +30,20 @@ export interface WeekSchedule {
   SAT: DaySchedule;
 }
 
-export interface EnrolledClass extends Class {
-  Course: Course;
-  Instructor: Instructor;
+export interface EnrolledClass {
+  id: string;
+  class_code: string;
+  schedule: string;  // format: "MON,WED,FRI|07:30-09:00"
+  room: string;
+  start_date: string;
+  end_date: string;
+  Course: {
+    code: string;
+    name: string;
+  };
+  Instructor: {
+    full_name: string;
+  };
 }
 
 export interface ParsedSchedule {
@@ -40,4 +51,11 @@ export interface ParsedSchedule {
   startTime: string;
   endTime: string;
   room: string;
+}
+
+export interface WeekOption {
+  startDate: string;
+  endDate: string;
+  label: string;
+  value: string;
 } 

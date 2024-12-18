@@ -147,5 +147,8 @@ export const API_ENDPOINTS = {
       HISTORY: `${API_BASE_URL}/api/student/enrollments/history`,
     },
     SCHEDULE: `${API_BASE_URL}/api/student/schedule`,
+    GRADES: {
+      MY_GRADES: `${API_BASE_URL}/api/student/grades/my-grades`,
+    },
   }
 }; 
