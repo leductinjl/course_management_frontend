@@ -53,10 +53,16 @@ class ClassService {
 
   async deleteClass(id: string): Promise<void> {
     try {
-      await axiosInstance.delete(API_ENDPOINTS.ADMIN.CLASSES.DELETE(id));
-    } catch (error) {
+      const response = await axiosInstance.delete(API_ENDPOINTS.ADMIN.CLASSES.DELETE(id));
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+    } catch (error: any) {
       console.error('Error deleting class:', error);
-      throw error;
+      if (error.response?.data) {
+        throw error;
+      }
+      throw new Error('Lỗi kết nối máy chủ');
     }
   }
 

@@ -27,6 +27,8 @@ import EditUserDialog from './user/EditUserDialog';
 import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
 import DeleteConfirmDialog from './common/DeleteConfirmDialog';
 import UserDetailDialog from './user/UserDetailDialog';
+import { useSnackbar } from 'notistack';
+import { showNotification, ERROR_MESSAGES } from '../../utils/notificationHelper';
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -35,15 +37,35 @@ const UserManagement: React.FC = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedUserForDetail, setSelectedUserForDetail] = useState<User | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const { dialogProps, handleOpen: openDelete } = useDeleteConfirmation<string>({
     onDelete: async (user_id) => {
       try {
         await userService.deleteUser(user_id);
         setUsers(users.filter(user => user.id !== user_id));
-        toast.success('Xóa người dùng thành công');
+        showNotification(enqueueSnackbar, {
+          message: 'Xóa người dùng thành công',
+          variant: 'success'
+        });
       } catch (error: any) {
-        toast.error(error.message || 'Không thể xóa người dùng');
+        let errorMessage = ERROR_MESSAGES.USER_DELETE_ERROR;
+        let variant: 'warning' | 'error' = 'error';
+        
+        if (error.code === 'DELETE_RESTRICTED') {
+          variant = 'warning';
+          if (error.message.includes('giảng viên')) {
+            errorMessage = ERROR_MESSAGES.INSTRUCTOR_HAS_CLASSES;
+          } else if (error.message.includes('học viên')) {
+            errorMessage = ERROR_MESSAGES.STUDENT_HAS_ENROLLMENTS;
+          }
+        }
+        
+        showNotification(enqueueSnackbar, {
+          message: errorMessage,
+          variant: variant
+        });
+        throw error;
       }
     },
     getMessage: () => 'Bạn có chắc chắn muốn xóa người dùng này không?',
@@ -71,9 +93,23 @@ const UserManagement: React.FC = () => {
       const newUser = await userService.createUser(userData);
       setUsers(prevUsers => [...prevUsers, newUser]);
       setOpenAddDialog(false);
-      toast.success('Thêm người dùng thành công');
+      showNotification(enqueueSnackbar, {
+        message: 'Thêm người dùng thành công',
+        variant: 'success'
+      });
     } catch (error: any) {
-      toast.error(error.message || 'Không thể thêm người dùng');
+      let errorMessage = ERROR_MESSAGES.USER_CREATE_ERROR;
+      let variant: 'warning' | 'error' = 'error';
+
+      if (error.code === 'EMAIL_EXISTS') {
+        errorMessage = ERROR_MESSAGES.EMAIL_EXISTS;
+        variant = 'warning';
+      }
+
+      showNotification(enqueueSnackbar, {
+        message: errorMessage,
+        variant: variant
+      });
     }
   };
 
@@ -121,11 +157,24 @@ const UserManagement: React.FC = () => {
         
         setOpenEditDialog(false);
         setSelectedUser(null);
-        toast.success('Cập nhật người dùng thành công');
+        showNotification(enqueueSnackbar, {
+          message: 'Cập nhật người dùng thành công',
+          variant: 'success'
+        });
       }
     } catch (error: any) {
-      console.error('Error updating user:', error);
-      toast.error(error.message || 'Có lỗi xảy ra khi cập nhật người dùng');
+      let errorMessage = ERROR_MESSAGES.USER_UPDATE_ERROR;
+      let variant: 'warning' | 'error' = 'error';
+
+      if (error.code === 'EMAIL_EXISTS') {
+        errorMessage = ERROR_MESSAGES.EMAIL_EXISTS;
+        variant = 'warning';
+      }
+
+      showNotification(enqueueSnackbar, {
+        message: errorMessage,
+        variant: variant
+      });
     } finally {
       setLoading(false);
     }

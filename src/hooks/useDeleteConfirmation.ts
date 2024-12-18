@@ -1,16 +1,12 @@
 import { useState } from 'react';
 
-interface UseDeleteConfirmationProps<T> {
-  onDelete: (item: T) => Promise<void> | void;
-  getMessage: (item: T) => string;
-  getTitle: (item: T) => string;
+interface DeleteConfirmationConfig<T> {
+  onDelete: (item: T) => Promise<void>;
+  getMessage: (item: T) => React.ReactNode;
+  getTitle: (item?: T) => string;
 }
 
-export const useDeleteConfirmation = <T>({
-  onDelete,
-  getMessage,
-  getTitle,
-}: UseDeleteConfirmationProps<T>) => {
+export const useDeleteConfirmation = <T extends any>(config: DeleteConfirmationConfig<T>) => {
   const [open, setOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
 
@@ -26,21 +22,22 @@ export const useDeleteConfirmation = <T>({
 
   const handleConfirm = async () => {
     if (selectedItem) {
-      await onDelete(selectedItem);
+      await config.onDelete(selectedItem);
       handleClose();
     }
   };
 
-  return {
+  const dialogProps = {
     open,
-    selectedItem,
-    dialogProps: {
-      open,
-      title: selectedItem ? getTitle(selectedItem) : '',
-      content: selectedItem ? getMessage(selectedItem) : '',
-      onClose: handleClose,
-      onConfirm: handleConfirm,
-    },
-    handleOpen,
+    onClose: handleClose,
+    onConfirm: handleConfirm,
+    title: config.getTitle(selectedItem || undefined),
+    message: selectedItem ? config.getMessage(selectedItem) : '',
+    item: selectedItem
+  };
+
+  return {
+    dialogProps,
+    handleOpen
   };
 }; 

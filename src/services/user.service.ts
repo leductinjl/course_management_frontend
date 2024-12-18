@@ -58,7 +58,13 @@ export const userService = {
 
   deleteUser: async (id: string): Promise<void> => {
     try {
-      await axiosInstance.delete(API_ENDPOINTS.ADMIN.USERS.DELETE(id));
+      const response = await axiosInstance.delete(API_ENDPOINTS.ADMIN.USERS.DELETE(id));
+      if (!response.data.success) {
+        throw new ApiError(
+          response.data.message || 'Không thể xóa người dùng',
+          response.data.code
+        );
+      }
     } catch (error) {
       const err = error as AxiosError<any>;
       throw new ApiError(

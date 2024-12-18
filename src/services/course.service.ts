@@ -43,7 +43,10 @@ export const courseService = {
     try {
       await axiosInstance.delete(API_ENDPOINTS.ADMIN.COURSES.DELETE(id));
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Không thể xóa khóa học');
+      if (error.response) {
+        throw error;
+      }
+      throw new Error('Không thể xóa khóa học');
     }
   },
 

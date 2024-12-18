@@ -38,8 +38,9 @@ import {
   COURSE_STATUS_COLORS, 
   CourseFilter 
 } from '../../types/course.types';
-import { useSnackbar } from 'notistack';
+import { useSnackbar, VariantType } from 'notistack';
 import CourseDetailDialog from './course/CourseDetailDialog';
+import { showNotification, ERROR_MESSAGES } from '../../utils/notificationHelper';
 
 const CourseManagement = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -65,10 +66,18 @@ const CourseManagement = () => {
       } else {
         console.error('Invalid response format:', response);
         setCourses([]);
+        enqueueSnackbar('Định dạng dữ liệu không hợp lệ', {
+          variant: 'error',
+          anchorOrigin: { vertical: 'top', horizontal: 'right' }
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading courses:', error);
-      enqueueSnackbar('Không thể tải danh sách khóa học', { variant: 'error' });
+      const message = error.response?.data?.message || 'Không thể tải danh sách khóa học';
+      enqueueSnackbar(message, {
+        variant: 'error',
+        anchorOrigin: { vertical: 'top', horizontal: 'right' }
+      });
       setCourses([]);
     } finally {
       setLoading(false);
@@ -82,39 +91,124 @@ const CourseManagement = () => {
   const handleAddCourse = async (courseData: any) => {
     try {
       await courseService.createCourse(courseData);
-      enqueueSnackbar('Thêm khóa học thành công', { variant: 'success' });
+      showNotification(enqueueSnackbar, {
+        message: 'Thêm môn học thành công',
+        variant: 'success'
+      });
       loadCourses();
       setOpenAddDialog(false);
-    } catch (error) {
-      enqueueSnackbar('Không thể thêm khóa học', { variant: 'error' });
+    } catch (error: any) {
+      if (error.response?.data?.details) {
+        error.response.data.details.forEach((detail: any) => {
+          showNotification(enqueueSnackbar, {
+            message: `${detail.field}: ${detail.message}`,
+            variant: 'error'
+          });
+        });
+      } else if (error.response?.status === 400 && error.response?.data?.message.includes('exists')) {
+        showNotification(enqueueSnackbar, {
+          message: ERROR_MESSAGES.COURSE_CODE_EXISTS,
+          variant: 'error'
+        });
+      } else {
+        showNotification(enqueueSnackbar, {
+          message: error.response?.data?.message || ERROR_MESSAGES.NETWORK_ERROR,
+          variant: 'error'
+        });
+      }
     }
   };
 
   const handleEditCourse = async (courseData: any) => {
     try {
       await courseService.updateCourse(selectedCourse!.id, courseData);
-      enqueueSnackbar('Cập nhật khóa học thành công', { variant: 'success' });
+      showNotification(enqueueSnackbar, {
+        message: 'Cập nhật môn học thành công',
+        variant: 'success'
+      });
       loadCourses();
       setOpenEditDialog(false);
-    } catch (error) {
-      enqueueSnackbar('Không thể cập nhật khóa học', { variant: 'error' });
+    } catch (error: any) {
+      if (error.response?.data?.details) {
+        error.response.data.details.forEach((detail: any) => {
+          showNotification(enqueueSnackbar, {
+            message: `${detail.field}: ${detail.message}`,
+            variant: 'error'
+          });
+        });
+      } else if (error.response?.status === 400 && error.response?.data?.message.includes('exists')) {
+        showNotification(enqueueSnackbar, {
+          message: ERROR_MESSAGES.COURSE_CODE_EXISTS,
+          variant: 'error'
+        });
+      } else {
+        showNotification(enqueueSnackbar, {
+          message: error.response?.data?.message || ERROR_MESSAGES.NETWORK_ERROR,
+          variant: 'error'
+        });
+      }
     }
   };
 
   const handleDeleteCourse = async (course: Course) => {
     try {
       await courseService.deleteCourse(course.id);
-      enqueueSnackbar('Xóa khóa học thành công', { variant: 'success' });
+      showNotification(enqueueSnackbar, {
+        message: 'Xóa môn học thành công',
+        variant: 'success'
+      });
       loadCourses();
-    } catch (error) {
-      enqueueSnackbar('Không thể xóa khóa học', { variant: 'error' });
+    } catch (error: any) {
+      console.log('Delete error:', error.response); // For debugging
+      
+      let message = ERROR_MESSAGES.NETWORK_ERROR;
+      let variant: VariantType = 'error';
+      
+      // Check if we have a response from the server
+      if (error.response?.data) {
+        const { status, data } = error.response;
+        
+        // Handle specific error cases
+        if (status === 409) {
+          variant = 'warning';
+          message = data.message || ERROR_MESSAGES.DELETE_COURSE_ERROR;
+          
+          // Add more specific details based on the error details
+          if (data.details?.table === 'enrollment_histories') {
+            message = 'Không thể xóa môn học này vì đã có sinh viên đăng ký học. Vui lòng kiểm tra lại lịch sử đăng ký.';
+          } else if (data.details?.table === 'classes') {
+            message = 'Không thể xóa môn học này vì đang có lớp học liên kết. Vui lòng xóa các lớp học trước.';
+          }
+        } else {
+          // For other error types
+          message = data.message || ERROR_MESSAGES.NETWORK_ERROR;
+        }
+      }
+
+      showNotification(enqueueSnackbar, {
+        message,
+        variant
+      });
     }
   };
 
-  const { dialogProps, handleOpen: openDelete } = useDeleteConfirmation({
+  const { dialogProps, handleOpen: openDelete } = useDeleteConfirmation<Course>({
     onDelete: handleDeleteCourse,
-    getMessage: (course) => `Bạn có chắc chắn muốn xóa môn học "${course.name}" không?`,
-    getTitle: () => "Xóa môn học"
+    getMessage: (course) => (
+      <>
+        <Typography>
+          Bạn có chắc chắn muốn xóa môn học "{course.name}" không?
+        </Typography>
+        <Typography 
+          variant="caption" 
+          color="warning.main" 
+          sx={{ display: 'block', mt: 1 }}
+        >
+          Lưu ý: Không thể xóa môn học nếu đang có lớp học hoặc sinh viên đăng ký.
+        </Typography>
+      </>
+    ),
+    getTitle: () => "Xác nhận xóa môn học"
   });
 
   const openEdit = (course: Course) => {

@@ -26,14 +26,15 @@ import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
-import { Class, CLASS_STATUS_MAP, CreateClassDTO } from '../../types/class.types';
+import { Class, CLASS_STATUS_MAP, CreateClassDTO, UpdateClassDTO } from '../../types/class.types';
 import { classService } from '../../services/class.service';
 import AddClassDialog from './class/AddClassDialog';
 import EditClassDialog from './class/EditClassDialog';
 import ClassDetailDialog from './class/ClassDetailDialog';
 import { useDeleteConfirmation } from '../../hooks/useDeleteConfirmation';
-import { useSnackbar } from 'notistack';
+import { useSnackbar, VariantType } from 'notistack';
 import { formatDateTime } from '../../utils/dateUtils';
+import { showNotification, ERROR_MESSAGES } from '../../utils/notificationHelper';
 
 const ClassManagement: React.FC = () => {
   const [classes, setClasses] = useState<Class[]>([]);
@@ -89,23 +90,69 @@ const ClassManagement: React.FC = () => {
     setOpenDetail(false);
   };
 
-  const handleDelete = (classData: Class) => {
-    deleteConfirmation.handleOpen(classData);
-    setOpenDetail(false);
+  const handleDelete = async (classData: Class) => {
+    try {
+      await classService.deleteClass(classData.id);
+      showNotification(enqueueSnackbar, {
+        message: 'Xóa lớp học thành công',
+        variant: 'success'
+      });
+      fetchClasses();
+    } catch (error: any) {
+      console.log('Delete error:', error.response);
+      
+      let message = ERROR_MESSAGES.NETWORK_ERROR;
+      let variant: VariantType = 'error';
+
+      if (error.response?.data) {
+        const { status, data } = error.response;
+        
+        if (status === 404) {
+          message = ERROR_MESSAGES.CLASS_NOT_FOUND;
+        } else if (status === 409) {
+          variant = 'warning';
+          
+          // Xử lý các trường hợp cụ thể
+          if (data.details?.table === 'enrollments') {
+            message = ERROR_MESSAGES.CLASS_HAS_ENROLLMENTS;
+          } else if (data.details?.table === 'lessons') {
+            message = ERROR_MESSAGES.CLASS_HAS_LESSONS;
+          } else if (data.message.includes('đã bắt đầu')) {
+            message = ERROR_MESSAGES.CLASS_ALREADY_STARTED;
+          } else {
+            message = data.message || ERROR_MESSAGES.CLASS_DELETE_ERROR;
+          }
+        } else {
+          message = data.message || ERROR_MESSAGES.NETWORK_ERROR;
+        }
+      }
+
+      showNotification(enqueueSnackbar, { message, variant });
+    }
   };
 
-  const deleteConfirmation = useDeleteConfirmation<Class>({
-    onDelete: async (classData) => {
-      try {
-        await classService.deleteClass(classData.id);
-        enqueueSnackbar('Xóa lớp học thành công', { variant: 'success' });
-        fetchClasses();
-      } catch (error) {
-        enqueueSnackbar('Không thể xóa lớp học', { variant: 'error' });
-      }
-    },
-    getMessage: (classData) => `Bạn có chắc chắn muốn xóa lớp học ${classData.class_code}?`,
-    getTitle: () => 'Xác nhận xóa',
+  const { dialogProps, handleOpen: openDelete } = useDeleteConfirmation<Class>({
+    onDelete: handleDelete,
+    getMessage: (classData) => (
+      <>
+        <Typography>
+          Bạn có chắc chắn muốn xóa lớp học "{classData.class_code}" không?
+        </Typography>
+        <Typography 
+          variant="caption" 
+          color="warning.main" 
+          sx={{ display: 'block', mt: 1 }}
+        >
+          Lưu ý: 
+          <ul style={{ margin: '4px 0', paddingLeft: '20px' }}>
+            <li>Không thể xóa lớp học đã bắt đầu hoặc đã kết thúc</li>
+            <li>Không thể xóa lớp học đã có học viên đăng ký</li>
+            <li>Hành động này không thể hoàn tác</li>
+          </ul>
+        </Typography>
+      </>
+    ),
+    getTitle: () => "Xác nhận xóa lớp học"
   });
 
   const getStatusColor = (status: string) => {
@@ -134,16 +181,73 @@ const ClassManagement: React.FC = () => {
     }
   };
 
-  const handleSubmitEdit = async (classData: Partial<Class>) => {
-    if (!selectedClass) return;
+  const handleSubmitEdit = async (data: UpdateClassDTO) => {
     try {
-      await classService.updateClass(selectedClass.id, classData);
-      enqueueSnackbar('Cập nhật lớp học thành công', { variant: 'success' });
+      if (!selectedClass) return;
+      
+      // Kiểm tra trạng thái lớp học trước khi cập nhật
+      if (selectedClass.status !== 'upcoming') {
+        showNotification(enqueueSnackbar, {
+          message: ERROR_MESSAGES.CLASS_UPDATE_NOT_ALLOWED,
+          variant: 'warning'
+        });
+        setOpenForm(false);
+        return;
+      }
+
+      await classService.updateClass(selectedClass.id, data);
+      showNotification(enqueueSnackbar, {
+        message: 'Cập nhật lớp học thành công',
+        variant: 'success'
+      });
       setOpenForm(false);
       fetchClasses();
-    } catch (error) {
-      enqueueSnackbar('Không thể cập nhật lớp học', { variant: 'error' });
+    } catch (error: any) {
+      console.log('Update error:', error.response);
+      
+      let message = ERROR_MESSAGES.NETWORK_ERROR;
+      let variant: VariantType = 'error';
+
+      if (error.response?.data) {
+        const { status, data } = error.response;
+        
+        if (status === 404) {
+          message = ERROR_MESSAGES.CLASS_NOT_FOUND;
+        } else if (status === 409) {
+          variant = 'warning';
+          if (data.message.includes('chưa bắt đầu')) {
+            message = ERROR_MESSAGES.CLASS_UPDATE_NOT_ALLOWED;
+          } else {
+            message = data.message || ERROR_MESSAGES.CLASS_UPDATE_ERROR;
+          }
+        } else {
+          message = data.message || ERROR_MESSAGES.CLASS_UPDATE_ERROR;
+        }
+      }
+
+      showNotification(enqueueSnackbar, { message, variant });
     }
+  };
+
+  const renderEditDialog = () => {
+    if (!selectedClass) return null;
+    
+    return (
+      <EditClassDialog
+        open={openForm}
+        onClose={() => setOpenForm(false)}
+        onSubmit={handleSubmitEdit}
+        classData={selectedClass}
+        // @ts-ignore
+        disabled={selectedClass.status !== 'upcoming'}
+        // @ts-ignore
+        statusMessage={
+          selectedClass.status !== 'upcoming' 
+            ? 'Không thể cập nhật lớp học đang diễn ra hoặc đã kết thúc'
+            : undefined
+        }
+      />
+    );
   };
 
   return (
@@ -236,7 +340,7 @@ const ClassManagement: React.FC = () => {
                     <IconButton 
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(classData);
+                        openDelete(classData);
                       }}
                       size="small" 
                       color="error"
@@ -269,27 +373,22 @@ const ClassManagement: React.FC = () => {
         />
       )}
 
-      {openForm && editMode && selectedClass && (
-        <EditClassDialog
-          open={openForm}
-          onClose={() => setOpenForm(false)}
-          onSubmit={handleSubmitEdit}
-          classData={selectedClass}
-        />
-      )}
+      {renderEditDialog()}
 
       <Dialog
-        open={deleteConfirmation.open}
-        onClose={deleteConfirmation.dialogProps.onClose}
+        open={dialogProps.open}
+        onClose={dialogProps.onClose}
       >
-        <DialogTitle>{deleteConfirmation.dialogProps.title}</DialogTitle>
+        <DialogTitle>{dialogProps.title}</DialogTitle>
         <DialogContent>
-          <Typography>{deleteConfirmation.dialogProps.content}</Typography>
+          <Typography>
+            {dialogProps.message}
+          </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteConfirmation.dialogProps.onClose}>Hủy</Button>
+          <Button onClick={dialogProps.onClose}>Hủy</Button>
           <Button
-            onClick={deleteConfirmation.dialogProps.onConfirm}
+            onClick={dialogProps.onConfirm}
             color="error"
             variant="contained"
           >

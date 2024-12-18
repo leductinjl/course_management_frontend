@@ -3,36 +3,45 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   Button,
-  Typography
+  Typography,
 } from '@mui/material';
 
-interface DeleteConfirmDialogProps {
+export interface DeleteConfirmDialogProps {
   open: boolean;
-  title: string;
-  content: string;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (item?: any) => void;
+  title: string;
+  message: React.ReactNode;
+  item?: any;
 }
 
 const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
   open,
-  title,
-  content,
   onClose,
   onConfirm,
+  title,
+  message,
+  item
 }) => {
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle>{title || 'Xác nhận xóa'}</DialogTitle>
       <DialogContent>
-        <Typography>{content}</Typography>
+        <DialogContentText>
+          {typeof message === 'string' ? (
+            message
+          ) : (
+            message
+          )}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Hủy</Button>
-        <Button onClick={onConfirm} color="error" variant="contained">
-          Xóa
+        <Button onClick={() => onConfirm(item)} color="error" variant="contained">
+          Xác nhận xóa
         </Button>
       </DialogActions>
     </Dialog>
