@@ -17,6 +17,7 @@ import InstructorTeaching from '../pages/instructor/InstructorTeaching';
 import AdminLogin from '../pages/admin/AdminLogin';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import InstructorSalary from '../pages/instructor/InstructorSalary';
+import VNPayReturn from '../pages/payment/VNPayReturn';
 
 const AppRouter: React.FC = () => {
 
@@ -36,6 +37,7 @@ const AppRouter: React.FC = () => {
       <Route path="/instructor-info" element={<InstructorInfo />} />
       <Route path="/instructor-teaching" element={<InstructorTeaching />} />
       <Route path="/instructor-salary" element={<InstructorSalary />} />
+      <Route path="/payment/vnpay-return" element={<VNPayReturn />} />
 
       {/* Admin Routes */}
       <Route path="/adminne/login" element={<AdminLogin />} />

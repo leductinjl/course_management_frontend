@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Typography,
   Table,
@@ -8,38 +8,67 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
   Box,
   Chip,
+  Alert
 } from '@mui/material';
-import PaymentIcon from '@mui/icons-material/Payment';
+import { useSnackbar } from 'notistack';
+import { tuitionService } from '../../services/tuition.service';
+import { Tuition as TuitionType } from '../../types/tuition.types';
+import VNPayButton from '../payment/VNPayButton';
+
+const statusColors = {
+  pending: 'warning',
+  paid: 'success',
+  processing: 'info',
+  overdue: 'error',
+} as const;
+
+const statusLabels = {
+  pending: 'Chưa thanh toán',
+  paid: 'Đã thanh toán',
+  processing: 'Đang xử lý',
+  overdue: 'Quá hạn',
+} as const;
+
+const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(amount);
+};
 
 const Tuition: React.FC = () => {
-  const tuitions = [
-    {
-      id: 1,
-      courseCode: 'CS101',
-      courseName: 'Tin học văn phòng',
-      amount: 2500000,
-      dueDate: '2024-03-15',
-      status: 'Chưa thanh toán',
-    },
-    {
-      id: 2,
-      courseCode: 'ENG201',
-      courseName: 'Tiếng Anh B1',
-      amount: 3000000,
-      dueDate: '2024-03-20',
-      status: 'Đã thanh toán',
-    },
-  ];
+  const [tuitions, setTuitions] = useState<TuitionType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(amount);
+  useEffect(() => {
+    fetchTuitions();
+  }, []);
+
+  const fetchTuitions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await tuitionService.getMyTuitions();
+      setTuitions(data);
+    } catch (err: any) {
+      setError(err.message || 'Không thể tải thông tin học phí');
+      enqueueSnackbar('Không thể tải thông tin học phí', { variant: 'error' });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return <Typography>Đang tải...</Typography>;
+  }
+
+  if (error) {
+    return <Alert severity="error">{error}</Alert>;
+  }
 
   return (
     <Box>
@@ -61,32 +90,26 @@ const Tuition: React.FC = () => {
           <TableBody>
             {tuitions.map((tuition) => (
               <TableRow key={tuition.id}>
-                <TableCell>{tuition.courseCode}</TableCell>
-                <TableCell>{tuition.courseName}</TableCell>
+                <TableCell>{tuition.course.code}</TableCell>
+                <TableCell>{tuition.course.name}</TableCell>
                 <TableCell align="right">
                   {formatCurrency(tuition.amount)}
                 </TableCell>
-                <TableCell>{tuition.dueDate}</TableCell>
+                <TableCell>{tuition.due_date}</TableCell>
                 <TableCell align="center">
                   <Chip
-                    label={tuition.status}
-                    color={tuition.status === 'Đã thanh toán' ? 'success' : 'warning'}
+                    label={statusLabels[tuition.status]}
+                    color={statusColors[tuition.status]}
                     size="small"
                   />
                 </TableCell>
                 <TableCell align="center">
-                  {tuition.status === 'Chưa thanh toán' && (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      startIcon={<PaymentIcon />}
-                      onClick={() => {
-                        // Xử lý thanh toán
-                        console.log('Thanh toán cho khóa học:', tuition.courseCode);
-                      }}
-                    >
-                      Thanh toán
-                    </Button>
+                  {tuition.status === 'pending' && (
+                    <VNPayButton
+                      tuitionId={tuition.id}
+                      amount={tuition.amount}
+                      onSuccess={() => fetchTuitions()}
+                    />
                   )}
                 </TableCell>
               </TableRow>

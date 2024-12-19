@@ -150,5 +150,11 @@ export const API_ENDPOINTS = {
     GRADES: {
       MY_GRADES: `${API_BASE_URL}/api/student/grades/my-grades`,
     },
+    TUITION: {
+      MY_TUITIONS: `${API_BASE_URL}/api/student/tuition/my-tuitions`,
+      PAY: `${API_BASE_URL}/api/student/tuition/pay`,
+      VNPAY_CREATE: `${API_BASE_URL}/api/student/tuition/vnpay/create`,
+      VNPAY_RETURN: `${API_BASE_URL}/api/student/tuition/vnpay/return`,
+    },
   }
 }; 
