@@ -8,6 +8,29 @@
 
 A modern and responsive frontend application for the Course Management System, built with React and TypeScript. This application provides an intuitive user interface for managing courses, classes, enrollments, and payments.
 
+## 📸 Screenshots
+
+### Admin Dashboard
+![Admin Dashboard](./images/Screenshot%202025-04-15%20223120.png)
+
+### Course Management
+![Course Management](./images/Screenshot%202025-04-15%20223141.png)
+
+### Class Management
+![Class Management](./images/Screenshot%202025-04-15%20223523.png)
+
+### Student Dashboard
+![Student Dashboard](./images/Screenshot%202025-04-15%20223534.png)
+
+### Enrollment Process
+![Enrollment Process](./images/Screenshot%202025-04-15%20223544.png)
+
+### Payment Integration
+![Payment Integration](./images/Screenshot%202025-04-15%20223602.png)
+
+### Login Page
+![Login Page](./images/Screenshot%202025-04-15%20215111.png)
+
 ## 🚀 Features
 
 ### User Interface
