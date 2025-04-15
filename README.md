@@ -10,26 +10,26 @@ A modern and responsive frontend application for the Course Management System, b
 
 ## 📸 Screenshots
 
-### Admin Dashboard
-![Admin Dashboard](./images/Screenshot%202025-04-15%20223120.png)
+Here are some key screenshots of the application. Note that these are just a few examples of the many features and interfaces available in the system.
+
+### Login & Registration
+![Login Page](./images/login.png)
+*Secure login interface with role-based access*
+
+![Registration Page](./images/register.png)
+*User registration form with validation*
+
+### Admin Interface
+![Admin Dashboard](./images/admin.png)
+*Admin dashboard with comprehensive management tools*
 
 ### Course Management
-![Course Management](./images/Screenshot%202025-04-15%20223141.png)
+![Course Management](./images/course_management.png)
+*Course listing and management interface*
 
-### Class Management
-![Class Management](./images/Screenshot%202025-04-15%20223523.png)
-
-### Student Dashboard
-![Student Dashboard](./images/Screenshot%202025-04-15%20223534.png)
-
-### Enrollment Process
-![Enrollment Process](./images/Screenshot%202025-04-15%20223544.png)
-
-### Payment Integration
-![Payment Integration](./images/Screenshot%202025-04-15%20223602.png)
-
-### Login Page
-![Login Page](./images/Screenshot%202025-04-15%20215111.png)
+### Student Profile
+![Student Profile](./images/student_profile.png)
+*Student profile and enrollment management*
 
 ## 🚀 Features
 
