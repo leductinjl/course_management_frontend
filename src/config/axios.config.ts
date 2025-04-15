@@ -14,6 +14,31 @@ if (token) {
   axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
+// Enable debug mode if specified in env
+if (import.meta.env.VITE_ENABLE_DEBUG_MODE === 'true') {
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      console.log('Request:', config);
+      return config;
+    },
+    (error) => {
+      console.error('Request Error:', error);
+      return Promise.reject(error);
+    }
+  );
+
+  axiosInstance.interceptors.response.use(
+    (response) => {
+      console.log('Response:', response);
+      return response;
+    },
+    (error) => {
+      console.error('Response Error:', error);
+      return Promise.reject(error);
+    }
+  );
+}
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const userToken = localStorage.getItem('userToken');
@@ -37,7 +62,9 @@ axiosInstance.interceptors.request.use(
       config.headers['Authorization'] = `Bearer ${token}`;
     }
 
-    console.log('Request headers:', config.headers);
+    if (import.meta.env.VITE_ENABLE_DEBUG_MODE === 'true') {
+      console.log('Request headers:', config.headers);
+    }
     return config;
   },
   (error) => {
